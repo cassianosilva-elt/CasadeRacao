@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Camera, CheckCircle2, ArrowLeft, X, Save } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Camera, CheckCircle2, ArrowLeft, X, Save, Edit3 } from 'lucide-react';
 import { useAdmin, CATEGORIES } from './adminContext';
 import { ImageEditor } from './ImageEditor';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminAddProduct = () => {
   const navigate = useNavigate();
-  const { addProduct } = useAdmin();
+  const { id } = useParams();
+  const { products, addProduct, updateProduct } = useAdmin();
+  const isEditing = !!id;
   
   const [formData, setFormData] = useState({
     name: '',
@@ -22,11 +24,32 @@ export const AdminAddProduct = () => {
   const [editingImage, setEditingImage] = useState<{ index: number; src: string } | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  React.useEffect(() => {
+    if (isEditing && products.length > 0) {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        setFormData({
+          name: product.name,
+          price: product.price.toString(),
+          quantity: product.quantity.toString(),
+          category: product.category,
+          brand: product.brand,
+          images: [
+            product.images[0] || '',
+            product.images[1] || '',
+            product.images[2] || '',
+          ],
+          video: product.video || '',
+        });
+      }
+    }
+  }, [isEditing, id, products]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.price) return;
 
-    addProduct({
+    const productData = {
       name: formData.name,
       price: parseFloat(formData.price),
       quantity: parseInt(formData.quantity) || 0,
@@ -36,7 +59,13 @@ export const AdminAddProduct = () => {
       video: formData.video,
       rating: 5,
       reviewCount: 0,
-    });
+    };
+
+    if (isEditing && id) {
+      updateProduct(id, productData);
+    } else {
+      addProduct(productData);
+    }
 
     setShowSuccess(true);
     setTimeout(() => {
@@ -82,8 +111,12 @@ export const AdminAddProduct = () => {
       </button>
 
       <div className="space-y-1">
-        <h1 className="text-2xl font-black text-stone-900 font-display">Adicionar Produto</h1>
-        <p className="text-sm text-stone-500">Preencha os dados do novo item.</p>
+        <h1 className="text-2xl font-black text-stone-900 font-display">
+          {isEditing ? 'Editar Produto' : 'Adicionar Produto'}
+        </h1>
+        <p className="text-sm text-stone-500">
+          {isEditing ? 'Atualize as informações do item.' : 'Preencha os dados do novo item.'}
+        </p>
       </div>
 
       <AnimatePresence>
@@ -268,8 +301,8 @@ export const AdminAddProduct = () => {
 
         <div className="pt-6">
           <button type="submit" className="admin-button-primary w-full flex items-center justify-center gap-2">
-            <Save className="w-4 h-4" />
-            Salvar Produto
+            {isEditing ? <Edit3 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+            {isEditing ? 'Atualizar Produto' : 'Salvar Produto'}
           </button>
         </div>
       </form>

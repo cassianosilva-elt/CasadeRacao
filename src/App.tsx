@@ -69,6 +69,7 @@ export default function App() {
                     <Route element={<AdminLayout />}>
                       <Route index element={<AdminHome />} />
                       <Route path="novo-produto" element={<AdminAddProduct />} />
+                      <Route path="editar-produto/:id" element={<AdminAddProduct />} />
                       <Route path="meus-produtos" element={<AdminProducts />} />
                       <Route path="vendas" element={<AdminOrders />} />
                     </Route>

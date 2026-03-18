@@ -43,6 +43,7 @@ interface AdminContextType {
   orders: Order[];
   addProduct: (product: Omit<Product, 'id'>) => void;
   updateProductPrice: (id: string, newPrice: number) => void;
+  updateProduct: (id: string, product: Omit<Product, 'id'>) => void;
   deleteProduct: (id: string) => void;
   updateOrderStatus: (id: string, newStatus: OrderStatus) => void;
   formatPrice: (price: number) => string;
@@ -113,6 +114,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setProducts(prev => prev.map(p => p.id === id ? { ...p, price: newPrice } : p));
   };
 
+  const updateProduct = (id: string, updatedProduct: Omit<Product, 'id'>) => {
+    setProducts(prev => prev.map(p => p.id === id ? { ...updatedProduct, id } : p));
+  };
+
   const deleteProduct = (id: string) => {
     setProducts(prev => prev.filter(p => p.id !== id));
   };
@@ -126,7 +131,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   return (
-    <AdminContext.Provider value={{ products, orders, addProduct, updateProductPrice, deleteProduct, updateOrderStatus, formatPrice }}>
+    <AdminContext.Provider value={{ products, orders, addProduct, updateProductPrice, updateProduct, deleteProduct, updateOrderStatus, formatPrice }}>
       {children}
     </AdminContext.Provider>
   );

@@ -25,14 +25,8 @@ export const AdminProducts = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [newPrice, setNewPrice] = useState('');
 
-  const handleEdit = (id: string, currentPrice: number) => {
-    setEditingId(id);
-    setNewPrice(currentPrice.toString());
-  };
-
-  const handleSavePrice = (id: string) => {
-    updateProductPrice(id, parseFloat(newPrice));
-    setEditingId(null);
+  const handleEdit = (id: string) => {
+    navigate(`/admin/editar-produto/${id}`);
   };
 
   return (
@@ -104,27 +98,9 @@ export const AdminProducts = () => {
                 <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-8">
                   <div className="space-y-0.5">
                     <span className="text-stone-400 font-bold text-[10px] uppercase tracking-wider block">Preço</span>
-                    {editingId === product.id ? (
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-black">R$</span>
-                        <input
-                          type="number"
-                          className="admin-input !w-24 !mt-0 !py-1 !text-sm"
-                          value={newPrice}
-                          onChange={e => setNewPrice(e.target.value)}
-                        />
-                        <button 
-                          onClick={() => handleSavePrice(product.id)}
-                          className="bg-green-600 text-white px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-green-700 transition-colors"
-                        >
-                          OK
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-lg font-black text-teal-600 font-display">
-                        {useAdmin().formatPrice(product.price)}
-                      </span>
-                    )}
+                    <span className="text-lg font-black text-teal-600 font-display">
+                      {useAdmin().formatPrice(product.price)}
+                    </span>
                   </div>
 
                   <div className="space-y-0.5">
@@ -136,11 +112,11 @@ export const AdminProducts = () => {
 
               <div className="flex sm:flex-col gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                 <button 
-                  onClick={() => handleEdit(product.id, product.price)}
+                  onClick={() => handleEdit(product.id)}
                   className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Editar</span> Preço
+                  Editar
                 </button>
                 <button 
                   onClick={() => {
