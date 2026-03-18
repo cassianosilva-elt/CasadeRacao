@@ -22,58 +22,63 @@ const FAQ = lazy(() => import('./Pages').then(module => ({ default: module.FAQ }
 const Favorites = lazy(() => import('./Pages').then(module => ({ default: module.Favorites })));
 const Checkout = lazy(() => import('./Pages').then(module => ({ default: module.Checkout })));
 
-// Admin Lazy Loads
-const AdminLayout = lazy(() => import('./Pages').then(module => ({ default: module.AdminLayout })));
-const AdminHome = lazy(() => import('./Pages').then(module => ({ default: module.AdminHome })));
-const AdminAddProduct = lazy(() => import('./Pages').then(module => ({ default: module.AdminAddProduct })));
-const AdminProducts = lazy(() => import('./Pages').then(module => ({ default: module.AdminProducts })));
-const AdminOrders = lazy(() => import('./Pages').then(module => ({ default: module.AdminOrders })));
-const AdminLogin = lazy(() => import('./Pages').then(module => ({ default: module.AdminLogin })));
-const AdminGuard = lazy(() => import('./Pages').then(module => ({ default: module.AdminGuard })));
+import {
+  AdminLayout,
+  AdminHome,
+  AdminAddProduct,
+  AdminProducts,
+  AdminOrders,
+  AdminLogin,
+  AdminGuard
+} from './Pages';
+
+import { AdminProvider } from './pages/admin/adminContext';
 
 export default function App() {
   return (
     <ToastProvider>
-      <FavoritesProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-teal-500 font-bold">Carregando...</div>}>
-              <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<Home />} />
-                  <Route path="produto/:id" element={<ProductDetails />} />
-                  <Route path="carrinho" element={<Cart />} />
-                  <Route path="faq" element={<FAQ />} />
-                  <Route path="conta" element={<Account />} />
-                  <Route path="onboarding" element={<Onboarding />} />
-                  <Route path="cadastrar-pet" element={<RegisterPet />} />
-                  <Route path="favoritos" element={<Favorites />} />
-                  <Route path="checkout" element={<Checkout />} />
-                  <Route path="painel" element={<Dashboard />} />
-                  <Route path="sobre" element={<About />} />
-                  <Route path="entrega" element={<Delivery />} />
-                  <Route path="trocas" element={<Returns />} />
-                  <Route path="blog" element={<Blog />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Route>
-
-                {/* Tela de Login Admin (Desprotegida) */}
-                <Route path="/admin/entrar" element={<AdminLogin />} />
-
-                {/* Painel Administrativo com Layout Separado e Proteção Guard */}
-                <Route path="/admin" element={<AdminGuard />}>
-                  <Route element={<AdminLayout />}>
-                    <Route index element={<AdminHome />} />
-                    <Route path="novo-produto" element={<AdminAddProduct />} />
-                    <Route path="meus-produtos" element={<AdminProducts />} />
-                    <Route path="vendas" element={<AdminOrders />} />
+      <AdminProvider>
+        <FavoritesProvider>
+          <CartProvider>
+            <BrowserRouter>
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-teal-500 font-bold">Carregando...</div>}>
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="produto/:id" element={<ProductDetails />} />
+                    <Route path="carrinho" element={<Cart />} />
+                    <Route path="faq" element={<FAQ />} />
+                    <Route path="conta" element={<Account />} />
+                    <Route path="onboarding" element={<Onboarding />} />
+                    <Route path="cadastrar-pet" element={<RegisterPet />} />
+                    <Route path="favoritos" element={<Favorites />} />
+                    <Route path="checkout" element={<Checkout />} />
+                    <Route path="painel" element={<Dashboard />} />
+                    <Route path="sobre" element={<About />} />
+                    <Route path="entrega" element={<Delivery />} />
+                    <Route path="trocas" element={<Returns />} />
+                    <Route path="blog" element={<Blog />} />
+                    <Route path="*" element={<NotFoundPage />} />
                   </Route>
-                </Route>
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
-        </CartProvider>
-      </FavoritesProvider>
+
+                  {/* Tela de Login Admin (Desprotegida) */}
+                  <Route path="/admin/entrar" element={<AdminLogin />} />
+
+                  {/* Painel Administrativo com Layout Separado e Proteção Guard */}
+                  <Route path="/admin" element={<AdminGuard />}>
+                    <Route element={<AdminLayout />}>
+                      <Route index element={<AdminHome />} />
+                      <Route path="novo-produto" element={<AdminAddProduct />} />
+                      <Route path="meus-produtos" element={<AdminProducts />} />
+                      <Route path="vendas" element={<AdminOrders />} />
+                    </Route>
+                  </Route>
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </CartProvider>
+        </FavoritesProvider>
+      </AdminProvider>
     </ToastProvider>
   );
 }

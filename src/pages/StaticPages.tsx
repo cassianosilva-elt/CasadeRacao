@@ -9,7 +9,7 @@ const PageHero = ({ title, subtitle, icon: Icon }: { title: string, subtitle: st
       <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-8 border border-white/20">
         <Icon className="w-8 h-8 text-teal-400" />
       </div>
-      <h1 className="font-display text-4xl md:text-6xl font-black mb-6 tracking-tighter uppercase">{title}</h1>
+      <h1 className="font-display text-4xl md:text-6xl font-black mb-6 tracking-tighter uppercase text-white">{title}</h1>
       <p className="text-stone-400 text-lg max-w-2xl mx-auto font-medium">{subtitle}</p>
     </div>
   </div>

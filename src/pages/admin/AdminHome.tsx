@@ -1,70 +1,106 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PackagePlus, ClipboardList, BadgeDollarSign } from 'lucide-react';
+import { PackagePlus, ClipboardList, BadgeDollarSign, Lightbulb } from 'lucide-react';
+import { motion } from 'motion/react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
 
 export const AdminHome = () => {
   const navigate = useNavigate();
 
   const menuItems = [
     {
-      title: '📦 Adicionar Novo Produto',
-      description: 'Coloque um novo item para vender no site.',
-      icon: <PackagePlus className="w-20 h-20 text-green-600" />,
+      title: 'Adicionar Produto',
+      description: 'Coloque um novo item na loja.',
+      icon: <PackagePlus className="w-10 h-10 text-teal-600" />,
       path: '/admin/novo-produto',
-      color: 'hover:border-green-500'
+      bgColor: 'bg-teal-50',
+      hoverBorder: 'hover:border-teal-300'
     },
     {
-      title: '📋 Ver Meus Produtos',
-      description: 'Veja, mude preços ou apague produtos.',
-      icon: <ClipboardList className="w-20 h-20 text-blue-600" />,
+      title: 'Meus Produtos',
+      description: 'Gerencie estoque e preços.',
+      icon: <ClipboardList className="w-10 h-10 text-blue-600" />,
       path: '/admin/meus-produtos',
-      color: 'hover:border-blue-500'
+      bgColor: 'bg-blue-50',
+      hoverBorder: 'hover:border-blue-300'
     },
     {
-      title: '💰 Vendas e Pedidos',
-      description: 'Veja o que os clientes compraram hoje.',
-      icon: <BadgeDollarSign className="w-20 h-20 text-orange-600" />,
+      title: 'Vendas e Pedidos',
+      description: 'Acompanhe compras.',
+      icon: <BadgeDollarSign className="w-10 h-10 text-orange-600" />,
       path: '/admin/vendas',
-      color: 'hover:border-orange-500'
+      bgColor: 'bg-orange-50',
+      hoverBorder: 'hover:border-orange-300'
     }
   ];
 
   return (
-    <div className="space-y-12 py-8">
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl font-black text-stone-900">O que você deseja fazer hoje?</h1>
-        <p className="text-2xl text-stone-500">Escolha uma das opções abaixo clicando no botão grande.</p>
-      </div>
+    <div className="max-w-5xl mx-auto space-y-8 py-8">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-2"
+      >
+        <h1 className="font-display text-3xl font-black text-stone-900">Visão Geral</h1>
+        <p className="text-base text-stone-500">O que você deseja gerenciar hoje?</p>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      >
         {menuItems.map((item) => (
-          <button
+          <motion.button
+            variants={itemVariants}
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`admin-card text-left flex flex-col items-center text-center gap-6 ${item.color}`}
+            className={`admin-card text-left flex flex-col items-start gap-4 ${item.hoverBorder} group relative overflow-hidden`}
           >
-            <div className="p-8 bg-stone-50 rounded-full">
+            <div className={`p-4 rounded-2xl ${item.bgColor} group-hover:scale-110 transition-transform duration-300 relative z-10`}>
               {item.icon}
             </div>
-            <div className="space-y-4">
-              <h2 className="text-3xl font-bold text-stone-900">{item.title}</h2>
-              <p className="text-xl text-stone-500 font-medium">
+            <div className="relative z-10">
+              <h2 className="text-lg font-bold text-stone-900 mb-1">{item.title}</h2>
+              <p className="text-sm text-stone-500">
                 {item.description}
               </p>
             </div>
-          </button>
+          </motion.button>
         ))}
-      </div>
+      </motion.div>
 
-      <div className="mt-20 p-10 bg-teal-50 rounded-[40px] border-4 border-teal-100 flex items-center gap-8">
-        <div className="text-5xl">💡</div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="mt-12 p-6 bg-amber-50 rounded-3xl border border-amber-100 flex items-start gap-4"
+      >
+        <div className="p-3 bg-amber-100 rounded-xl text-amber-600 shrink-0">
+          <Lightbulb className="w-6 h-6" />
+        </div>
         <div>
-          <h3 className="text-2xl font-bold text-teal-900 mb-2">Dica de Amigo:</h3>
-          <p className="text-xl text-teal-800">
-            Sempre confira se o <strong>Preço de Venda</strong> está certinho antes de salvar um produto novo!
+          <h3 className="text-base font-bold text-amber-900 mb-1">Dica de Sucesso:</h3>
+          <p className="text-sm text-amber-800">
+            Confira as informações, preço e fotos antes de salvar o produto.
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

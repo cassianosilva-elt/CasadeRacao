@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { products, Product } from '../data';
+import { useAdmin } from './admin/adminContext';
 import { useCart } from '../CartContext';
 import { useFavorites } from '../FavoritesContext';
 import { Star, ShoppingCart, Heart, ArrowLeft, ShieldCheck, Truck, RefreshCw, ChevronRight, Plus, Minus } from 'lucide-react';
@@ -9,11 +9,19 @@ import { motion, AnimatePresence } from 'motion/react';
 export const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const product = products.find(p => p.id === Number(id));
+  const { products, formatPrice } = useAdmin();
+  const product = products.find(p => p.id === id);
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'desc' | 'spec' | 'reviews'>('desc');
+  const [selectedMedia, setSelectedMedia] = useState<{ type: 'image' | 'video'; src: string }>({ type: 'image', src: '' });
+
+  useEffect(() => {
+    if (product) {
+      setSelectedMedia({ type: 'image', src: product.images[0] });
+    }
+  }, [product]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -42,11 +50,12 @@ export const ProductDetails = () => {
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-24">
-          <div className="relative">
+          <div className="space-y-6">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-stone-50 rounded-[40px] p-6 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden"
+              key={selectedMedia.src}
+              className="bg-stone-50 rounded-[40px] p-6 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden shadow-inner"
             >
               {product.badge && (
                 <span className={`absolute top-4 left-4 md:top-8 md:left-8 z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white ${
@@ -55,8 +64,43 @@ export const ProductDetails = () => {
                   {product.badge}
                 </span>
               )}
-              <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply transition-transform hover:scale-110 duration-700" />
+              {selectedMedia.type === 'video' ? (
+                <video src={selectedMedia.src} controls autoPlay className="max-w-full max-h-full rounded-2xl shadow-2xl" />
+              ) : (
+                <img src={selectedMedia.src} alt={product.name} className="max-w-full max-h-full object-contain mix-blend-multiply transition-transform hover:scale-105 duration-700" />
+              )}
             </motion.div>
+
+            {(product.images.length > 1 || product.video) && (
+              <div className="flex gap-4 justify-center md:justify-start overflow-x-auto pb-2 no-scrollbar">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedMedia({ type: 'image', src: img })}
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${
+                      selectedMedia.type === 'image' && selectedMedia.src === img ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+                {product.video && (
+                  <button
+                    onClick={() => setSelectedMedia({ type: 'video', src: product.video! })}
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-stone-900 flex items-center justify-center relative ${
+                      selectedMedia.type === 'video' ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-teal-600 border-b-[6px] border-b-transparent ml-1"></div>
+                      </div>
+                    </div>
+                    <span className="text-[8px] text-white font-bold absolute bottom-2 uppercase">Vídeo</span>
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -76,8 +120,8 @@ export const ProductDetails = () => {
 
             <div className="mb-8 md:mb-10 p-6 md:p-8 bg-stone-50 rounded-[32px]">
               <div className="flex items-end gap-2 md:gap-3 mb-2">
-                {product.oldPriceFormatted && <span className="text-lg md:text-xl text-stone-400 line-through mb-1">{product.oldPriceFormatted}</span>}
-                <span className="text-3xl md:text-5xl font-display font-bold text-stone-900 leading-none">{product.priceFormatted}</span>
+                {product.oldPrice && <span className="text-lg md:text-xl text-stone-400 line-through mb-1">{formatPrice(product.oldPrice)}</span>}
+                <span className="text-3xl md:text-5xl font-display font-bold text-stone-900 leading-none">{formatPrice(product.price)}</span>
               </div>
               <p className="text-stone-500 text-sm font-medium">À vista no PIX com 5% de desconto ou em até 3x sem juros.</p>
             </div>
@@ -198,11 +242,11 @@ export const ProductDetails = () => {
               {relatedProducts.map(rp => (
                 <Link key={rp.id} to={`/produto/${rp.id}`} className="bg-white border border-stone-100 rounded-[20px] md:rounded-3xl overflow-hidden hover:shadow-xl transition-all p-4 md:p-6 group">
                   <div className="aspect-square bg-stone-50 rounded-xl md:rounded-2xl mb-3 md:mb-4 flex items-center justify-center relative overflow-hidden">
-                    <img src={rp.image} alt={rp.name} className="w-full h-full object-contain p-3 md:p-4 group-hover:scale-110 transition-transform duration-500" />
+                    <img src={rp.images[0]} alt={rp.name} className="w-full h-full object-contain p-3 md:p-4 group-hover:scale-110 transition-transform duration-500" />
                   </div>
                   <p className="text-[8px] md:text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1 md:mb-2">{rp.brand}</p>
                   <h3 className="font-bold text-stone-900 text-sm mb-2 md:mb-3 line-clamp-2 leading-tight">{rp.name}</h3>
-                  <p className="font-display font-bold text-base md:text-lg text-stone-900">{rp.priceFormatted}</p>
+                  <p className="font-display font-bold text-base md:text-lg text-stone-900">{formatPrice(rp.price)}</p>
                 </Link>
               ))}
             </div>

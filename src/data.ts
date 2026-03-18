@@ -17,7 +17,7 @@ export interface Product {
 export const products: Product[] = [
   { 
     id: 1, 
-    category: 'Rações', 
+    category: 'Rações para Cães', 
     brand: 'Royal Canin', 
     name: 'Golden Retriever Adulto 15kg', 
     price: 349.90, 
@@ -32,7 +32,7 @@ export const products: Product[] = [
   },
   { 
     id: 2, 
-    category: 'Rações', 
+    category: 'Rações para Gatos', 
     brand: 'Premier', 
     name: 'Ambientes Internos Gatos Castrados 7.5kg', 
     price: 189.90, 
@@ -84,7 +84,7 @@ export const products: Product[] = [
   },
   { 
     id: 6, 
-    category: 'Rações', 
+    category: 'Rações para Cães', 
     brand: 'Guabi Natural', 
     name: 'Cães Adultos Frango e Arroz 15kg', 
     price: 289.90, 
@@ -133,7 +133,7 @@ export const products: Product[] = [
   },
   {
     id: 10,
-    category: 'Rações',
+    category: 'Rações para Cães', 
     brand: 'Royal Canin',
     name: 'Satiety Support Cães 10.1kg',
     price: 459.90,
@@ -170,9 +170,9 @@ export const products: Product[] = [
   },
   {
     id: 13,
-    category: 'Rações',
-    brand: 'Purina Pro Plan',
-    name: 'Gatos Adultos Urinary Stall 7.5kg',
+    category: 'Rações para Gatos', 
+    brand: 'Purina Pro Plan', 
+    name: 'Gatos Adultos Urinary Stall 7.5kg', 
     price: 224.90,
     priceFormatted: 'R$ 224,90',
     oldPrice: 249.90,
@@ -209,9 +209,9 @@ export const products: Product[] = [
   },
   {
     id: 16,
-    category: 'Rações',
-    brand: 'N&D Prime',
-    name: 'Gatos Adultos Cordeiro e Mirtilo 1.5kg',
+    category: 'Rações para Gatos', 
+    brand: 'N&D Prime', 
+    name: 'Gatos Adultos Cordeiro e Mirtilo 1.5kg', 
     price: 134.90,
     priceFormatted: 'R$ 134,90',
     image: 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&q=80&w=400',
@@ -257,7 +257,7 @@ export const products: Product[] = [
   },
   {
     id: 20,
-    category: 'Rações',
+    category: 'Rações para Cães', 
     brand: 'Eukanuba',
     name: 'Puppy Large Breed 15kg',
     price: 319.90,
@@ -309,7 +309,7 @@ export const products: Product[] = [
   },
   {
     id: 24,
-    category: 'Rações',
+    category: 'Rações para Cães', 
     brand: 'Hill\'s Science Diet',
     name: 'Adulto 7+ Raças Pequenas 6kg',
     price: 259.00,

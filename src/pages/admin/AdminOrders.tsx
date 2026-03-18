@@ -4,6 +4,22 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { ArrowLeft, CheckCircle, Clock, Package, Truck, CheckCircle2, XCircle, User as UserIcon, Phone, Mail, X } from 'lucide-react';
 import { OrderStatus } from './adminContext';
+import { motion, AnimatePresence } from 'motion/react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0 }
+};
 
 export const AdminOrders = () => {
   const navigate = useNavigate();
@@ -21,18 +37,18 @@ export const AdminOrders = () => {
 
   const getStatusBadge = (status: OrderStatus) => {
     switch (status) {
-      case 'pending': return <span className="text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Clock className="w-4 h-4" /> Aguardando Pagamento</span>;
-      case 'paid': return <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Pago</span>;
-      case 'preparing': return <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Package className="w-4 h-4" /> Em Separação</span>;
-      case 'shipped': return <span className="text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Truck className="w-4 h-4" /> Em Rota de Entrega</span>;
-      case 'delivered': return <span className="text-teal-600 bg-teal-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><CheckCircle2 className="w-4 h-4" /> Entregue</span>;
-      case 'cancelled': return <span className="text-red-600 bg-red-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><XCircle className="w-4 h-4" /> Cancelado</span>;
+      case 'pending': return <span className="text-yellow-600 bg-yellow-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><Clock className="w-3 h-3" /> Aguardando Pagamento</span>;
+      case 'paid': return <span className="text-green-600 bg-green-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><CheckCircle className="w-3 h-3" /> Pago</span>;
+      case 'preparing': return <span className="text-blue-600 bg-blue-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><Package className="w-3 h-3" /> Em Separação</span>;
+      case 'shipped': return <span className="text-orange-600 bg-orange-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><Truck className="w-3 h-3" /> Em Rota de Entrega</span>;
+      case 'delivered': return <span className="text-teal-600 bg-teal-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><CheckCircle2 className="w-3 h-3" /> Entregue</span>;
+      case 'cancelled': return <span className="text-red-600 bg-red-50 px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 uppercase tracking-wider"><XCircle className="w-3 h-3" /> Cancelado</span>;
       default: return null;
     }
   };
 
   if (convexOrders === undefined) {
-    return <div className="py-20 text-center text-stone-500 font-bold">Carregando pedidos...</div>;
+    return <div className="py-20 text-center text-stone-500 font-bold text-sm">Carregando pedidos...</div>;
   }
 
   const orders = convexOrders?.map(o => ({
@@ -49,75 +65,83 @@ export const AdminOrders = () => {
 
   return (
     <>
-      <div className="space-y-10 py-8">
-        <div className="space-y-4">
+      <div className="max-w-5xl mx-auto space-y-6 py-6">
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-1"
+        >
           <button 
             onClick={() => navigate('/admin')}
-            className="flex items-center gap-2 text-stone-500 hover:text-stone-900 font-bold text-xl"
+            className="flex items-center gap-2 text-stone-500 hover:text-stone-900 font-bold text-sm mb-2 transition-colors"
           >
-            <ArrowLeft className="w-6 h-6" />
-            Voltar para o Início
+            <ArrowLeft className="w-4 h-4" />
+            Voltar
           </button>
-          <h1 className="text-4xl font-black text-stone-900">Vendas e Pedidos de Hoje</h1>
-          <p className="text-xl text-stone-500">Acompanhe quem comprou e o status de cada entrega.</p>
-        </div>
+          <h1 className="text-2xl font-black text-stone-900 font-display">Vendas e Pedidos</h1>
+          <p className="text-sm text-stone-500">Acompanhe quem comprou e o status de cada entrega.</p>
+        </motion.div>
 
-        <div className="space-y-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="space-y-4"
+        >
           {orders.map((order) => (
-            <div key={order.id} className="admin-card border-l-[16px] border-l-stone-100">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div className="space-y-4 flex-grow">
+            <motion.div variants={itemVariants} key={order.id} className="admin-card !p-4 border-l-[6px] border-l-stone-200 hover:border-l-teal-400 overflow-hidden">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div className="space-y-3 flex-grow w-full">
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-stone-400">Pedido #{order.shortId} • {order.date}</span>
+                    <span className="text-xs font-bold text-stone-400">#{order.shortId} • {order.date}</span>
                     {getStatusBadge(order.status)}
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-3xl font-black text-stone-900">Cliente: {order.customerName}</h3>
-                    <p className="text-2xl text-stone-600 font-medium">🛒 Comprou: <span className="font-bold">{order.items}</span></p>
-                    <p className="text-3xl font-black text-teal-600">Total: R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-black text-stone-900 leading-none">{order.customerName}</h3>
+                    <p className="text-sm text-stone-600 line-clamp-2">🛒 <span className="font-medium">{order.items}</span></p>
+                    <p className="text-lg font-black text-teal-600 font-display pt-1">R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-4 w-full md:w-auto">
-                  <div className="flex flex-wrap gap-2">
-                    {/* ... status update buttons remain the same */}
+                <div className="flex flex-col md:flex-row gap-2 w-full md:w-auto shrink-0 md:items-center">
+                  <div className="flex flex-wrap gap-2 w-full md:w-auto">
                     {order.status === 'pending' && (
                       <button 
                         onClick={() => updateOrderStatus(order.id, 'paid')}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition-colors"
+                        className="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm"
                       >
-                        Marcar como PAGO ✅
+                        PAGO ✅
                       </button>
                     )}
                     {order.status === 'paid' && (
                       <button 
                         onClick={() => updateOrderStatus(order.id, 'preparing')}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition-colors"
+                        className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm"
                       >
-                        Começar a SEPARAR 📦
+                        SEPARAR 📦
                       </button>
                     )}
                     {order.status === 'preparing' && (
                       <button 
                         onClick={() => updateOrderStatus(order.id, 'shipped')}
-                        className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition-colors"
+                        className="flex-1 md:flex-none bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm"
                       >
-                        SAIU para ENTREGA 🚚
+                        ENVIAR 🚚
                       </button>
                     )}
                     {order.status === 'shipped' && (
                       <button 
                         onClick={() => updateOrderStatus(order.id, 'delivered')}
-                        className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-3 rounded-xl font-bold text-sm transition-colors"
+                        className="flex-1 md:flex-none bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg font-bold text-xs transition-colors shadow-sm"
                       >
-                        Confirmar ENTREGA ✨
+                        ENTREGUE ✨
                       </button>
                     )}
                     {order.status !== 'delivered' && order.status !== 'cancelled' && (
                       <button 
                         onClick={() => updateOrderStatus(order.id, 'cancelled')}
-                        className="bg-stone-200 hover:bg-red-100 hover:text-red-700 text-stone-600 px-4 py-3 rounded-xl font-bold text-sm transition-colors"
+                        className="flex-none bg-stone-100 hover:bg-red-50 hover:text-red-600 text-stone-500 px-3 py-2 rounded-lg font-bold text-xs transition-colors"
                       >
                         Cancelar
                       </button>
@@ -125,80 +149,96 @@ export const AdminOrders = () => {
                   </div>
                   <button 
                     onClick={() => setSelectedOrder(order)}
-                    className="bg-stone-100 text-stone-600 hover:bg-stone-200 px-6 py-4 rounded-2xl font-bold text-xl transition-colors"
+                    className="w-full md:w-auto bg-stone-50 text-stone-600 hover:bg-stone-100 hover:text-stone-900 px-4 py-2 rounded-xl font-bold text-xs transition-colors border border-stone-200"
                   >
-                    Ver Detalhes do Cliente
+                    Ver Cliente
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="bg-amber-50 p-10 rounded-[40px] border-4 border-amber-100 text-center">
-          <p className="text-2xl font-bold text-amber-900">
-            ⚠️ Lembre-se: Entrega rápida faz o cliente ficar muito feliz!
-          </p>
-        </div>
+        {orders.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-teal-50 p-4 rounded-2xl border border-teal-100 text-center"
+          >
+            <p className="text-sm font-bold text-teal-800">
+              Entrega rápida faz o cliente feliz! Mantenha os status sempre atualizados.
+            </p>
+          </motion.div>
+        )}
       </div>
 
-      {/* Modal de Detalhes do Cliente */}
-      {selectedOrder && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[40px] w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="bg-stone-900 p-8 text-white flex justify-between items-center">
-              <h2 className="text-2xl font-black">Detalhes do Cliente</h2>
-              <button 
-                onClick={() => setSelectedOrder(null)}
-                className="p-2 hover:bg-white/10 rounded-full transition-colors"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <div className="p-8 space-y-8">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center text-stone-400">
-                  <UserIcon className="w-8 h-8" />
-                </div>
-                <div>
-                  <p className="text-stone-400 font-bold uppercase text-xs tracking-wider">Nome do Cliente</p>
-                  <h3 className="text-2xl font-black text-stone-900">{selectedOrder.customerName}</h3>
-                </div>
+      <AnimatePresence>
+        {selectedOrder && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-stone-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 10 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 10 }}
+              className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl"
+            >
+              <div className="bg-stone-50 p-4 sm:p-6 border-b border-stone-100 flex justify-between items-center">
+                <h2 className="text-base font-black text-stone-900 font-display">Detalhes do Cliente</h2>
+                <button 
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-1.5 hover:bg-stone-200 rounded-full transition-colors text-stone-500"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-
-              <div className="grid grid-cols-1 gap-6">
-                <div className="space-y-2">
-                  <p className="text-stone-400 font-bold uppercase text-xs tracking-wider flex items-center gap-2">
-                    <Phone className="w-3 h-3" /> WhatsApp / Telefone
-                  </p>
-                  <p className="text-xl font-bold text-stone-800">{selectedOrder.customerPhone || 'Não informado'}</p>
+              
+              <div className="p-4 sm:p-6 space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600">
+                    <UserIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-stone-900">{selectedOrder.customerName}</h3>
+                    <p className="text-stone-400 font-medium text-[10px] uppercase tracking-wider">Cliente da Loja</p>
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-stone-400 font-bold uppercase text-xs tracking-wider flex items-center gap-2">
-                    <Mail className="w-3 h-3" /> E-mail
-                  </p>
-                  <p className="text-xl font-bold text-stone-800">{selectedOrder.customerEmail || 'Não informado'}</p>
-                </div>
-              </div>
 
-              <div className="pt-6 border-t border-stone-100">
-                <p className="text-stone-400 font-bold uppercase text-xs tracking-wider mb-4 text-center">Ações Rápidas</p>
-                <div className="flex gap-4">
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <p className="text-stone-400 font-bold uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                      <Phone className="w-3 h-3 text-stone-300" /> WhatsApp / Telefone
+                    </p>
+                    <p className="text-sm font-bold text-stone-800">{selectedOrder.customerPhone || 'Não informado'}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-stone-400 font-bold uppercase text-[10px] tracking-wider flex items-center gap-1.5">
+                      <Mail className="w-3 h-3 text-stone-300" /> E-mail
+                    </p>
+                    <p className="text-sm font-bold text-stone-800 break-all">{selectedOrder.customerEmail || 'Não informado'}</p>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-stone-100">
                   <a 
                     href={`https://wa.me/${selectedOrder.customerPhone?.replace(/\D/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-bold text-center transition-colors"
+                    className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-xl font-bold text-sm transition-colors shadow-sm"
                   >
+                    <Phone className="w-4 h-4" />
                     Chamar no WhatsApp
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

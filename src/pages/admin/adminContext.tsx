@@ -1,12 +1,29 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { products as INITIAL_DATA } from '../../data';
 
 export interface Product {
   id: string;
   name: string;
   price: number;
   quantity: number;
-  image?: string;
+  category: string;
+  brand: string;
+  images: string[];
+  video?: string;
+  description?: string;
+  rating: number;
+  reviewCount: number;
+  badge?: string;
+  oldPrice?: number;
 }
+
+export const CATEGORIES = [
+  'Rações para Cães',
+  'Rações para Gatos',
+  'Acessórios',
+  'Brinquedos',
+  'Farmácia'
+];
 
 export type OrderStatus = 'pending' | 'paid' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
 
@@ -28,14 +45,25 @@ interface AdminContextType {
   updateProductPrice: (id: string, newPrice: number) => void;
   deleteProduct: (id: string) => void;
   updateOrderStatus: (id: string, newStatus: OrderStatus) => void;
+  formatPrice: (price: number) => string;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-const INITIAL_PRODUCTS: Product[] = [
-  { id: '1', name: 'Ração Golden 15kg', price: 159.90, quantity: 12, image: 'https://images.unsplash.com/photo-1589924691106-073b33e2069e?q=80&w=400' },
-  { id: '2', name: 'Brinquedo Mordedor Osso', price: 29.90, quantity: 5, image: 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=400' },
-];
+const MAPPED_INITIAL_PRODUCTS: Product[] = INITIAL_DATA.map(p => ({
+  id: String(p.id),
+  name: p.name,
+  price: p.price,
+  quantity: 10, // Default quantity for initial data
+  category: p.category,
+  brand: p.brand,
+  images: [p.image], // Single image to array
+  description: p.description,
+  rating: p.rating,
+  reviewCount: p.reviewCount,
+  badge: p.badge,
+  oldPrice: p.oldPrice
+}));
 
 const INITIAL_ORDERS: Order[] = [
   { id: '101', customerName: 'Dona Maria', customerPhone: '11 98888-7777', customerEmail: 'maria@email.com', items: '2x Ração Golden 15kg', total: 319.80, status: 'paid', date: 'Hoje, 09:30' },
@@ -47,7 +75,20 @@ const INITIAL_ORDERS: Order[] = [
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(() => {
     const saved = localStorage.getItem('admin_products');
-    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Migração: Garante que todos os produtos tenham o array 'images'
+        return parsed.map((p: any) => ({
+          ...p,
+          images: p.images || (p.image ? [p.image] : [])
+        }));
+      } catch (e) {
+        console.error("Erro ao carregar produtos do localStorage:", e);
+        return MAPPED_INITIAL_PRODUCTS;
+      }
+    }
+    return MAPPED_INITIAL_PRODUCTS;
   });
 
   const [orders, setOrders] = useState<Order[]>(() => {
@@ -80,8 +121,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setOrders(prev => prev.map(o => o.id === id ? { ...o, status: newStatus } : o));
   };
 
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  };
+
   return (
-    <AdminContext.Provider value={{ products, orders, addProduct, updateProductPrice, deleteProduct, updateOrderStatus }}>
+    <AdminContext.Provider value={{ products, orders, addProduct, updateProductPrice, deleteProduct, updateOrderStatus, formatPrice }}>
       {children}
     </AdminContext.Provider>
   );

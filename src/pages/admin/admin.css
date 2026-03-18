@@ -1,87 +1,90 @@
-/* Estilos específicos para acessibilidade da terceira idade */
+/* Estilos modernos e compactos para o admin */
 
 .admin-body {
-  font-size: 18px !important;
-  line-height: 1.6;
-  color: #1a1a1a;
-  background-color: #fcfcfc;
-}
-
-h1, h2, h3 {
-  color: #000;
-  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1c1917; /* stone-900 */
+  background-color: #fafaf9; /* stone-50 */
 }
 
 .admin-card {
   background: white;
-  border: 4px solid #f0f0f0;
-  border-radius: 40px;
-  transition: all 0.2s ease-in-out;
-  padding: 40px;
+  border: 1px solid #f5f5f4; /* stone-100 */
+  border-radius: 24px; /* rounded-3xl */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
 .admin-card:hover {
-  border-color: #14b8a6;
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+  border-color: #99f6e4; /* teal-200 */
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
 }
 
 .admin-button-primary {
-  background-color: #15803d; /* Verde forte */
+  background-color: #14b8a6; /* teal-500 */
   color: white;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 20px 40px;
-  border-radius: 20px;
+  font-size: 14px; /* text-sm */
+  font-weight: 700; /* font-bold */
+  padding: 12px 24px; /* py-3 px-6 */
+  border-radius: 12px; /* rounded-xl */
   border: none;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px 0 rgba(20, 184, 166, 0.39);
 }
 
 .admin-button-primary:hover {
-  background-color: #166534;
+  background-color: #0d9488; /* teal-600 */
+  transform: translateY(-1px);
 }
 
 .admin-input {
-  font-size: 20px;
-  padding: 15px 20px;
-  border: 3px solid #e5e7eb;
-  border-radius: 15px;
+  font-size: 14px;
+  padding: 10px 16px;
+  border: 1px solid #e7e5e4; /* stone-200 */
+  border-radius: 12px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 4px;
+  background-color: #fafaf9; /* stone-50 */
+  transition: all 0.2s;
 }
 
 .admin-input:focus {
   border-color: #14b8a6;
+  background-color: white;
   outline: none;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
 }
 
 .admin-label {
-  font-weight: bold;
-  font-size: 20px;
-  color: #374151;
+  font-weight: 700;
+  font-size: 14px;
+  color: #44403c; /* stone-700 */
 }
 
 .success-message {
-  animation: slideDown 0.5s ease-out;
-  background-color: #dcfce7;
-  color: #166534;
-  padding: 20px;
-  border-radius: 15px;
-  border: 2px solid #bbf7d0;
-  font-weight: bold;
+  animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: #f0fdf4; /* green-50 */
+  color: #166534; /* green-800 */
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #bbf7d0; /* green-200 */
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-20px); opacity: 0; }
+  from { transform: translateY(-10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Ajustes para tablet */
 @media (max-width: 1024px) {
   .admin-card {
-    padding: 30px;
+    padding: 20px;
+    border-radius: 20px;
   }
 }

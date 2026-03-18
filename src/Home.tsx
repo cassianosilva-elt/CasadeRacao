@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Truck, MessageCircle, Dog, Cat, Fish, Pill, ChevronRight, Heart, ArrowUpDown, Check, Plus } from 'lucide-react';
+import { Star, Truck, MessageCircle, Dog, Cat, Fish, Pill, ChevronRight, Heart, ArrowUpDown, Check, Plus, ShoppingBag, Gamepad2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
-import { products, Product } from './data';
+import { useAdmin, CATEGORIES } from './pages/admin/adminContext';
 import { useCart } from './CartContext';
 import { useFavorites } from './FavoritesContext';
 
@@ -144,9 +144,10 @@ const TrustSignals = () => (
 
 const Categories = () => {
   const categories = [
-    { name: 'Rações', icon: Dog, color: 'bg-orange-100 text-orange-600' },
-    { name: 'Acessórios', icon: Cat, color: 'bg-teal-100 text-teal-600' },
-    { name: 'Brinquedos', icon: Fish, color: 'bg-blue-100 text-blue-600' },
+    { name: 'Rações para Cães', icon: Dog, color: 'bg-orange-100 text-orange-600' },
+    { name: 'Rações para Gatos', icon: Cat, color: 'bg-teal-100 text-teal-600' },
+    { name: 'Acessórios', icon: ShoppingBag, color: 'bg-blue-100 text-blue-600' },
+    { name: 'Brinquedos', icon: Gamepad2, color: 'bg-purple-100 text-purple-600' },
     { name: 'Farmácia', icon: Pill, color: 'bg-red-100 text-red-600' },
   ];
   return (
@@ -161,7 +162,7 @@ const Categories = () => {
           <h2 id="categories-heading" className="font-display text-3xl md:text-4xl font-bold text-stone-900 mb-4">O que seu pet precisa hoje?</h2>
           <p className="text-stone-500">Navegue por nossas principais categorias e encontre os melhores produtos para a saúde e diversão do seu melhor amigo.</p>
         </motion.div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
@@ -169,10 +170,11 @@ const Categories = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="h-full"
             >
               <Link 
                 to={`/?categoria=${cat.name}#produtos`} 
-                className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center hover:shadow-xl hover:border-teal-200 transition-all group w-full"
+                className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center justify-center hover:shadow-xl hover:border-teal-200 transition-all group w-full h-full min-h-[200px] text-center"
               >
                 <div aria-hidden="true" className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4 md:mb-6 ${cat.color} group-hover:scale-110 transition-transform shadow-inner`}>
                   <cat.icon className="w-8 h-8 md:w-10 md:h-10" />
@@ -190,6 +192,7 @@ const Categories = () => {
 const ProductGrid = () => {
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { products, formatPrice } = useAdmin();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
   
@@ -206,11 +209,12 @@ const ProductGrid = () => {
     return () => clearTimeout(timer);
   }, [urlCategory, urlSearch]);
 
-  const categories = ['Todos', ...Array.from(new Set(products.map(p => p.category)))];
+  const productCategories = ['Todos', ...CATEGORIES];
 
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = (products || []).filter(p => {
+    if (!p) return false;
     const matchCategory = selectedCategory === 'Todos' || p.category === selectedCategory;
-    const matchSearch = p.name.toLowerCase().includes(urlSearch.toLowerCase()) || p.brand.toLowerCase().includes(urlSearch.toLowerCase());
+    const matchSearch = p.name?.toLowerCase().includes(urlSearch.toLowerCase()) || p.brand?.toLowerCase().includes(urlSearch.toLowerCase());
     return matchCategory && matchSearch;
   });
 
@@ -264,10 +268,10 @@ const ProductGrid = () => {
           transition={{ delay: 0.2 }}
           className="flex flex-wrap gap-2 mb-8 md:mb-12 overflow-x-auto no-scrollbar pb-2"
         >
-          {categories.map(cat => (
+          {productCategories.filter(Boolean).map((cat, i) => (
             <button 
-              key={cat} 
-              onClick={() => { setSelectedCategory(cat); setSearchParams({ categoria: cat }); }} 
+              key={`${cat}-${i}`} 
+              onClick={() => { setSelectedCategory(cat); setSearchParams({ categoria: cat as string }); }} 
               className={`px-5 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all shadow-sm whitespace-nowrap ${selectedCategory === cat ? 'bg-teal-500 text-white shadow-teal-500/20' : 'bg-white text-stone-600 border border-stone-100 hover:bg-stone-50'}`}
             >
               {cat}
@@ -290,7 +294,7 @@ const ProductGrid = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
             {sortedProducts.map((product, i) => (
               <motion.article 
-                key={product.id} 
+                key={product.id || i} 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -312,7 +316,12 @@ const ProductGrid = () => {
                   <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-stone-400'}`} />
                 </button>
                 <Link to={`/produto/${product.id}`} className="block relative pt-[100%] bg-stone-50/50 overflow-hidden">
-                  <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
+                  <img 
+                    src={product.images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
+                    alt={product.name} 
+                    loading="lazy" 
+                    className="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-500" 
+                  />
                 </Link>
                 <div className="p-3 md:p-6 flex flex-col flex-grow">
                   <p className="text-[10px] md:text-xs font-bold text-teal-600 uppercase mb-1 md:mb-2 tracking-wider">{product.brand}</p>
@@ -324,8 +333,8 @@ const ProductGrid = () => {
                   </div>
                   <div className="mt-auto pt-3 md:pt-4 flex items-end justify-between">
                     <div>
-                      {product.oldPriceFormatted && <p className="text-[10px] md:text-xs text-stone-400 line-through mb-0 md:mb-0.5">{product.oldPriceFormatted}</p>}
-                      <p className="text-lg md:text-2xl font-display font-bold text-stone-900 leading-none">{product.priceFormatted}</p>
+                      {product.oldPrice && <p className="text-[10px] md:text-xs text-stone-400 line-through mb-0 md:mb-0.5">{formatPrice(product.oldPrice)}</p>}
+                      <p className="text-lg md:text-2xl font-display font-bold text-stone-900 leading-none">{formatPrice(product.price)}</p>
                     </div>
                     <button 
                       onClick={() => addToCart(product)} 
