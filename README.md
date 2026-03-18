@@ -1,20 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Casa de Ração Lopes
 
-# Run and deploy your AI Studio app
+Plataforma moderna de e-commerce e gestão para Pet Shop.
 
-This contains everything you need to run your app locally.
+## 🐾 Sobre o Projeto
 
-View your app in AI Studio: https://ai.studio/apps/38a92fb9-320b-4a17-946b-6caca84f12cf
+A **Casa de Ração Lopes** é uma solução completa para pet shops, oferecendo uma experiência de compra intuitiva para os clientes e uma ferramenta de gestão poderosa para os administradores.
 
-## Run Locally
+### Funcionalidades:
+- **Catálogo de Produtos**: Navegação fácil com filtros e detalhes dos itens.
+- **Carrinho de Compras**: Gestão simplificada de pedidos.
+- **Painel Administrativo**: Controle total sobre produtos, pedidos e clientes.
+- **Área do Cliente**: Histórico de pedidos e perfil personalizado.
 
-**Prerequisites:**  Node.js
+## 🚀 Como Executar Localmente
 
+### Pré-requisitos:
+- Node.js instalado.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Passo a Passo:
+
+1. **Instalar dependências:**
+   ```bash
+   npm install
+   ```
+
+2. **Configuração de Ambiente:**
+   Crie um arquivo `.env.local` e configure as variáveis necessárias (veja `.env.example`).
+
+3. **Executar o aplicativo:**
+   ```bash
+   npm run dev
+   ```
+
+## 🛠️ Tecnologias Utilizadas
+
+- **React / Vite**: Interface moderna e rápida.
+- **Convex**: Backend como serviço escalável e em tempo real.
+- **TypeScript**: Maior segurança e qualidade no código.
+- **Vanilla CSS**: Estilização personalizada e otimizada.
