@@ -36,11 +36,9 @@ export const AdminLayout = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4">
             <Link to="/admin" className="flex items-center gap-2 group shrink-0">
-               <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform shadow-sm shadow-teal-500/20">
-                 <Dog className="text-white w-5 h-5" />
-               </div>
-               <span className="font-display text-xl font-black tracking-tighter text-stone-900 uppercase">
-                 LOPES <span className="text-orange-500">ADMIN</span>
+               <img src="/logo.png" alt="Casa de Ração LOPES" className="h-8 w-auto object-contain" />
+               <span className="font-display text-lg font-black tracking-tighter text-orange-500 uppercase">
+                 ADMIN
                </span>
             </Link>
 

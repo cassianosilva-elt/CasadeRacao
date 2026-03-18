@@ -49,10 +49,16 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-             <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
-               <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
-             </div>
-             <span className={`font-display text-xl md:text-2xl font-black tracking-tighter transition-colors ${isScrolled || !isHome ? 'text-stone-900' : 'text-white'}`}>LOPES</span>
+             {isScrolled || !isHome ? (
+               <img src="/logo.png" alt="Casa de Ração LOPES" className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+             ) : (
+               <>
+                 <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
+                   <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
+                 </div>
+                 <span className="font-display text-xl md:text-2xl font-black tracking-tighter transition-colors text-white">LOPES</span>
+               </>
+             )}
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
@@ -112,10 +118,7 @@ const Header = () => {
           >
             <div className="flex items-center justify-between mb-12">
               <Link to="/" className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center">
-                  <Dog className="text-white w-6 h-6" />
-                </div>
-                <span className="font-display text-2xl font-black text-stone-900">LOPES</span>
+                <img src="/logo.png" alt="Casa de Ração LOPES" className="h-12 w-auto object-contain" />
               </Link>
               <button onClick={() => setIsMenuOpen(false)} className="p-3 bg-stone-100 rounded-2xl"><X className="w-6 h-6" /></button>
             </div>
@@ -154,10 +157,7 @@ const Footer = () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-20">
         <div className="reveal-on-scroll">
           <Link to="/" className="flex items-center gap-2 mb-6 md:mb-8 group">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center">
-              <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
-            </div>
-            <span className="font-display text-xl md:text-2xl font-black tracking-tighter text-stone-900">LOPES</span>
+            <img src="/logo.png" alt="Casa de Ração LOPES" className="h-10 md:h-12 w-auto object-contain" />
           </Link>
           <p className="text-stone-500 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">Cuidando do seu melhor amigo com as melhores marcas e entrega recorde em toda São Paulo.</p>
           <div className="flex gap-4">
