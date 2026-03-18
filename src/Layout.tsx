@@ -101,6 +101,7 @@ const Header = () => {
             <button 
               onClick={() => setIsMenuOpen(true)}
               className={`lg:hidden p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'text-stone-600' : 'text-white'}`}
+              aria-label="Abrir menu de navegação"
             >
               <Menu className="w-5 h-5 md:w-6 md:h-6" />
             </button>
@@ -120,7 +121,7 @@ const Header = () => {
               <Link to="/" className="flex items-center gap-2">
                 <img src="/logo.png" alt="Casa de Ração LOPES" className="h-12 w-auto object-contain" />
               </Link>
-              <button onClick={() => setIsMenuOpen(false)} className="p-3 bg-stone-100 rounded-2xl"><X className="w-6 h-6" /></button>
+              <button onClick={() => setIsMenuOpen(false)} className="p-3 bg-stone-100 rounded-2xl" aria-label="Fechar menu de navegação"><X className="w-6 h-6" /></button>
             </div>
             <nav className="flex flex-col gap-6 mb-12">
               {navLinks.map((link) => (
@@ -140,9 +141,9 @@ const Header = () => {
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-stone-400" />
             </form>
             <div className="flex justify-center gap-8 py-8 border-t border-stone-100 text-stone-400">
-               <Instagram className="w-6 h-6" />
-               <Facebook className="w-6 h-6" />
-               <Phone className="w-6 h-6" />
+               <a href="#" aria-label="Instagram"><Instagram className="w-6 h-6" /></a>
+               <a href="#" aria-label="Facebook"><Facebook className="w-6 h-6" /></a>
+               <a href="tel:+5511948219786" aria-label="Telefone"><Phone className="w-6 h-6" /></a>
             </div>
           </motion.div>
         )}
@@ -161,8 +162,8 @@ const Footer = () => (
           </Link>
           <p className="text-stone-500 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">Cuidando do seu melhor amigo com as melhores marcas e entrega recorde em toda São Paulo.</p>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Instagram className="w-5 h-5" /></a>
-            <a href="#" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Facebook className="w-5 h-5" /></a>
+            <a href="#" aria-label="Siga-nos no Instagram" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Instagram className="w-5 h-5" /></a>
+            <a href="#" aria-label="Siga-nos no Facebook" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Facebook className="w-5 h-5" /></a>
           </div>
         </div>
 

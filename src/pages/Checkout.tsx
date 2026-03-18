@@ -425,11 +425,17 @@ export const Checkout = () => {
 
                   {paymentMethod === 'card' && (
                     <div className="mt-10 p-8 bg-stone-50 rounded-[30px] border border-stone-100 space-y-4">
-                       <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest px-1">Número do Cartão</label>
-                       <input type="text" placeholder="0000 0000 0000 0000" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
+                       <label htmlFor="card-number" className="block text-xs font-bold text-stone-400 uppercase tracking-widest px-1">Número do Cartão</label>
+                       <input id="card-number" type="text" placeholder="0000 0000 0000 0000" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
                        <div className="grid grid-cols-2 gap-4">
-                         <input type="text" placeholder="MM/AA" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
-                         <input type="text" placeholder="CVV" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
+                         <div>
+                           <label htmlFor="card-expiry" className="block text-xs font-bold text-stone-400 uppercase tracking-widest px-1 mb-1">Validade</label>
+                           <input id="card-expiry" type="text" placeholder="MM/AA" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
+                         </div>
+                         <div>
+                           <label htmlFor="card-cvv" className="block text-xs font-bold text-stone-400 uppercase tracking-widest px-1 mb-1">CVV</label>
+                           <input id="card-cvv" type="text" placeholder="CVV" className="w-full bg-white border border-stone-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono" />
+                         </div>
                        </div>
                     </div>
                   )}

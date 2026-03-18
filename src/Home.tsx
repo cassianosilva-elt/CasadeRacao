@@ -54,7 +54,14 @@ const PromoSlider = () => {
           className="absolute inset-0"
           style={{ pointerEvents: index === current ? 'auto' : 'none', zIndex: index === current ? 10 : 0 }}
         >
-          <img src={slide.image} alt={slide.title} className="w-full h-full object-cover opacity-60" />
+          <img 
+            src={slide.image} 
+            alt={slide.title} 
+            className="w-full h-full object-cover opacity-60" 
+            fetchPriority={index === 0 ? "high" : "auto"}
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding="async"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-stone-900/90 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -120,21 +127,21 @@ const TrustSignals = () => (
           <div className="w-12 h-12 md:w-14 md:h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
             <Truck className="w-6 h-6 md:w-7 md:h-7 text-teal-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-base md:text-lg">Entrega Rápida</h3>
+          <p className="font-bold text-stone-900 text-base md:text-lg">Entrega Rápida</p>
           <p className="text-stone-500 text-sm md:text-base">Para toda São Paulo</p>
         </div>
         <div className="flex flex-col items-center justify-center pt-6 md:pt-0">
           <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
             <Star className="w-6 h-6 md:w-7 md:h-7 text-orange-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-base md:text-lg">Melhores Marcas</h3>
+          <p className="font-bold text-stone-900 text-base md:text-lg">Melhores Marcas</p>
           <p className="text-stone-500 text-sm md:text-base">Produtos 100% originais</p>
         </div>
         <div className="flex flex-col items-center justify-center pt-6 md:pt-0">
           <div className="w-12 h-12 md:w-14 md:h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
             <MessageCircle className="w-6 h-6 md:w-7 md:h-7 text-teal-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-base md:text-lg">Suporte Humanizado</h3>
+          <p className="font-bold text-stone-900 text-base md:text-lg">Suporte Humanizado</p>
           <p className="text-stone-500 text-sm md:text-base">Chame no WhatsApp</p>
         </div>
       </div>
@@ -247,8 +254,10 @@ const ProductGrid = () => {
             <p className="text-stone-500 mt-2">Os melhores preços e marcas para o seu pet.</p>
           </div>
           <div className="flex items-center gap-3 w-full md:w-auto">
-            <ArrowUpDown className="w-5 h-5 text-stone-400" />
+            <label htmlFor="sort-products" className="sr-only">Ordenar produtos</label>
+            <ArrowUpDown className="w-5 h-5 text-stone-400" aria-hidden="true" />
             <select 
+              id="sort-products"
               value={sortOrder} 
               onChange={(e) => setSortOrder(e.target.value as any)}
               className="bg-stone-50 border border-stone-200 text-stone-700 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-teal-500 outline-none w-full md:w-auto cursor-pointer"
@@ -401,7 +410,7 @@ const Testimonials = () => {
               <div className="flex items-center gap-4">
                 <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 <div>
-                  <h4 className="font-bold">{t.name}</h4>
+                  <h3 className="font-bold text-base">{t.name}</h3>
                   <p className="text-xs text-stone-400">Tutor do {t.pet}</p>
                 </div>
               </div>
