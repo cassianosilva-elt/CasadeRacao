@@ -1,16 +1,51 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
 import { ArrowLeft, CheckCircle, Clock, Package, Truck, CheckCircle2, XCircle, User as UserIcon, Phone, Mail, X } from 'lucide-react';
-import { useAdmin, OrderStatus, Order } from './adminContext';
+import { OrderStatus } from './adminContext';
 
 export const AdminOrders = () => {
   const navigate = useNavigate();
-  const { orders, updateOrderStatus } = useAdmin();
-  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
+  const convexOrders = useQuery(api.orders.listAllOrders);
+  const updateOrderStatusMutation = useMutation(api.orders.updateOrderStatus);
+  const [selectedOrder, setSelectedOrder] = React.useState<any>(null);
+
+  const updateOrderStatus = async (id: string, newStatus: OrderStatus) => {
+    try {
+      await updateOrderStatusMutation({ orderId: id as any, status: newStatus });
+    } catch (error) {
+      console.error("Erro ao atualizar pedido:", error);
+    }
+  };
 
   const getStatusBadge = (status: OrderStatus) => {
-    // ... no changes here
+    switch (status) {
+      case 'pending': return <span className="text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Clock className="w-4 h-4" /> Aguardando Pagamento</span>;
+      case 'paid': return <span className="text-green-600 bg-green-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Pago</span>;
+      case 'preparing': return <span className="text-blue-600 bg-blue-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Package className="w-4 h-4" /> Em Separação</span>;
+      case 'shipped': return <span className="text-orange-600 bg-orange-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><Truck className="w-4 h-4" /> Em Rota de Entrega</span>;
+      case 'delivered': return <span className="text-teal-600 bg-teal-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><CheckCircle2 className="w-4 h-4" /> Entregue</span>;
+      case 'cancelled': return <span className="text-red-600 bg-red-50 px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1"><XCircle className="w-4 h-4" /> Cancelado</span>;
+      default: return null;
+    }
   };
+
+  if (convexOrders === undefined) {
+    return <div className="py-20 text-center text-stone-500 font-bold">Carregando pedidos...</div>;
+  }
+
+  const orders = convexOrders?.map(o => ({
+    id: o._id,
+    shortId: o._id.substring(0, 6).toUpperCase(),
+    customerName: o.tutor.name,
+    customerPhone: o.tutor.whatsapp,
+    customerEmail: o.tutor.email,
+    items: o.items.map((i: any) => `${i.quantity}x ${i.name}`).join(', '),
+    total: o.total,
+    status: o.status as OrderStatus,
+    date: new Date(o._creationTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' - ' + new Date(o._creationTime).toLocaleDateString('pt-BR')
+  })) || [];
 
   return (
     <>
@@ -33,7 +68,7 @@ export const AdminOrders = () => {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="space-y-4 flex-grow">
                   <div className="flex items-center justify-between">
-                    <span className="text-xl font-bold text-stone-400">Pedido #{order.id} • {order.date}</span>
+                    <span className="text-xl font-bold text-stone-400">Pedido #{order.shortId} • {order.date}</span>
                     {getStatusBadge(order.status)}
                   </div>
 

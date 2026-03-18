@@ -45,14 +45,14 @@ const Header = () => {
   const isHome = pathname === '/';
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled || !isHome ? 'bg-white/95 backdrop-blur-md shadow-lg py-3' : 'bg-transparent py-6'}`}>
+    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled || !isHome ? 'bg-white/95 backdrop-blur-md shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex items-center justify-between gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-             <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
-               <Dog className="text-white w-6 h-6" />
+             <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
+               <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
              </div>
-             <span className={`font-display text-2xl font-black tracking-tighter transition-colors ${isScrolled || !isHome ? 'text-stone-900' : 'text-white'}`}>LOPES</span>
+             <span className={`font-display text-xl md:text-2xl font-black tracking-tighter transition-colors ${isScrolled || !isHome ? 'text-stone-900' : 'text-white'}`}>LOPES</span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
@@ -78,25 +78,25 @@ const Header = () => {
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isScrolled || !isHome ? 'text-stone-400' : 'text-white/50'}`} />
           </form>
 
-          <div className="flex items-center gap-3">
-            <Link to="/conta" className={`p-3 rounded-2xl transition-all ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`} aria-label="Minha Conta">
-              <User className="w-6 h-6" />
+          <div className="flex items-center gap-2 md:gap-3">
+            <Link to="/conta" className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`} aria-label="Minha Conta">
+              <User className="w-5 h-5 md:w-6 md:h-6" />
             </Link>
-            <Link to="/dashboard" className={`p-3 rounded-2xl transition-all relative ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`} aria-label="Favoritos">
-              <Heart className="w-6 h-6" />
-              {favorites.length > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-white"></span>}
+            <Link to="/favoritos" className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all relative ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`} aria-label="Favoritos">
+              <Heart className="w-5 h-5 md:w-6 md:h-6" />
+              {favorites.length > 0 && <span className="absolute top-1 right-1 md:top-2 md:right-2 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-white"></span>}
             </Link>
-            <Link to="/carrinho" className={`group p-3 rounded-2xl transition-all relative ${isScrolled || !isHome ? 'bg-stone-900 text-white' : 'bg-teal-500 text-white shadow-lg shadow-teal-500/20'}`} aria-label="Carrinho">
-              <ShoppingCart className="w-6 h-6" />
+            <Link to="/carrinho" className={`group p-2 md:p-3 rounded-xl md:rounded-2xl transition-all relative ${isScrolled || !isHome ? 'bg-stone-900 text-white' : 'bg-teal-500 text-white shadow-lg shadow-teal-500/20'}`} aria-label="Carrinho">
+              <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
               <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">
                 {items.length}
               </span>
             </Link>
             <button 
               onClick={() => setIsMenuOpen(true)}
-              className={`lg:hidden p-3 rounded-2xl transition-all ${isScrolled || !isHome ? 'text-stone-600' : 'text-white'}`}
+              className={`lg:hidden p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'text-stone-600' : 'text-white'}`}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5 md:w-6 md:h-6" />
             </button>
           </div>
         </div>
@@ -149,17 +149,17 @@ const Header = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-stone-50 border-t border-stone-100 pt-24 pb-12">
+  <footer className="bg-stone-50 border-t border-stone-100 pt-16 pb-8 md:pt-24 md:pb-12">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-12 md:mb-20">
         <div className="reveal-on-scroll">
-          <Link to="/" className="flex items-center gap-2 mb-8 group">
-            <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center">
-              <Dog className="text-white w-6 h-6" />
+          <Link to="/" className="flex items-center gap-2 mb-6 md:mb-8 group">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center">
+              <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
             </div>
-            <span className="font-display text-2xl font-black tracking-tighter text-stone-900">LOPES</span>
+            <span className="font-display text-xl md:text-2xl font-black tracking-tighter text-stone-900">LOPES</span>
           </Link>
-          <p className="text-stone-500 leading-relaxed mb-8">Cuidando do seu melhor amigo com as melhores marcas e entrega recorde em toda São Paulo.</p>
+          <p className="text-stone-500 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">Cuidando do seu melhor amigo com as melhores marcas e entrega recorde em toda São Paulo.</p>
           <div className="flex gap-4">
             <a href="#" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Instagram className="w-5 h-5" /></a>
             <a href="#" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Facebook className="w-5 h-5" /></a>
@@ -169,8 +169,13 @@ const Footer = () => (
         <div className="reveal-on-scroll" style={{ transitionDelay: '100ms' }}>
           <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Menu Rápido</h3>
           <ul className="space-y-4">
-             {['Sobre Nós', 'Blog Pet', 'Nossas Lojas', 'FAQ'].map(item => (
-               <li key={item}><Link to={item === 'FAQ' ? '/faq' : '/sobre'} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item}</Link></li>
+             {[
+               { name: 'Sobre Nós', path: '/sobre' },
+               { name: 'Blog Pet', path: '/blog' },
+               { name: 'Nossas Lojas', path: '/sobre' },
+               { name: 'FAQ', path: '/faq' }
+             ].map(item => (
+               <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
              ))}
           </ul>
         </div>
@@ -178,8 +183,13 @@ const Footer = () => (
         <div className="reveal-on-scroll" style={{ transitionDelay: '200ms' }}>
           <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Atendimento</h3>
           <ul className="space-y-4">
-             {['Política de Entrega', 'Trocas e Devoluções', 'Privacidade', 'Termos de Uso'].map(item => (
-               <li key={item}><Link to="/delivery" className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item}</Link></li>
+             {[
+               { name: 'Política de Entrega', path: '/entrega' },
+               { name: 'Trocas e Devoluções', path: '/trocas' },
+               { name: 'Privacidade', path: '/sobre' },
+               { name: 'Termos de Uso', path: '/sobre' }
+             ].map(item => (
+               <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
              ))}
           </ul>
         </div>

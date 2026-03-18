@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Truck, RefreshCcw, Info, BookOpen, ShieldCheck, Heart, Dog, MapPin } from 'lucide-react';
+import { Truck, RefreshCcw, Info, BookOpen, ShieldCheck, Heart, Dog, MapPin, Clock, ChevronRight } from 'lucide-react';
 
 const PageHero = ({ title, subtitle, icon: Icon }: { title: string, subtitle: string, icon: any }) => (
   <div className="bg-stone-900 text-white pt-32 pb-20 relative overflow-hidden">

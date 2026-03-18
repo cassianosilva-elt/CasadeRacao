@@ -63,22 +63,22 @@ export const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-16 gap-6 reveal-on-scroll">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-16 gap-4 md:gap-6 reveal-on-scroll">
         <div>
-          <h1 className="font-display text-4xl md:text-5xl font-black text-stone-900 tracking-tighter">Oi, {user?.name.split(' ')[0]}!</h1>
-          <p className="text-stone-500 mt-2 font-medium">Gerencie seus pets e acompanhe seus pedidos aqui.</p>
+          <h1 className="font-display text-3xl md:text-5xl font-black text-stone-900 tracking-tighter">Oi, {user?.name.split(' ')[0]}!</h1>
+          <p className="text-stone-500 mt-2 font-medium text-sm md:text-base">Gerencie seus pets e acompanhe seus pedidos aqui.</p>
         </div>
         <button 
           onClick={handleSignOut}
-          className="flex items-center gap-2 text-stone-400 hover:text-red-500 font-bold transition-colors text-sm uppercase tracking-widest"
+          className="flex items-center gap-2 text-stone-400 hover:text-red-500 font-bold transition-colors text-xs md:text-sm uppercase tracking-widest self-start md:self-auto"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-4 h-4 md:w-5 md:h-5" />
           Sair da Conta
         </button>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+        <div className="lg:col-span-2 space-y-8 md:space-y-12">
           {/* Pets Section */}
           <section className="reveal-on-scroll">
             <div className="flex items-center justify-between mb-8">
@@ -107,14 +107,14 @@ export const Dashboard = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {pets.map((pet) => (
-                  <motion.div whileHover={{ y: -5 }} key={pet._id} className="bg-white p-6 rounded-[32px] border border-stone-100 shadow-sm flex items-center justify-between group transition-all hover:border-teal-200 hover:shadow-xl hover:shadow-teal-500/5">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-teal-50 group-hover:text-teal-500 transition-colors">
-                        {pet.species === "Gato" ? <Cat className="w-8 h-8" /> : <Dog className="w-8 h-8" />}
+                  <motion.div whileHover={{ y: -5 }} key={pet._id} className="bg-white p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-stone-100 shadow-sm flex items-center justify-between group transition-all hover:border-teal-200 hover:shadow-xl hover:shadow-teal-500/5">
+                    <div className="flex items-center gap-3 md:gap-4">
+                      <div className="w-12 h-12 md:w-16 md:h-16 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-teal-50 group-hover:text-teal-500 transition-colors">
+                        {pet.species === "Gato" ? <Cat className="w-6 h-6 md:w-8 md:h-8" /> : <Dog className="w-6 h-6 md:w-8 md:h-8" />}
                       </div>
                       <div>
-                        <h3 className="font-bold text-stone-900 text-lg">{pet.name}</h3>
-                        <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">{pet.breed} • {pet.age}</p>
+                        <h3 className="font-bold text-stone-900 text-base md:text-lg leading-tight">{pet.name}</h3>
+                        <p className="text-stone-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{pet.breed} • {pet.age}</p>
                       </div>
                     </div>
                     <button 
@@ -167,13 +167,13 @@ export const Dashboard = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-8 reveal-on-scroll" style={{ transitionDelay: '300ms' }}>
-          <div className="bg-stone-900 text-white p-10 rounded-[40px] shadow-2xl shadow-stone-900/40 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-            <h3 className="font-display text-2xl font-bold mb-8 relative z-10">Seu Perfil</h3>
+        <div className="space-y-6 md:space-y-8 reveal-on-scroll" style={{ transitionDelay: '300ms' }}>
+          <div className="bg-stone-900 text-white p-6 md:p-10 rounded-[32px] md:rounded-[40px] shadow-2xl shadow-stone-900/40 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-teal-500/10 rounded-full -mr-12 -mt-12 md:-mr-16 md:-mt-16 blur-2xl md:blur-3xl"></div>
+            <h3 className="font-display text-xl md:text-2xl font-bold mb-6 md:mb-8 relative z-10">Seu Perfil</h3>
             <div className="space-y-6 relative z-10">
               <div className="space-y-2">
-                <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">Nome Completo</p>
+                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Nome Completo</p>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -186,7 +186,7 @@ export const Dashboard = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">WhatsApp</p>
+                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">WhatsApp</p>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -199,8 +199,8 @@ export const Dashboard = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <p className="text-[10px] font-bold text-stone-500 uppercase tracking-widest">E-mail</p>
-                <p className="text-stone-400 text-sm font-medium truncate">{user?.email}</p>
+                <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">E-mail</p>
+                <p className="text-stone-300 text-sm font-medium truncate">{user?.email}</p>
               </div>
             </div>
             
@@ -234,10 +234,10 @@ export const Dashboard = () => {
             </div>
           </div>
 
-          <div className="bg-teal-50 p-10 rounded-[40px] border border-teal-100 relative overflow-hidden group">
-            <dog className="absolute bottom-0 right-0 w-32 h-32 text-teal-100 group-hover:scale-110 transition-transform duration-700" />
-            <h3 className="font-display font-bold text-teal-900 text-xl mb-3 relative z-10">Membro Prime?</h3>
-            <p className="text-teal-700 text-sm leading-relaxed mb-8 relative z-10">Seus dados estão 80% completos. Finalize seu cadastro e ganhe frete grátis na próxima compra!</p>
+          <div className="bg-teal-50 p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-teal-100 relative overflow-hidden group">
+            <Dog className="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 text-teal-100 group-hover:scale-110 transition-transform duration-700" />
+            <h3 className="font-display font-bold text-teal-900 text-lg md:text-xl mb-2 md:mb-3 relative z-10">Membro Prime?</h3>
+            <p className="text-teal-700 text-xs md:text-sm leading-relaxed mb-6 md:mb-8 relative z-10">Seus dados estão 80% completos. Finalize seu cadastro e ganhe frete grátis na próxima compra!</p>
             <div className="w-full bg-white rounded-full h-3 p-1 relative z-10">
                <motion.div initial={{ width: 0 }} animate={{ width: '80%' }} className="bg-teal-500 h-full rounded-full" transition={{ duration: 1.5, delay: 0.5 }}></motion.div>
             </div>
@@ -249,14 +249,7 @@ export const Dashboard = () => {
 };
 
 const OrdersList = () => {
-  const [orders, setOrders] = useState<any[]>([]);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('admin_orders');
-    if (saved) {
-      setOrders(JSON.parse(saved));
-    }
-  }, []);
+  const orders = useQuery(api.orders.listMyOrders);
 
   const getStatusDisplay = (status: string) => {
     switch (status) {
@@ -268,6 +261,14 @@ const OrdersList = () => {
       default: return { label: status, color: 'bg-stone-50 text-stone-600 border-stone-100', icon: Package };
     }
   };
+
+  if (orders === undefined) {
+    return (
+      <div className="flex justify-center p-12">
+        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+      </div>
+    );
+  }
 
   if (orders.length === 0) {
     return (
@@ -283,18 +284,30 @@ const OrdersList = () => {
       {orders.map((order) => {
         const status = getStatusDisplay(order.status);
         const StatusIcon = status.icon;
+        
+        // Format date from timestamp
+        const date = new Date(order._creationTime).toLocaleDateString('pt-BR', {
+          day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+        
+        // Short ID
+        const shortId = order._id.toString().substring(0, 6).toUpperCase();
+        
+        // Items string
+        const itemsString = order.items.map((i: any) => `${i.quantity}x ${i.name}`).join(', ');
+
         return (
-          <div key={order.id} className="bg-white p-8 rounded-[32px] border border-stone-100 shadow-sm transition-all hover:border-teal-100 hover:shadow-xl hover:shadow-teal-500/5">
-            <div className="flex flex-col md:flex-row justify-between gap-6">
-              <div className="flex-grow space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-stone-50 rounded-2xl flex items-center justify-center text-stone-400"><Package className="w-6 h-6" /></div>
+          <div key={order._id} className="bg-white p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-stone-100 shadow-sm transition-all hover:border-teal-100 hover:shadow-xl hover:shadow-teal-500/5">
+            <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
+              <div className="flex-grow space-y-3 md:space-y-4">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-stone-400"><Package className="w-5 h-5 md:w-6 md:h-6" /></div>
                   <div>
-                    <h4 className="font-bold text-stone-900 text-lg">Pedido #{order.id}</h4>
-                    <p className="text-stone-400 text-xs font-bold uppercase tracking-widest">{order.date}</p>
+                    <h4 className="font-bold text-stone-900 text-base md:text-lg">Pedido #{shortId}</h4>
+                    <p className="text-stone-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{date}</p>
                   </div>
                 </div>
-                <p className="text-stone-500 text-sm font-medium line-clamp-1">{order.items}</p>
+                <p className="text-stone-500 text-sm font-medium line-clamp-1" title={itemsString}>{itemsString}</p>
                 <div className="flex items-center gap-2">
                    <p className="text-2xl font-display font-black text-stone-900">R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                 </div>

@@ -30,7 +30,13 @@ const faqs = [
   }
 ];
 
-const FAQItem = ({ q, a }: { q: string, a: string }) => {
+interface FAQItemProps {
+  q: string;
+  a: string;
+  key?: React.Key;
+}
+
+const FAQItem = ({ q, a }: FAQItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border-b border-stone-100 last:border-0">

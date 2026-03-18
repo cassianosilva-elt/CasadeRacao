@@ -46,10 +46,10 @@ export const ProductDetails = () => {
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-stone-50 rounded-[40px] p-8 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden"
+              className="bg-stone-50 rounded-[40px] p-6 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden"
             >
               {product.badge && (
-                <span className={`absolute top-8 left-8 z-10 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full text-white ${
+                <span className={`absolute top-4 left-4 md:top-8 md:left-8 z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white ${
                   product.badge === 'Novo' ? 'bg-blue-500' : product.badge === 'Promoção' ? 'bg-orange-500' : 'bg-teal-500'
                 }`}>
                   {product.badge}
@@ -60,10 +60,10 @@ export const ProductDetails = () => {
           </div>
 
           <div className="flex flex-col">
-            <div className="mb-8">
-              <p className="text-teal-600 font-bold uppercase tracking-[0.2em] text-xs mb-4">{product.brand}</p>
-              <h1 className="font-display text-3xl md:text-5xl font-bold text-stone-900 mb-6 leading-tight">{product.name}</h1>
-              <div className="flex items-center gap-4">
+            <div className="mb-6 md:mb-8">
+              <p className="text-teal-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-3 md:mb-4">{product.brand}</p>
+              <h1 className="font-display text-2xl md:text-5xl font-bold text-stone-900 mb-4 md:mb-6 leading-tight">{product.name}</h1>
+              <div className="flex items-center gap-2 md:gap-4">
                 <div className="flex bg-orange-50 px-3 py-1.5 rounded-xl">
                   {[1, 2, 3, 4, 5].map(s => (
                     <Star key={s} className={`w-4 h-4 ${s <= Math.floor(product.rating) ? 'text-orange-400 fill-orange-400' : 'text-stone-200'}`} />
@@ -74,10 +74,10 @@ export const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="mb-10 p-8 bg-stone-50 rounded-[32px]">
-              <div className="flex items-end gap-3 mb-2">
-                {product.oldPriceFormatted && <span className="text-xl text-stone-400 line-through mb-1">{product.oldPriceFormatted}</span>}
-                <span className="text-4xl md:text-5xl font-display font-bold text-stone-900">{product.priceFormatted}</span>
+            <div className="mb-8 md:mb-10 p-6 md:p-8 bg-stone-50 rounded-[32px]">
+              <div className="flex items-end gap-2 md:gap-3 mb-2">
+                {product.oldPriceFormatted && <span className="text-lg md:text-xl text-stone-400 line-through mb-1">{product.oldPriceFormatted}</span>}
+                <span className="text-3xl md:text-5xl font-display font-bold text-stone-900 leading-none">{product.priceFormatted}</span>
               </div>
               <p className="text-stone-500 text-sm font-medium">À vista no PIX com 5% de desconto ou em até 3x sem juros.</p>
             </div>
@@ -126,7 +126,7 @@ export const ProductDetails = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`px-8 py-4 font-bold text-sm uppercase tracking-widest whitespace-nowrap transition-all relative ${
+                className={`px-6 py-4 md:px-8 md:py-4 font-bold text-[10px] md:text-sm uppercase tracking-widest whitespace-nowrap transition-all relative ${
                   activeTab === tab ? 'text-teal-600' : 'text-stone-400 hover:text-stone-600'
                 }`}
               >
@@ -187,21 +187,22 @@ export const ProductDetails = () => {
 
         {relatedProducts.length > 0 && (
           <div className="reveal-on-scroll">
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="font-display text-3xl font-bold text-stone-900">Também pode te interessar</h2>
-              <Link to={`/?categoria=${product.category}#produtos`} className="text-teal-600 font-bold flex items-center gap-2 hover:gap-4 transition-all">
-                Ver tudo <ChevronRight className="w-5 h-5" />
+            <div className="flex items-center justify-between mb-8 md:mb-10">
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">Também pode te interessar</h2>
+              <Link to={`/?categoria=${product.category}#produtos`} className="text-teal-600 text-sm md:text-base font-bold flex items-center gap-1 md:gap-2 hover:gap-4 transition-all">
+                <span className="hidden md:inline">Ver tudo</span>
+                <ChevronRight className="w-5 h-5" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
               {relatedProducts.map(rp => (
-                <Link key={rp.id} to={`/produto/${rp.id}`} className="bg-white border border-stone-100 rounded-3xl overflow-hidden hover:shadow-xl transition-all p-6 group">
-                  <div className="aspect-square bg-stone-50 rounded-2xl mb-4 flex items-center justify-center relative overflow-hidden">
-                    <img src={rp.image} alt={rp.name} className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500" />
+                <Link key={rp.id} to={`/produto/${rp.id}`} className="bg-white border border-stone-100 rounded-[20px] md:rounded-3xl overflow-hidden hover:shadow-xl transition-all p-4 md:p-6 group">
+                  <div className="aspect-square bg-stone-50 rounded-xl md:rounded-2xl mb-3 md:mb-4 flex items-center justify-center relative overflow-hidden">
+                    <img src={rp.image} alt={rp.name} className="w-full h-full object-contain p-3 md:p-4 group-hover:scale-110 transition-transform duration-500" />
                   </div>
-                  <p className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-2">{rp.brand}</p>
-                  <h3 className="font-bold text-stone-900 text-sm mb-3 line-clamp-2">{rp.name}</h3>
-                  <p className="font-display font-bold text-lg text-stone-900">{rp.priceFormatted}</p>
+                  <p className="text-[8px] md:text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-1 md:mb-2">{rp.brand}</p>
+                  <h3 className="font-bold text-stone-900 text-sm mb-2 md:mb-3 line-clamp-2 leading-tight">{rp.name}</h3>
+                  <p className="font-display font-bold text-base md:text-lg text-stone-900">{rp.priceFormatted}</p>
                 </Link>
               ))}
             </div>

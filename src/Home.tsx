@@ -71,7 +71,7 @@ const PromoSlider = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: index === current ? 0 : 20, opacity: index === current ? 1 : 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="text-4xl md:text-7xl font-display font-bold text-white mb-6 leading-tight"
+                  className="text-3xl sm:text-4xl md:text-7xl font-display font-bold text-white mb-4 md:mb-6 leading-tight"
                 >
                   {slide.title}
                 </motion.h2>
@@ -79,7 +79,7 @@ const PromoSlider = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: index === current ? 0 : 20, opacity: index === current ? 1 : 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
-                  className="text-lg md:text-xl text-stone-200 mb-10"
+                  className="text-base sm:text-lg md:text-xl text-stone-200 mb-8 md:mb-10"
                 >
                   {slide.subtitle}
                 </motion.p>
@@ -113,29 +113,29 @@ const PromoSlider = () => {
 };
 
 const TrustSignals = () => (
-  <div className="bg-white border-b border-stone-100 py-10">
+  <div className="bg-white border-b border-stone-100 py-6 md:py-10">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center divide-y md:divide-y-0 md:divide-x divide-stone-100">
-        <div className="flex flex-col items-center justify-center pt-6 md:pt-0">
-          <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-4">
-            <Truck className="w-7 h-7 text-teal-600" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 text-center divide-y md:divide-y-0 md:divide-x divide-stone-100">
+        <div className="flex flex-col items-center justify-center pt-4 md:pt-0">
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
+            <Truck className="w-6 h-6 md:w-7 md:h-7 text-teal-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-lg">Entrega Rápida</h3>
-          <p className="text-stone-500">Para toda São Paulo</p>
+          <h3 className="font-bold text-stone-900 text-base md:text-lg">Entrega Rápida</h3>
+          <p className="text-stone-500 text-sm md:text-base">Para toda São Paulo</p>
         </div>
         <div className="flex flex-col items-center justify-center pt-6 md:pt-0">
-          <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-4">
-            <Star className="w-7 h-7 text-orange-600" />
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
+            <Star className="w-6 h-6 md:w-7 md:h-7 text-orange-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-lg">Melhores Marcas</h3>
-          <p className="text-stone-500">Produtos 100% originais</p>
+          <h3 className="font-bold text-stone-900 text-base md:text-lg">Melhores Marcas</h3>
+          <p className="text-stone-500 text-sm md:text-base">Produtos 100% originais</p>
         </div>
         <div className="flex flex-col items-center justify-center pt-6 md:pt-0">
-          <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-4">
-            <MessageCircle className="w-7 h-7 text-teal-600" />
+          <div className="w-12 h-12 md:w-14 md:h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-3 md:mb-4">
+            <MessageCircle className="w-6 h-6 md:w-7 md:h-7 text-teal-600" />
           </div>
-          <h3 className="font-bold text-stone-900 text-lg">Suporte Humanizado</h3>
-          <p className="text-stone-500">Chame no WhatsApp</p>
+          <h3 className="font-bold text-stone-900 text-base md:text-lg">Suporte Humanizado</h3>
+          <p className="text-stone-500 text-sm md:text-base">Chame no WhatsApp</p>
         </div>
       </div>
     </div>
@@ -150,7 +150,7 @@ const Categories = () => {
     { name: 'Farmácia', icon: Pill, color: 'bg-red-100 text-red-600' },
   ];
   return (
-    <section aria-labelledby="categories-heading" className="py-20 bg-stone-50">
+    <section aria-labelledby="categories-heading" className="py-12 md:py-20 bg-stone-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -161,7 +161,7 @@ const Categories = () => {
           <h2 id="categories-heading" className="font-display text-3xl md:text-4xl font-bold text-stone-900 mb-4">O que seu pet precisa hoje?</h2>
           <p className="text-stone-500">Navegue por nossas principais categorias e encontre os melhores produtos para a saúde e diversão do seu melhor amigo.</p>
         </motion.div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
@@ -174,10 +174,10 @@ const Categories = () => {
                 to={`/?categoria=${cat.name}#produtos`} 
                 className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center hover:shadow-xl hover:border-teal-200 transition-all group w-full"
               >
-                <div aria-hidden="true" className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 ${cat.color} group-hover:scale-110 transition-transform shadow-inner`}>
-                  <cat.icon className="w-10 h-10" />
+                <div aria-hidden="true" className={`w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mb-4 md:mb-6 ${cat.color} group-hover:scale-110 transition-transform shadow-inner`}>
+                  <cat.icon className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
-                <span className="font-bold text-stone-800 text-lg">{cat.name}</span>
+                <span className="font-bold text-stone-800 text-base md:text-lg">{cat.name}</span>
               </Link>
             </motion.div>
           ))}
@@ -228,7 +228,7 @@ const ProductGrid = () => {
   };
 
   return (
-    <section id="produtos" aria-labelledby="products-heading" className="py-24 bg-white scroll-mt-20">
+    <section id="produtos" aria-labelledby="products-heading" className="py-12 md:py-24 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -262,13 +262,13 @@ const ProductGrid = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="flex flex-wrap gap-2 mb-12"
+          className="flex flex-wrap gap-2 mb-8 md:mb-12 overflow-x-auto no-scrollbar pb-2"
         >
           {categories.map(cat => (
             <button 
               key={cat} 
               onClick={() => { setSelectedCategory(cat); setSearchParams({ categoria: cat }); }} 
-              className={`px-6 py-3 rounded-full text-sm font-bold transition-all shadow-sm ${selectedCategory === cat ? 'bg-teal-500 text-white shadow-teal-500/20' : 'bg-white text-stone-600 border border-stone-100 hover:bg-stone-50'}`}
+              className={`px-5 py-2.5 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all shadow-sm whitespace-nowrap ${selectedCategory === cat ? 'bg-teal-500 text-white shadow-teal-500/20' : 'bg-white text-stone-600 border border-stone-100 hover:bg-stone-50'}`}
             >
               {cat}
             </button>
@@ -276,18 +276,18 @@ const ProductGrid = () => {
         </motion.div>
         
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="bg-white border border-stone-100 rounded-3xl overflow-hidden p-6 animate-shimmer">
-                <div className="bg-stone-100 h-48 rounded-2xl mb-4"></div>
-                <div className="bg-stone-100 h-4 w-1/3 rounded mb-2"></div>
-                <div className="bg-stone-100 h-6 w-full rounded mb-4"></div>
-                <div className="bg-stone-100 h-10 w-full rounded-xl"></div>
+              <div key={i} className="bg-white border border-stone-100 rounded-[20px] md:rounded-3xl overflow-hidden p-3 md:p-6 animate-shimmer">
+                <div className="bg-stone-100 h-32 md:h-48 rounded-xl md:rounded-2xl mb-3 md:mb-4"></div>
+                <div className="bg-stone-100 h-3 w-1/3 rounded mb-2"></div>
+                <div className="bg-stone-100 h-5 w-full rounded mb-3 md:mb-4"></div>
+                <div className="bg-stone-100 h-8 md:h-10 w-full rounded-lg md:rounded-xl"></div>
               </div>
             ))}
           </div>
         ) : sortedProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-8">
             {sortedProducts.map((product, i) => (
               <motion.article 
                 key={product.id} 
@@ -298,7 +298,7 @@ const ProductGrid = () => {
                 className="bg-white border border-stone-100 rounded-3xl overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full relative group"
               >
                 {product.badge && (
-                  <span className={`absolute top-4 left-4 z-10 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-full text-white ${
+                  <span className={`absolute top-2 left-2 md:top-4 md:left-4 z-10 text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-full text-white ${
                     product.badge === 'Novo' ? 'bg-blue-500' : product.badge === 'Promoção' ? 'bg-orange-500' : 'bg-teal-500'
                   }`}>
                     {product.badge}
@@ -307,32 +307,32 @@ const ProductGrid = () => {
                 <button 
                   onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }}
                   aria-label={isFavorite(product.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-                  className="absolute top-4 right-4 z-10 p-2.5 bg-white/80 backdrop-blur-md rounded-full shadow-sm hover:bg-white transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 border border-stone-100"
+                  className="absolute top-2 right-2 md:top-4 md:right-4 z-10 p-2 md:p-2.5 bg-white/80 backdrop-blur-md rounded-full shadow-sm hover:bg-white transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 border border-stone-100"
                 >
-                  <Heart className={`w-5 h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-stone-400'}`} />
+                  <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorite(product.id) ? 'fill-red-500 text-red-500' : 'text-stone-400'}`} />
                 </button>
                 <Link to={`/produto/${product.id}`} className="block relative pt-[100%] bg-stone-50/50 overflow-hidden">
                   <img src={product.image} alt={product.name} loading="lazy" className="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-500" />
                 </Link>
-                <div className="p-6 flex flex-col flex-grow">
-                  <p className="text-xs font-bold text-teal-600 uppercase mb-2 tracking-wider">{product.brand}</p>
-                  <Link to={`/produto/${product.id}`} className="font-bold text-stone-900 leading-snug mb-3 hover:text-teal-600 line-clamp-2 transition-colors">{product.name}</Link>
-                  <div className="flex items-center gap-1 mb-4">
-                    <Star className="w-3.5 h-3.5 text-orange-400 fill-orange-400" />
-                    <span className="text-sm font-bold text-stone-700">{product.rating}</span>
-                    <span className="text-xs text-stone-400">({product.reviewCount})</span>
+                <div className="p-3 md:p-6 flex flex-col flex-grow">
+                  <p className="text-[10px] md:text-xs font-bold text-teal-600 uppercase mb-1 md:mb-2 tracking-wider">{product.brand}</p>
+                  <Link to={`/produto/${product.id}`} className="font-bold text-stone-900 text-sm md:text-base leading-snug mb-2 md:mb-3 hover:text-teal-600 line-clamp-2 transition-colors">{product.name}</Link>
+                  <div className="flex items-center gap-1 mb-2 md:mb-4">
+                    <Star className="w-3 h-3 md:w-3.5 md:h-3.5 text-orange-400 fill-orange-400" />
+                    <span className="text-xs md:text-sm font-bold text-stone-700">{product.rating}</span>
+                    <span className="text-[10px] md:text-xs text-stone-400">({product.reviewCount})</span>
                   </div>
-                  <div className="mt-auto pt-4 flex items-end justify-between">
+                  <div className="mt-auto pt-3 md:pt-4 flex items-end justify-between">
                     <div>
-                      {product.oldPriceFormatted && <p className="text-xs text-stone-400 line-through mb-0.5">{product.oldPriceFormatted}</p>}
-                      <p className="text-2xl font-display font-bold text-stone-900">{product.priceFormatted}</p>
+                      {product.oldPriceFormatted && <p className="text-[10px] md:text-xs text-stone-400 line-through mb-0 md:mb-0.5">{product.oldPriceFormatted}</p>}
+                      <p className="text-lg md:text-2xl font-display font-bold text-stone-900 leading-none">{product.priceFormatted}</p>
                     </div>
                     <button 
                       onClick={() => addToCart(product)} 
-                      className="bg-stone-900 hover:bg-teal-500 text-white p-3 rounded-2xl transition-all shadow-sm"
+                      className="bg-stone-900 hover:bg-teal-500 text-white p-2 md:p-3 rounded-xl md:rounded-2xl transition-all shadow-sm shrink-0 ml-2"
                       aria-label="Adicionar ao carrinho"
                     >
-                      <Plus className="w-6 h-6" />
+                      <Plus className="w-4 h-4 md:w-6 md:h-6" />
                     </button>
                   </div>
                 </div>
@@ -363,16 +363,16 @@ const Testimonials = () => {
   ];
 
   return (
-    <section className="py-24 bg-stone-900 text-white overflow-hidden">
+    <section className="py-12 md:py-24 bg-stone-900 text-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16"
         >
-          <h2 className="font-display text-3xl md:text-5xl font-bold mb-4">Quem ama seu pet, confia em nós.</h2>
-          <p className="text-stone-400">Veja o que dizem nossos clientes sobre a experiência na Loja LOPES.</p>
+          <h2 className="font-display text-2xl md:text-5xl font-bold mb-3 md:mb-4">Quem ama seu pet, confia em nós.</h2>
+          <p className="text-stone-300 text-sm md:text-base">Veja o que dizem nossos clientes sobre a experiência na Loja LOPES.</p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
@@ -393,7 +393,7 @@ const Testimonials = () => {
                 <img src={t.image} alt={t.name} className="w-12 h-12 rounded-full object-cover" />
                 <div>
                   <h4 className="font-bold">{t.name}</h4>
-                  <p className="text-xs text-stone-500">Tutor do {t.pet}</p>
+                  <p className="text-xs text-stone-400">Tutor do {t.pet}</p>
                 </div>
               </div>
             </motion.div>
@@ -407,12 +407,12 @@ const Testimonials = () => {
 const BrandLogos = () => {
   const brands = ['Royal Canin', 'Premier', 'Zee.Dog', 'Bravecto', 'Kong', 'Purina', 'Zoetis', 'Simparic'];
   return (
-    <section className="py-20 bg-white border-b border-stone-100 overflow-hidden">
+    <section className="py-10 md:py-20 bg-white border-b border-stone-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-stone-400 font-bold uppercase tracking-[0.2em] text-xs mb-12">Principais Marcas Parceiras</p>
-        <div className="flex flex-wrap justify-center items-center gap-x-16 gap-y-10 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
+        <p className="text-center text-stone-400 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-8 md:mb-12">Principais Marcas Parceiras</p>
+        <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6 md:gap-x-16 md:gap-y-10 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
           {brands.map(brand => (
-             <span key={brand} className="text-2xl font-display font-black text-stone-900">{brand.toUpperCase()}</span>
+             <span key={brand} className="text-lg md:text-2xl font-display font-black text-stone-900">{brand.toUpperCase()}</span>
           ))}
         </div>
       </div>
@@ -433,9 +433,9 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="py-24 bg-teal-500 relative overflow-hidden">
-       <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48 blur-3xl" />
-       <div className="absolute bottom-0 left-0 w-64 h-64 bg-stone-900/5 rounded-full -ml-32 -mb-32 blur-2xl" />
+    <section className="py-16 md:py-24 bg-teal-500 relative overflow-hidden">
+       <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-white/10 rounded-full -mr-32 -mt-32 md:-mr-48 md:-mt-48 blur-3xl" />
+       <div className="absolute bottom-0 left-0 w-48 h-48 md:w-64 md:h-64 bg-stone-900/5 rounded-full -ml-24 -mb-24 md:-ml-32 md:-mb-32 blur-2xl" />
        
        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
          <motion.div
@@ -443,8 +443,8 @@ const Newsletter = () => {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
          >
-           <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-6">Mime seu pet com descontos exclusivos!</h2>
-           <p className="text-teal-50 text-lg mb-10 leading-relaxed">Receba nossas melhores ofertas, cupons e dicas de saúde animal direto no seu email. Prometemos não encher sua caixa.</p>
+           <h2 className="font-display text-2xl md:text-5xl font-bold text-white mb-4 md:mb-6">Mime seu pet com descontos exclusivos!</h2>
+           <p className="text-teal-50 text-base md:text-lg mb-8 md:mb-10 leading-relaxed">Receba nossas melhores ofertas, cupons e dicas de saúde animal direto no seu email. Prometemos não encher sua caixa.</p>
            
            <AnimatePresence mode="wait">
              {subscribed ? (

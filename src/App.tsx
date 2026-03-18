@@ -19,6 +19,8 @@ const Delivery = lazy(() => import('./Pages').then(module => ({ default: module.
 const Returns = lazy(() => import('./Pages').then(module => ({ default: module.Returns })));
 const Blog = lazy(() => import('./Pages').then(module => ({ default: module.Blog })));
 const FAQ = lazy(() => import('./Pages').then(module => ({ default: module.FAQ })));
+const Favorites = lazy(() => import('./Pages').then(module => ({ default: module.Favorites })));
+const Checkout = lazy(() => import('./Pages').then(module => ({ default: module.Checkout })));
 
 // Admin Lazy Loads
 const AdminLayout = lazy(() => import('./Pages').then(module => ({ default: module.AdminLayout })));
@@ -45,12 +47,14 @@ export default function App() {
                   <Route path="conta" element={<Account />} />
                   <Route path="onboarding" element={<Onboarding />} />
                   <Route path="cadastrar-pet" element={<RegisterPet />} />
+                  <Route path="favoritos" element={<Favorites />} />
+                  <Route path="checkout" element={<Checkout />} />
                   <Route path="painel" element={<Dashboard />} />
                   <Route path="sobre" element={<About />} />
                   <Route path="entrega" element={<Delivery />} />
                   <Route path="trocas" element={<Returns />} />
                   <Route path="blog" element={<Blog />} />
-                  <Route path="*" element={<div className="py-24 text-center"><h1 className="text-4xl font-bold mb-4">404</h1><p>Página não encontrada</p></div>} />
+                  <Route path="*" element={<NotFoundPage />} />
                 </Route>
 
                 {/* Tela de Login Admin (Desprotegida) */}
