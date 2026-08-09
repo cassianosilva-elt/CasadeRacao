@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://casaderacaolopes.vercel.app/</loc>
+    <loc>https://casalopes.netlify.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/faq</loc>
+    <loc>https://casalopes.netlify.app/faq</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/sobre</loc>
+    <loc>https://casalopes.netlify.app/sobre</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/entrega</loc>
+    <loc>https://casalopes.netlify.app/entrega</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/trocas</loc>
+    <loc>https://casalopes.netlify.app/trocas</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/blog</loc>
+    <loc>https://casalopes.netlify.app/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://casaderacaolopes.vercel.app/carrinho</loc>
+    <loc>https://casalopes.netlify.app/carrinho</loc>
     <changefreq>always</changefreq>
     <priority>0.4</priority>
   </url>

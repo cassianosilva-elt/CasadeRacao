@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useCart } from '../CartContext';
 import { useAdmin } from './admin/adminContext';
-import { ShoppingCart, Minus, Plus, Trash2, CheckCircle, Ticket, MapPin, ArrowRight, Loader2, Clock } from 'lucide-react';
+import { ShoppingCart, Minus, Plus, Trash2, CheckCircle, Ticket, MapPin, ArrowRight, Loader2, Clock, Repeat } from 'lucide-react';
 
 export const Cart = () => {
   const { items, updateQuantity, removeFromCart, total, clearCart } = useCart();
@@ -91,9 +91,18 @@ export const Cart = () => {
                         }}
                       />
                     <div className="flex-grow text-center sm:text-left">
-                      <p className="text-teal-600 text-[10px] font-bold uppercase tracking-widest mb-1">{item.brand}</p>
+                      <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                        <p className="text-teal-600 text-[10px] font-bold uppercase tracking-widest">{item.brand}</p>
+                        {item.isSubscription && (
+                          <span className="bg-orange-100 text-orange-700 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                            <Repeat className="w-3 h-3" /> Assinatura Mensal
+                          </span>
+                        )}
+                      </div>
                       <h2 className="font-bold text-stone-900 text-base sm:text-lg mb-1 sm:mb-2 leading-tight">{item.name}</h2>
-                      <p className="font-display font-bold text-lg sm:text-xl text-stone-900">{item.priceFormatted}</p>
+                      <p className="font-display font-bold text-lg sm:text-xl text-stone-900">
+                        {item.isSubscription ? 'R$ 180,00 / mês' : item.priceFormatted}
+                      </p>
                     </div>
                     <div className="flex items-center gap-4 sm:gap-6 mt-2 sm:mt-0">
                       <div className="flex items-center bg-stone-50 rounded-2xl border border-stone-100 p-1">

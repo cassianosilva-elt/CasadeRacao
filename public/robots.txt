@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://casaderacaolopes.vercel.app/sitemap.xml
+Sitemap: https://casalopes.netlify.app/sitemap.xml

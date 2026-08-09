@@ -412,8 +412,8 @@ const OrdersList = () => {
           const text = `⚡ *AGILIZAÇÃO DE ENTREGA DE PEDIDO* ⚡\n\n` +
             `Olá, Casa de Ração Lopes! Preciso de ajuda para agilizar a entrega do meu pedido.\n\n` +
             `🆔 *Pedido:* #${shortOrderNumber}\n` +
-            `👤 *Tutor:* ${orderData.tutor?.name || user?.name || 'Cliente'}\n` +
-            `📱 *WhatsApp:* ${orderData.tutor?.whatsapp || user?.phone || ''}\n` +
+            `👤 *Tutor:* ${orderData.tutor?.name || 'Cliente'}\n` +
+            `📱 *WhatsApp:* ${orderData.tutor?.whatsapp || ''}\n` +
             `💳 *Pagamento:* ${paymentText}\n\n` +
             `🛒 *Itens:*\n${itemsList}\n\n` +
             `💰 *Total:* R$ ${orderData.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n\n` +
@@ -602,7 +602,7 @@ const SubscriptionsList = () => {
                {sub.items.slice(0, 3).map((item, i) => (
                  <img 
                    key={i} 
-                   src={item.image || item.images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
+                   src={item.image || (item as any).images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
                    alt={item.name} 
                    className="w-12 h-12 rounded-full border-4 border-white bg-stone-50 object-contain shadow-sm" 
                    onError={(e) => {

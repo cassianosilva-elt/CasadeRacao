@@ -327,8 +327,8 @@ export const ProductDetails = () => {
                  >
                    <Repeat className="w-5 h-5" />
                    <div>
-                     <p className="leading-tight">Assinar e Ganhar 10% OFF</p>
-                     <p className="text-[10px] font-medium opacity-80 uppercase tracking-widest mt-0.5">({formatPrice(product.price * 0.9)} a cada entrega)</p>
+                     <p className="leading-tight">Assinar Plano Mensal</p>
+                     <p className="text-[10px] font-medium opacity-80 uppercase tracking-widest mt-0.5">(R$ 180,00 / mês • Taxa Fixa de Assinatura)</p>
                    </div>
                  </button>
               )}

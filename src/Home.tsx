@@ -397,21 +397,21 @@ const SubscriptionBanner = () => {
           >
             <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">
               <Repeat className="w-4 h-4" />
-              Assinatura Pet
+              Plano Assinatura Mensal
             </div>
             <h2 className="font-display text-3xl md:text-5xl font-black text-stone-900 tracking-tighter leading-tight">
-              Assine e Economize<br />
-              <span className="text-teal-600">10% em Cada Entrega</span>
+              Plano de Assinatura<br />
+              <span className="text-teal-600">R$ 180,00 / mês</span>
             </h2>
             <p className="text-stone-500 text-lg leading-relaxed max-w-lg">
-              Nunca mais esqueça a ração do seu pet! Com a Assinatura LOPES, você recebe seus produtos favoritos com desconto automático e na frequência ideal.
+              Receba a ração do seu pet todo mês com valor fixo e previsível de R$ 180,00/mês. Garantia de ração sempre fresca e entregue sem preocupações.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {[
-                { icon: '💰', title: '10% OFF Sempre', desc: 'Desconto automático em cada entrega recorrente' },
-                { icon: '📦', title: 'Entrega Automática', desc: 'Quinzenal ou mensal, você escolhe o ritmo' },
-                { icon: '❌', title: 'Cancele Quando Quiser', desc: 'Sem multa, sem compromisso, sem burocracia' }
+                { icon: '💳', title: 'R$ 180,00 Fixo', desc: 'Valor fixo mensal sem alterações no preço da ração' },
+                { icon: '📦', title: 'Entrega Automática', desc: 'Sua ração chega todo mês no dia agendado' },
+                { icon: '❌', title: 'Sem Fidelidade', desc: 'Cancele ou altere a qualquer momento sem burocracia' }
               ].map((item, i) => (
                 <motion.div
                   key={i}
@@ -434,10 +434,10 @@ const SubscriptionBanner = () => {
                 className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-teal-500/20 flex items-center justify-center gap-2"
               >
                 <Repeat className="w-5 h-5" />
-                Escolher Produtos para Assinar
+                Assinar Rações (R$ 180,00/mês)
               </Link>
               <p className="text-xs text-stone-400 font-medium self-center">
-                Clique em "Assinar e Ganhar 10% OFF" na página de qualquer produto
+                Clique em "Assinar Plano Mensal" na página de qualquer ração
               </p>
             </div>
           </motion.div>
@@ -458,24 +458,24 @@ const SubscriptionBanner = () => {
                       <Repeat className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold">Plano de Assinatura</p>
-                      <p className="text-[10px] text-stone-400 uppercase tracking-widest">Entrega Mensal</p>
+                      <p className="text-sm font-bold">Plano Assinatura Mensal</p>
+                      <p className="text-[10px] text-teal-400 uppercase tracking-widest font-mono">R$ 180,00 / mês</p>
                     </div>
                   </div>
                   <div className="space-y-4">
-                    {['Ração Premium 15kg', 'Petiscos Naturais', 'Anti-pulgas Mensal'].map((item, i) => (
+                    {['Ração Cães Adultos 15kg', 'Ração Filhotes Premium', 'Ração Gatos Castrados'].map((item, i) => (
                       <div key={i} className="flex items-center justify-between bg-white/5 p-4 rounded-xl">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-sm">📦</div>
                           <span className="text-sm font-medium">{item}</span>
                         </div>
-                        <span className="text-teal-400 text-xs font-bold">-10%</span>
+                        <span className="text-teal-400 text-xs font-bold font-mono">R$ 180,00</span>
                       </div>
                     ))}
                   </div>
                   <div className="border-t border-white/10 pt-4 flex justify-between items-center">
-                    <span className="text-stone-400 text-sm">Próxima entrega</span>
-                    <span className="text-teal-400 font-bold text-sm">Em 15 dias</span>
+                    <span className="text-stone-400 text-sm">Cobrança e entrega</span>
+                    <span className="text-teal-400 font-bold text-sm">Mensal (R$ 180,00)</span>
                   </div>
                 </div>
               </div>

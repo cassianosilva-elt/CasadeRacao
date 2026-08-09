@@ -82,9 +82,9 @@ export const CartProvider: React.FC<{children: React.ReactNode}> = ({ children }
   
   const clearCart = () => setItems([]);
 
-  // Apply 10% discount for subscription items
+  // Calculate total: subscription items use the fixed monthly plan price of R$ 180,00
   const total = items.reduce((acc, item) => {
-    const itemPrice = item.isSubscription ? item.price * 0.9 : item.price;
+    const itemPrice = item.isSubscription ? 180 : item.price;
     return acc + itemPrice * item.quantity;
   }, 0);
 
