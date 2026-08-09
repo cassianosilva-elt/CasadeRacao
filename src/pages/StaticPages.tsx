@@ -19,42 +19,42 @@ export const About = () => {
   useEffect(() => window.scrollTo(0, 0), []);
   return (
     <div className="bg-white pb-24">
-      <PageHero 
-        title="Nossa História" 
-        subtitle="Desde 2012, cuidando do seu melhor amigo com dedicação e os melhores produtos do mercado paulista." 
-        icon={Info} 
+      <PageHero
+        title="Nossa História"
+        subtitle="Desde 2012, cuidando do seu melhor amigo com dedicação e os melhores produtos do mercado paulista."
+        icon={Info}
       />
       <div className="max-w-4xl mx-auto px-4 py-20">
         <div className="prose prose-stone max-w-none text-stone-600 leading-relaxed space-y-8">
-           <h2 className="font-display text-3xl font-bold text-stone-900">Paixão por animais em cada detalhe</h2>
-           <p className="text-xl font-medium text-stone-700 italic border-l-4 border-teal-500 pl-6 py-2">
-             "A Casa de Ração LOPES nasceu de um sonho simples: oferecer nutrição de qualidade para pets com o carinho que eles merecem."
-           </p>
-           <p>
-             Localizada no coração de São Paulo, somos mais que uma loja de ração. Somos um ponto de encontro para tutores que buscam o melhor para seus companheiros. Nossa equipe é formada por especialistas que amam o que fazem, garantindo que você sempre leve o produto ideal para a necessidade específica do seu pet.
-           </p>
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-16">
-              <div className="p-8 bg-stone-50 rounded-[40px] border border-stone-100">
-                 <ShieldCheck className="w-10 h-10 text-teal-600 mb-6" />
-                 <h3 className="font-bold text-stone-900 text-xl mb-4">Qualidade Certificada</h3>
-                 <p className="text-sm">Trabalhamos apenas com marcas líderes e produtos com procedência garantida, assegurando a saúde do seu animal.</p>
+          <h2 className="font-display text-3xl font-bold text-stone-900">Paixão por animais em cada detalhe</h2>
+          <p className="text-xl font-medium text-stone-700 italic border-l-4 border-teal-500 pl-6 py-2">
+            "A Casa de Ração LOPES nasceu de um sonho simples: oferecer nutrição de qualidade para pets com o carinho que eles merecem."
+          </p>
+          <p>
+            Localizada no coração de São Paulo, somos mais que uma loja de ração. Somos um ponto de encontro para tutores que buscam o melhor para seus companheiros. Nossa equipe é formada por especialistas que amam o que fazem, garantindo que você sempre leve o produto ideal para a necessidade específica do seu pet.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-16">
+            <div className="p-8 bg-stone-50 rounded-[40px] border border-stone-100">
+              <ShieldCheck className="w-10 h-10 text-teal-600 mb-6" />
+              <h3 className="font-bold text-stone-900 text-xl mb-4">Qualidade Certificada</h3>
+              <p className="text-sm">Trabalhamos apenas com marcas líderes e produtos com procedência garantida, assegurando a saúde do seu animal.</p>
+            </div>
+            <div className="p-8 bg-orange-50 rounded-[40px] border border-orange-100">
+              <Heart className="w-10 h-10 text-orange-500 mb-6" />
+              <h3 className="font-bold text-stone-900 text-xl mb-4">Atendimento Humano</h3>
+              <p className="text-sm">Não somos apenas um e-commerce. Estamos aqui para ouvir suas dúvidas e ajudar na escolha da ração perfeita.</p>
+            </div>
+          </div>
+          <h2 className="font-display text-3xl font-bold text-stone-900">Nossa Loja Física</h2>
+          <div className="aspect-video bg-stone-200 rounded-[40px] overflow-hidden relative group">
+            <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=2000" alt="Loja" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
+            <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center pointer-events-none">
+              <div className="text-center">
+                <MapPin className="w-12 h-12 text-white mx-auto mb-4" />
+                <p className="text-white font-bold text-xl">Rua Edimundo Audran, 18 - Cidade Tiradentes, São Paulo - SP</p>
               </div>
-              <div className="p-8 bg-orange-50 rounded-[40px] border border-orange-100">
-                 <Heart className="w-10 h-10 text-orange-500 mb-6" />
-                 <h3 className="font-bold text-stone-900 text-xl mb-4">Atendimento Humano</h3>
-                 <p className="text-sm">Não somos apenas um e-commerce. Estamos aqui para ouvir suas dúvidas e ajudar na escolha da ração perfeita.</p>
-              </div>
-           </div>
-           <h2 className="font-display text-3xl font-bold text-stone-900">Nossa Loja Física</h2>
-           <div className="aspect-video bg-stone-200 rounded-[40px] overflow-hidden relative group">
-              <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=2000" alt="Loja" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
-              <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center pointer-events-none">
-                 <div className="text-center">
-                    <MapPin className="w-12 h-12 text-white mx-auto mb-4" />
-                    <p className="text-white font-bold text-xl">Rua das Flores, 123 - São Paulo/SP</p>
-                 </div>
-              </div>
-           </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -65,51 +65,51 @@ export const Delivery = () => {
   useEffect(() => window.scrollTo(0, 0), []);
   return (
     <div className="bg-white pb-24">
-      <PageHero 
-        title="Entrega Rápida" 
-        subtitle="Entendemos que a fome do seu pet não pode esperar. Por isso, operamos com logística de ponta." 
-        icon={Truck} 
+      <PageHero
+        title="Entrega Rápida"
+        subtitle="Entendemos que a fome do seu pet não pode esperar. Por isso, operamos com logística de ponta."
+        icon={Truck}
       />
       <div className="max-w-4xl mx-auto px-4 py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
           <div className="text-center">
-             <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 mx-auto mb-6">
-                <Clock className="w-8 h-8" />
-             </div>
-             <h3 className="font-bold text-stone-900 mb-2">Entrega Expressa</h3>
-             <p className="text-stone-500 text-sm">Entregas no mesmo dia ou em até 24h úteis.</p>
+            <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 mx-auto mb-6">
+              <Clock className="w-8 h-8" />
+            </div>
+            <h3 className="font-bold text-stone-900 mb-2">Entrega Expressa</h3>
+            <p className="text-stone-500 text-sm">Entregas no mesmo dia ou em até 24h úteis.</p>
           </div>
           <div className="text-center">
-             <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mx-auto mb-6">
-                <Truck className="w-8 h-8" />
-             </div>
-             <h3 className="font-bold text-stone-900 mb-2">R$ 1,00 por KM</h3>
-             <p className="text-stone-500 text-sm">Taxa justa calculada pela distância da loja mais próxima.</p>
+            <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mx-auto mb-6">
+              <Truck className="w-8 h-8" />
+            </div>
+            <h3 className="font-bold text-stone-900 mb-2">R$ 1,00 por KM</h3>
+            <p className="text-stone-500 text-sm">Taxa justa calculada pela distância da loja mais próxima.</p>
           </div>
           <div className="text-center">
-             <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 mx-auto mb-6">
-                <MapPin className="w-8 h-8" />
-             </div>
-             <h3 className="font-bold text-stone-900 mb-2">2 Unidades Físicas</h3>
-             <p className="text-stone-500 text-sm">Retirada grátis na Rua Edimundo Audran, 18 ou Salvador Vigano, 175.</p>
+            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 mx-auto mb-6">
+              <MapPin className="w-8 h-8" />
+            </div>
+            <h3 className="font-bold text-stone-900 mb-2">2 Unidades Físicas</h3>
+            <p className="text-stone-500 text-sm">Retirada grátis na Rua Edimundo Audran, 18 ou Salvador Vigano, 175.</p>
           </div>
         </div>
         <div className="bg-stone-50 p-10 md:p-16 rounded-[40px] border border-stone-100">
-           <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">Informações da Nossa Logística</h2>
-           <ul className="space-y-6 text-stone-600">
-              <li className="flex gap-4">
-                 <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>O cálculo da taxa de entrega é automático (R$ 1,00/km) usando o CEP fornecido no checkout e localizando a loja mais próxima entre a <strong>Unidade Rua Edimundo Audran, 18</strong> e a <strong>Unidade Rua Salvador Vigano, 175</strong>.</p>
-              </li>
-              <li className="flex gap-4">
-                 <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>Se você preferir buscar o pedido pessoalmente, a <strong>Retirada na Loja é 100% Grátis</strong> em qualquer uma das duas unidades.</p>
-              </li>
-              <li className="flex gap-4">
-                 <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>As entregas ocorrem de segunda a sábado, entre as 09h e 19h com avisos via WhatsApp.</p>
-              </li>
-           </ul>
+          <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">Informações da Nossa Logística</h2>
+          <ul className="space-y-6 text-stone-600">
+            <li className="flex gap-4">
+              <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
+              <p>O cálculo da taxa de entrega é automático (R$ 1,00/km) usando o CEP fornecido no checkout e localizando a loja mais próxima entre a <strong>Unidade Rua Edimundo Audran, 18</strong> e a <strong>Unidade Rua Salvador Vigano, 175</strong>.</p>
+            </li>
+            <li className="flex gap-4">
+              <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
+              <p>Se você preferir buscar o pedido pessoalmente, a <strong>Retirada na Loja é 100% Grátis</strong> em qualquer uma das duas unidades.</p>
+            </li>
+            <li className="flex gap-4">
+              <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
+              <p>As entregas ocorrem de segunda a sábado, entre as 09h e 19h com avisos via WhatsApp.</p>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -120,22 +120,22 @@ export const Returns = () => {
   useEffect(() => window.scrollTo(0, 0), []);
   return (
     <div className="bg-white pb-24">
-      <PageHero 
-        title="Trocas e Devoluções" 
-        subtitle="Sua satisfação é nossa prioridade absoluta. Conheça nossa política flexível de trocas." 
-        icon={RefreshCcw} 
+      <PageHero
+        title="Trocas e Devoluções"
+        subtitle="Sua satisfação é nossa prioridade absoluta. Conheça nossa política flexível de trocas."
+        icon={RefreshCcw}
       />
       <div className="max-w-4xl mx-auto px-4 py-20">
         <div className="prose prose-stone max-w-none text-stone-600">
-           <p className="text-lg mb-12">Seguimos rigorosamente o Código de Defesa do Consumidor, mas buscamos ir além para garantir que sua experiência seja positiva.</p>
-           <h3 className="font-display text-2xl font-bold text-stone-900 mb-6">Prazo para Arrependimento</h3>
-           <p className="mb-10">Você tem até 7 (sete) dias corridos após o recebimento para desistir da compra e solicitar o estorno integral do valor pago.</p>
-           <h3 className="font-display text-2xl font-bold text-stone-900 mb-6">Condições do Produto</h3>
-           <p className="mb-10">Para que a troca ou devolução seja aceita, o produto deve estar em sua embalagem original, sem sinais de uso e acompanhado da nota fiscal.</p>
-           <div className="bg-red-50 p-8 rounded-3xl border border-red-100 text-red-800 text-sm">
-              <p className="flex items-center gap-3 font-bold mb-2 uppercase tracking-widest"><Info className="w-5 h-5" /> Importante</p>
-              <p>Produtos perecíveis, como rações abertas, só podem ser trocados em caso de vício ou defeito de fabricação, conforme orientação da marca fabricante.</p>
-           </div>
+          <p className="text-lg mb-12">Seguimos rigorosamente o Código de Defesa do Consumidor, mas buscamos ir além para garantir que sua experiência seja positiva.</p>
+          <h3 className="font-display text-2xl font-bold text-stone-900 mb-6">Prazo para Arrependimento</h3>
+          <p className="mb-10">Você tem até 7 (sete) dias corridos após o recebimento para desistir da compra e solicitar o estorno integral do valor pago.</p>
+          <h3 className="font-display text-2xl font-bold text-stone-900 mb-6">Condições do Produto</h3>
+          <p className="mb-10">Para que a troca ou devolução seja aceita, o produto deve estar em sua embalagem original, sem sinais de uso e acompanhado da nota fiscal.</p>
+          <div className="bg-red-50 p-8 rounded-3xl border border-red-100 text-red-800 text-sm">
+            <p className="flex items-center gap-3 font-bold mb-2 uppercase tracking-widest"><Info className="w-5 h-5" /> Importante</p>
+            <p>Produtos perecíveis, como rações abertas, só podem ser trocados em caso de vício ou defeito de fabricação, conforme orientação da marca fabricante.</p>
+          </div>
         </div>
       </div>
     </div>

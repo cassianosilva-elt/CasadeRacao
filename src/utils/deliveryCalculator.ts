@@ -19,7 +19,7 @@ export const STORES: StoreLocation[] = [
   {
     id: 'salvador-vigano',
     name: 'Unidade Salvador Vigano',
-    address: 'Rua Salvador Vigano, 175 - Cidade Tiradentes, São Paulo - SP',
+    address: 'Salvador Vigano, 175 - Cidade Tiradentes, São Paulo - SP',
     zip: '08473-605',
     lat: -23.58740,
     lng: -46.39200,
