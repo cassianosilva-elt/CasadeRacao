@@ -10,7 +10,7 @@ export interface StoreLocation {
 export const STORES: StoreLocation[] = [
   {
     id: 'edimundo-audran',
-    name: 'Unidade Edimundo Audran',
+    name: 'Loja 1 - Rua Edimundo Audran, 18',
     address: 'Rua Edimundo Audran, 18 - Cidade Tiradentes, São Paulo - SP',
     zip: '08473-532',
     lat: -23.58348,
@@ -18,8 +18,8 @@ export const STORES: StoreLocation[] = [
   },
   {
     id: 'salvador-vigano',
-    name: 'Unidade Salvador Vigano',
-    address: 'Salvador Vigano, 175 - Cidade Tiradentes, São Paulo - SP',
+    name: 'Loja 2 - Rua Salvador Vigano, 175',
+    address: 'Rua Salvador Vigano, 175 - Cidade Tiradentes, São Paulo - SP',
     zip: '08473-605',
     lat: -23.58740,
     lng: -46.39200,

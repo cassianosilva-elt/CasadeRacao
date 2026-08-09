@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PackagePlus, ClipboardList, BadgeDollarSign, Lightbulb, TrendingUp, Users, ShoppingBag, Ticket, Star, Repeat, UserCheck } from 'lucide-react';
+import { PackagePlus, ClipboardList, BadgeDollarSign, Lightbulb, TrendingUp, Users, ShoppingBag, Ticket, Star, Repeat, UserCheck, Tag } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAdmin } from './adminContext';
 import { useQuery } from 'convex/react';
@@ -39,6 +39,7 @@ export const AdminHome = () => {
   const totalUsers = allUsers?.length ?? 0;
   const totalReviews = allReviews?.length ?? 0;
   const activeSubscriptions = allSubscriptions?.filter(s => s.status === 'active').length ?? 0;
+  const activeOffers = products.filter(p => p.oldPrice && p.badge === 'Promoção').length;
 
   const stats = [
     { label: 'Faturamento Total', value: formatPrice(totalRevenue), icon: <TrendingUp className="w-5 h-5" />, color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
@@ -48,6 +49,7 @@ export const AdminHome = () => {
     { label: 'Usuários', value: totalUsers, icon: <Users className="w-5 h-5" />, color: 'text-indigo-600', bgColor: 'bg-indigo-50' },
     { label: 'Avaliações', value: totalReviews, icon: <Star className="w-5 h-5" />, color: 'text-amber-600', bgColor: 'bg-amber-50' },
     { label: 'Assinaturas Ativas', value: activeSubscriptions, icon: <Repeat className="w-5 h-5" />, color: 'text-cyan-600', bgColor: 'bg-cyan-50' },
+    { label: 'Ofertas Ativas', value: activeOffers, icon: <Tag className="w-5 h-5" />, color: 'text-rose-600', bgColor: 'bg-rose-50' },
   ];
 
   const menuItems = [
@@ -106,6 +108,14 @@ export const AdminHome = () => {
       path: '/admin/assinaturas',
       bgColor: 'bg-cyan-50',
       hoverBorder: 'hover:border-cyan-300'
+    },
+    {
+      title: 'Ofertas',
+      description: 'Crie promoções e descontos.',
+      icon: <Tag className="w-10 h-10 text-rose-600" />,
+      path: '/admin/ofertas',
+      bgColor: 'bg-rose-50',
+      hoverBorder: 'hover:border-rose-300'
     }
   ];
 

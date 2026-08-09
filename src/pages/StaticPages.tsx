@@ -45,13 +45,28 @@ export const About = () => {
               <p className="text-sm">Não somos apenas um e-commerce. Estamos aqui para ouvir suas dúvidas e ajudar na escolha da ração perfeita.</p>
             </div>
           </div>
-          <h2 className="font-display text-3xl font-bold text-stone-900">Nossa Loja Física</h2>
-          <div className="aspect-video bg-stone-200 rounded-[40px] overflow-hidden relative group">
-            <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=2000" alt="Loja" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
-            <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center pointer-events-none">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-white mx-auto mb-4" />
-                <p className="text-white font-bold text-xl">Rua Edimundo Audran, 18 - Cidade Tiradentes, São Paulo - SP</p>
+          <h2 className="font-display text-3xl font-bold text-stone-900">Nossas Lojas Físicas</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="aspect-video bg-stone-200 rounded-[32px] overflow-hidden relative group">
+              <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=2000" alt="Loja 1" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
+              <div className="absolute inset-0 bg-stone-900/50 flex items-center justify-center p-6 text-center">
+                <div>
+                  <MapPin className="w-10 h-10 text-teal-400 mx-auto mb-3" />
+                  <span className="bg-teal-500/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">Loja 1</span>
+                  <p className="text-white font-bold text-lg leading-tight">Rua Edimundo Audran, 18</p>
+                  <p className="text-stone-300 text-xs mt-1">Cidade Tiradentes, São Paulo - SP</p>
+                </div>
+              </div>
+            </div>
+            <div className="aspect-video bg-stone-200 rounded-[32px] overflow-hidden relative group">
+              <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?q=80&w=2000" alt="Loja 2" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
+              <div className="absolute inset-0 bg-stone-900/50 flex items-center justify-center p-6 text-center">
+                <div>
+                  <MapPin className="w-10 h-10 text-teal-400 mx-auto mb-3" />
+                  <span className="bg-teal-500/80 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-block mb-2">Loja 2</span>
+                  <p className="text-white font-bold text-lg leading-tight">Rua Salvador Vigano, 175</p>
+                  <p className="text-stone-300 text-xs mt-1">Cidade Tiradentes, São Paulo - SP</p>
+                </div>
               </div>
             </div>
           </div>
@@ -91,7 +106,7 @@ export const Delivery = () => {
               <MapPin className="w-8 h-8" />
             </div>
             <h3 className="font-bold text-stone-900 mb-2">2 Unidades Físicas</h3>
-            <p className="text-stone-500 text-sm">Retirada grátis na Rua Edimundo Audran, 18 ou Salvador Vigano, 175.</p>
+            <p className="text-stone-500 text-sm">Retirada grátis na Rua Edimundo Audran, 18 ou Rua Salvador Vigano, 175.</p>
           </div>
         </div>
         <div className="bg-stone-50 p-10 md:p-16 rounded-[40px] border border-stone-100">
@@ -99,7 +114,7 @@ export const Delivery = () => {
           <ul className="space-y-6 text-stone-600">
             <li className="flex gap-4">
               <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-              <p>O cálculo da taxa de entrega é automático (R$ 1,00/km) usando o CEP fornecido no checkout e localizando a loja mais próxima entre a <strong>Unidade Rua Edimundo Audran, 18</strong> e a <strong>Unidade Rua Salvador Vigano, 175</strong>.</p>
+              <p>O cálculo da taxa de entrega é automático (R$ 1,00/km) usando o CEP fornecido no checkout e localizando a loja mais próxima entre a <strong>Loja 1 (Rua Edimundo Audran, 18)</strong> e a <strong>Loja 2 (Rua Salvador Vigano, 175)</strong>.</p>
             </li>
             <li className="flex gap-4">
               <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>

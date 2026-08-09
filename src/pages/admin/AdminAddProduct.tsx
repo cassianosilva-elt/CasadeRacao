@@ -19,6 +19,7 @@ export const AdminAddProduct = () => {
     brand: '',
     images: ['', '', ''] as string[],
     video: '',
+    description: '',
   });
   
   const [editingImage, setEditingImage] = useState<{ index: number; src: string } | null>(null);
@@ -41,6 +42,7 @@ export const AdminAddProduct = () => {
             product.images[2] || '',
           ],
           video: product.video || '',
+          description: product.description || '',
         });
       }
     }
@@ -60,6 +62,7 @@ export const AdminAddProduct = () => {
       brand: formData.brand || 'Marca Própria',
       images: formData.images.filter(img => img.trim() !== ''),
       video: formData.video,
+      description: formData.description || undefined,
       rating: 5,
       reviewCount: 0,
     };
@@ -202,6 +205,17 @@ export const AdminAddProduct = () => {
               onChange={e => setFormData({ ...formData, quantity: e.target.value })}
             />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="admin-label block">Descrição do Produto (Opcional)</label>
+          <textarea
+            placeholder="Descreva o produto, ingredientes, benefícios, etc."
+            className="admin-input min-h-[120px] resize-y"
+            value={formData.description}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
+          />
+          <p className="text-xs text-stone-400 font-medium pl-1">A descrição será exibida na página do produto. Se não preenchida, será gerada automaticamente.</p>
         </div>
 
         <div className="space-y-3">

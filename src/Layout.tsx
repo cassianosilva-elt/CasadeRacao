@@ -69,39 +69,39 @@ const Header = () => {
 
   const isHome = pathname === '/';
 
-    const toggleDark = () => {
-      const dark = !isDark;
-      setIsDark(dark);
-      document.documentElement.classList.toggle('dark', dark);
-      try {
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-      } catch (e) {
-        // storage indisponível (modo privado, etc.); ignora silenciosamente
-      }
-    };
+  const toggleDark = () => {
+    const dark = !isDark;
+    setIsDark(dark);
+    document.documentElement.classList.toggle('dark', dark);
+    try {
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
+    } catch (e) {
+      // storage indisponível (modo privado, etc.); ignora silenciosamente
+    }
+  };
 
-    return (
+  return (
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled || !isHome ? 'bg-white/95 backdrop-blur-md shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 md:gap-8">
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-             {isScrolled || !isHome ? (
-               <img src="/logo.png" alt="Casa de Ração LOPES" className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
-             ) : (
-               <>
-                 <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
-                   <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
-                 </div>
-                 <span className="font-display text-xl md:text-2xl font-black tracking-tighter transition-colors text-white">LOPES</span>
-               </>
-             )}
+            {isScrolled || !isHome ? (
+              <img src="/logo.png" alt="Casa de Ração LOPES" className="h-10 md:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+            ) : (
+              <>
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-teal-500 rounded-lg md:rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform shadow-lg shadow-teal-500/20">
+                  <Dog className="text-white w-5 h-5 md:w-6 md:h-6" />
+                </div>
+                <span className="font-display text-xl md:text-2xl font-black tracking-tighter transition-colors text-white">LOPES</span>
+              </>
+            )}
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
+              <Link
+                key={link.name}
+                to={link.path}
                 className={`text-sm font-bold uppercase tracking-widest transition-colors ${pathname === link.path ? 'text-teal-500' : isScrolled || !isHome ? 'text-stone-600 hover:text-teal-500' : 'text-white/80 hover:text-white'}`}
               >
                 {link.name}
@@ -110,9 +110,9 @@ const Header = () => {
           </nav>
 
           <form onSubmit={handleSearch} className="hidden md:flex flex-grow max-w-md relative group">
-            <input 
-              type="text" 
-              placeholder="Buscar ração, brinquedos..." 
+            <input
+              type="text"
+              placeholder="Buscar ração, brinquedos..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full rounded-2xl px-6 py-3 pl-12 text-sm focus:ring-2 focus:ring-teal-500 outline-none transition-all ${isScrolled || !isHome ? 'bg-stone-100 text-stone-900' : 'bg-white/10 backdrop-blur-md text-white placeholder-white/50 border border-white/20'}`}
@@ -134,7 +134,7 @@ const Header = () => {
                 {items.length}
               </span>
             </Link>
-            <button 
+            <button
               onClick={toggleDark}
               className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`}
               aria-label="Alternar Tema"
@@ -143,7 +143,7 @@ const Header = () => {
             >
               {isDark ? <Sun className="w-5 h-5 md:w-6 md:h-6" /> : <Moon className="w-5 h-5 md:w-6 md:h-6" />}
             </button>
-            <button 
+            <button
               onClick={() => setIsMenuOpen(true)}
               className={`lg:hidden p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'text-stone-600' : 'text-white'}`}
               aria-label="Abrir menu de navegação"
@@ -156,7 +156,7 @@ const Header = () => {
 
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -176,9 +176,9 @@ const Header = () => {
               ))}
             </nav>
             <form onSubmit={handleSearch} className="relative mb-auto">
-               <input 
-                type="text" 
-                placeholder="O que seu pet precisa?" 
+              <input
+                type="text"
+                placeholder="O que seu pet precisa?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-6 py-5 pl-14 text-lg focus:ring-2 focus:ring-teal-500 outline-none"
@@ -186,9 +186,9 @@ const Header = () => {
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-stone-400" />
             </form>
             <div className="flex justify-center gap-8 py-8 border-t border-stone-100 text-stone-400">
-               <a href="#" aria-label="Instagram"><Instagram className="w-6 h-6" /></a>
-               <a href="#" aria-label="Facebook"><Facebook className="w-6 h-6" /></a>
-               <a href="tel:+5511948219786" aria-label="Telefone"><Phone className="w-6 h-6" /></a>
+              <a href="https://www.instagram.com/casaracao_lopes?igsh=MWRqeWNqcmFrYmNrNA==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram className="w-6 h-6" /></a>
+              <a href="#" aria-label="Facebook"><Facebook className="w-6 h-6" /></a>
+              <a href="tel:+5511948219786" aria-label="Telefone"><Phone className="w-6 h-6" /></a>
             </div>
           </motion.div>
         )}
@@ -207,7 +207,7 @@ const Footer = () => (
           </Link>
           <p className="text-stone-500 leading-relaxed mb-6 md:mb-8 text-sm md:text-base">Cuidando do seu melhor amigo com as melhores marcas e entrega recorde em toda São Paulo.</p>
           <div className="flex gap-4">
-            <a href="#" aria-label="Siga-nos no Instagram" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Instagram className="w-5 h-5" /></a>
+            <a href="https://www.instagram.com/casaracao_lopes?igsh=MWRqeWNqcmFrYmNrNA==" target="_blank" rel="noopener noreferrer" aria-label="Siga-nos no Instagram" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Instagram className="w-5 h-5" /></a>
             <a href="#" aria-label="Siga-nos no Facebook" className="w-10 h-10 bg-white border border-stone-200 rounded-xl flex items-center justify-center text-stone-400 hover:text-teal-500 hover:border-teal-100 transition-all shadow-sm"><Facebook className="w-5 h-5" /></a>
           </div>
         </div>
@@ -215,48 +215,64 @@ const Footer = () => (
         <div className="reveal-on-scroll" style={{ transitionDelay: '100ms' }}>
           <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Menu Rápido</h3>
           <ul className="space-y-4">
-             {[
-               { name: 'Sobre Nós', path: '/sobre' },
-               { name: 'Blog Pet', path: '/blog' },
-               { name: 'Nossas Lojas', path: '/sobre' },
-               { name: 'FAQ', path: '/faq' }
-             ].map(item => (
-               <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
-             ))}
+            {[
+              { name: 'Sobre Nós', path: '/sobre' },
+              { name: 'Blog Pet', path: '/blog' },
+              { name: 'Nossas Lojas', path: '/sobre' },
+              { name: 'FAQ', path: '/faq' }
+            ].map(item => (
+              <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
+            ))}
           </ul>
         </div>
 
         <div className="reveal-on-scroll" style={{ transitionDelay: '200ms' }}>
           <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Atendimento</h3>
           <ul className="space-y-4">
-             {[
-               { name: 'Política de Entrega', path: '/entrega' },
-               { name: 'Trocas e Devoluções', path: '/trocas' },
-               { name: 'Privacidade', path: '/sobre' },
-               { name: 'Termos de Uso', path: '/sobre' }
-             ].map(item => (
-               <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
-             ))}
+            {[
+              { name: 'Política de Entrega', path: '/entrega' },
+              { name: 'Trocas e Devoluções', path: '/trocas' },
+              { name: 'Privacidade', path: '/sobre' },
+              { name: 'Termos de Uso', path: '/sobre' }
+            ].map(item => (
+              <li key={item.name}><Link to={item.path} className="text-stone-500 hover:text-teal-600 transition-colors flex items-center gap-2 group"><ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all" /> {item.name}</Link></li>
+            ))}
           </ul>
         </div>
 
         <div className="reveal-on-scroll" style={{ transitionDelay: '300ms' }}>
-          <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Contatos</h3>
-          <ul className="space-y-6">
-             <li className="flex items-start gap-4">
-               <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><Phone className="w-5 h-5" /></div>
-               <div><p className="text-xs font-bold text-stone-400 uppercase mb-1">Telefone</p><p className="font-bold text-stone-800">(11) 94821-9786</p></div>
-             </li>
-             <li className="flex items-start gap-4">
-               <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><Mail className="w-5 h-5" /></div>
-               <div><p className="text-xs font-bold text-stone-400 uppercase mb-1">E-mail</p><p className="font-bold text-stone-800">contato@lojalopes.com</p></div>
-             </li>
+          <h3 className="font-bold text-stone-900 mb-8 uppercase tracking-widest text-xs">Contatos & Lojas</h3>
+          <ul className="space-y-4">
+            <li className="flex items-start gap-3">
+              <div className="w-9 h-9 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><Phone className="w-4 h-4" /></div>
+              <div><p className="text-[10px] font-bold text-stone-400 uppercase">Telefone</p><p className="font-bold text-stone-800 text-sm">(11) 94821-9786</p></div>
+            </li>
+            <li className="flex items-start gap-3">
+              <div className="w-9 h-9 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><Mail className="w-4 h-4" /></div>
+              <div><p className="text-[10px] font-bold text-stone-400 uppercase">E-mail</p><p className="font-bold text-stone-800 text-sm">contato@lojalopes.com</p></div>
+            </li>
+            <li className="flex items-start gap-3">
+              <div className="w-9 h-9 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><MapPin className="w-4 h-4" /></div>
+              <div>
+                <p className="text-[10px] font-bold text-stone-400 uppercase">Loja 1</p>
+                <p className="font-bold text-stone-800 text-xs">Rua Edimundo Audran, 18</p>
+                <p className="text-[11px] text-stone-400">Cidade Tiradentes - SP</p>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <div className="w-9 h-9 bg-white rounded-xl shadow-sm flex items-center justify-center text-teal-600 shrink-0"><MapPin className="w-4 h-4" /></div>
+              <div>
+                <p className="text-[10px] font-bold text-stone-400 uppercase">Loja 2</p>
+                <p className="font-bold text-stone-800 text-xs">Rua Salvador Vigano, 175</p>
+                <p className="text-[11px] text-stone-400">Cidade Tiradentes - SP</p>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
 
       <div className="border-t border-stone-200 pt-12 text-center text-stone-400">
-        <p className="text-sm">© 2026 Casa de Ração LOPES. Marcondes & Silva LTDA. CNPJ: 14.502.810/0001-90</p>
+        <p className="text-sm">© 2026 Casa de Ração LOPES. CNPJ: 42.205.771/0001-65</p>
       </div>
     </div>
   </footer>
@@ -278,7 +294,6 @@ export default function Layout() {
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
-      <WhatsAppButton />
       <CookieBanner />
       <WelcomePopup />
     </div>

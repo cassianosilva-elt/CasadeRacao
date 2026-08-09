@@ -116,6 +116,71 @@ export const ProductDetails = () => {
   const isLowStock = product.quantity > 0 && product.quantity <= 2;
   const isOutOfStock = product.quantity === 0;
 
+  const getDescription = (product: any) => {
+    if (product.description && product.description.trim() !== '') {
+      return product.description;
+    }
+    const cat = product.category;
+    if (cat === 'Rações para Cães') {
+      return `${product.name} da ${product.brand} é uma ração de alta qualidade desenvolvida especialmente para cães. Formulada com ingredientes selecionados para promover saúde, vitalidade e pelo brilhante para o seu pet.`;
+    } else if (cat === 'Rações para Gatos') {
+      return `${product.name} da ${product.brand} é uma ração de alta qualidade desenvolvida especialmente para gatos. Formulada com ingredientes selecionados para promover saúde, vitalidade e pelo brilhante para o seu pet.`;
+    } else if (cat === 'Acessórios') {
+      return `${product.name} da ${product.brand}. Acessório de qualidade para o conforto e bem-estar do seu pet.`;
+    } else if (cat === 'Brinquedos') {
+      return `${product.name} da ${product.brand}. Brinquedo resistente e seguro para horas de diversão e entretenimento do seu pet.`;
+    } else if (cat === 'Farmácia') {
+      return `${product.name} da ${product.brand}. Produto de saúde e cuidado para garantir o bem-estar do seu animal de estimação.`;
+    }
+    return `${product.name} da ${product.brand}.`;
+  };
+
+  const extractSpecsFromProduct = (product: any) => {
+    const name = product.name || '';
+    
+    let tipo = 'Standard';
+    if (name.includes('Super Premium')) tipo = 'Super Premium';
+    else if (name.includes('Premium')) tipo = 'Premium';
+    else if (name.includes('Special')) tipo = 'Special';
+
+    let indicacao = 'Adultos';
+    if (name.includes('Filhote') || name.includes('Puppy')) indicacao = 'Filhotes';
+    else if (name.includes('Senior') || name.includes('Idoso')) indicacao = 'Senior';
+
+    const weightMatch = name.match(/(\d+(?:[.,]\d+)?\s*(?:kg|g))/i);
+    const peso = weightMatch ? weightMatch[1].toLowerCase() : 'Consulte';
+
+    let saborBase = '';
+    const sabores = ['Frango', 'Carne', 'Peixe', 'Salmão', 'Cordeiro', 'Peru'];
+    for (const s of sabores) {
+      if (name.toLowerCase().includes(s.toLowerCase())) {
+        saborBase = s;
+        break;
+      }
+    }
+    let sabor = 'Variado';
+    if (saborBase) {
+      sabor = saborBase;
+      if (name.toLowerCase().includes(' e vegetais') || name.toLowerCase().includes(' com vegetais')) {
+        sabor += ' e Vegetais';
+      } else if (name.toLowerCase().includes(' e arroz') || name.toLowerCase().includes(' com arroz')) {
+        sabor += ' e Arroz';
+      }
+    }
+
+    const estoque = product.quantity > 0 ? `${product.quantity} unidades` : 'Esgotado';
+
+    return [
+      { l: 'Marca', v: product.brand },
+      { l: 'Categoria', v: product.category },
+      { l: 'Tipo', v: tipo },
+      { l: 'Indicação', v: indicacao },
+      { l: 'Peso', v: peso },
+      { l: 'Sabor', v: sabor },
+      { l: 'Estoque', v: estoque }
+    ];
+  };
+
   return (
     <div className="bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
@@ -344,20 +409,14 @@ export const ProductDetails = () => {
             {activeTab === 'desc' && (
               <div className="text-stone-600 leading-relaxed">
                 <h3 className="font-display text-2xl font-bold text-stone-900 mb-4">Sobre o produto</h3>
-                <p className="mb-6">{product.description}</p>
-                <p>Nossa ração é formulada com ingredientes de alta qualidade para garantir a saúde e vitalidade do seu animal de estimação. Rica em vitaminas e minerais essenciais.</p>
+                {getDescription(product).split('\n').map((paragraph: string, idx: number) => (
+                  paragraph.trim() ? <p key={idx} className="mb-4">{paragraph}</p> : null
+                ))}
               </div>
             )}
             {activeTab === 'spec' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                {[
-                  { l: 'Marca', v: product.brand },
-                  { l: 'Categoria', v: product.category },
-                  { l: 'Tipo', v: 'Premium' },
-                  { l: 'Indicação', v: 'Adultos' },
-                  { l: 'Peso', v: '15kg' },
-                  { l: 'Sabor', v: 'Carne e Vegetais' }
-                ].map((s, i) => (
+                {extractSpecsFromProduct(product).map((s, i) => (
                   <div key={i} className="flex justify-between border-b border-stone-200 pb-2">
                     <span className="font-bold text-stone-400 text-xs uppercase tracking-widest">{s.l}</span>
                     <span className="font-bold text-stone-900">{s.v}</span>

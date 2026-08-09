@@ -39,7 +39,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.9 }}
               className={`flex items-center gap-3 px-6 py-4 rounded-xl shadow-lg text-white font-medium ${
-                toast.type === 'success' ? 'bg-teal-500' : 'bg-red-500'
+                toast.type === 'success' ? 'bg-teal-500' : 'bg-blue-500'
               }`}
               role="alert"
             >

@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Gift, Sparkles, ArrowRight } from 'lucide-react';
+import { X, Gift, Sparkles, ArrowRight, Copy, Check } from 'lucide-react';
+import { useToast } from '../ToastContext';
+
+const COUPON_CODE = 'PRIMEIRA10';
 
 export const WelcomePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const { addToast } = useToast();
 
   useEffect(() => {
     const hasSeen = localStorage.getItem('hasSeenWelcomePopup');
@@ -18,6 +23,13 @@ export const WelcomePopup = () => {
   const closePopup = () => {
     setIsOpen(false);
     localStorage.setItem('hasSeenWelcomePopup', 'true');
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(COUPON_CODE);
+    setCopied(true);
+    addToast(`Cupom ${COUPON_CODE} copiado!`, 'success');
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -54,28 +66,39 @@ export const WelcomePopup = () => {
             <div className="p-10 text-center">
               <h2 className="font-display text-3xl font-black text-stone-900 mb-4 tracking-tight">Bem-vindo à Família LOPES!</h2>
               <p className="text-stone-500 mb-8 leading-relaxed">
-                Preparamos um presente especial para a sua primeira compra. Use o cupom abaixo e garanta:
+                Preparamos um presente especial para a sua primeira compra. Use o cupom abaixo no carrinho e garanta <strong className="text-stone-900">10% de desconto</strong>:
               </p>
               
-              <div className="bg-orange-50 border-2 border-dashed border-orange-200 p-6 rounded-3xl mb-8 group cursor-pointer relative overflow-hidden"
-                   onClick={() => {
-                     navigator.clipboard.writeText('PEDIGREE15');
-                     // Could add a toast here
-                   }}
+              <button
+                onClick={handleCopy}
+                className="w-full bg-orange-50 border-2 border-dashed border-orange-200 p-6 rounded-3xl mb-8 group cursor-pointer relative overflow-hidden hover:bg-orange-100 transition-colors"
               >
                   <div className="relative z-10">
-                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] mb-2">Seu Código de Desconto</p>
-                    <p className="text-4xl font-display font-black text-orange-700 tracking-tighter">PRIMEIRA10</p>
+                    <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em] mb-2">Seu Código de Desconto — Clique para copiar</p>
+                    <p className="text-4xl font-display font-black text-orange-700 tracking-tighter">{COUPON_CODE}</p>
+                  </div>
+                  <div className="absolute top-4 right-4 z-10">
+                    {copied ? (
+                      <div className="flex items-center gap-1 bg-teal-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">
+                        <Check className="w-3.5 h-3.5" />
+                        Copiado!
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 bg-white text-stone-500 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                        <Copy className="w-3.5 h-3.5" />
+                        Copiar
+                      </div>
+                    )}
                   </div>
                   <div className="absolute inset-0 bg-white/40 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              </div>
+              </button>
 
               <div className="space-y-4">
                 <button 
-                  onClick={closePopup}
+                  onClick={() => { handleCopy(); closePopup(); }}
                   className="w-full bg-teal-500 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-teal-600 transition-all shadow-xl shadow-teal-500/20"
                 >
-                  Aproveitar Descontos
+                  Copiar e Começar a Comprar
                   <ArrowRight className="w-5 h-5" />
                 </button>
                 <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest">Válido apenas para novos clientes • 10% OFF</p>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { products } from '../data';
 import { useAdmin } from './admin/adminContext';
 import { Link } from 'react-router-dom';
 import { Tag, ArrowRight, ShoppingCart } from 'lucide-react';
@@ -7,7 +6,7 @@ import { motion } from 'motion/react';
 import { useCart } from '../CartContext';
 
 export const Offers = () => {
-  const { formatPrice } = useAdmin();
+  const { products, formatPrice } = useAdmin();
   const { addToCart } = useCart();
   
   const discountProducts = products.filter(p => p.oldPrice || p.badge === 'Promoção');
@@ -72,6 +71,14 @@ export const Offers = () => {
           </motion.div>
         ))}
       </div>
+
+      {discountProducts.length === 0 && (
+        <div className="text-center py-24 bg-stone-50 rounded-[40px] border-2 border-dashed border-stone-200">
+          <Tag className="w-16 h-16 text-stone-200 mx-auto mb-6" />
+          <p className="text-stone-400 font-bold text-lg">Nenhuma oferta disponível no momento.</p>
+          <Link to="/" className="inline-block mt-4 text-teal-600 font-bold hover:underline">Voltar para a loja</Link>
+        </div>
+      )}
     </div>
   );
 };

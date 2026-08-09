@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Home, LogOut, Package, ShoppingBag, PlusCircle, Users, Star, Repeat, Ticket } from 'lucide-react';
+import { Home, LogOut, Package, ShoppingBag, PlusCircle, Users, Star, Repeat, Ticket, Tag } from 'lucide-react';
 import { useAuthActions } from "@convex-dev/auth/react";
 import { motion } from 'motion/react';
 import { AdminProvider } from './adminContext';
@@ -31,6 +31,7 @@ export const AdminLayout = () => {
     { name: 'Avaliações', path: '/admin/avaliacoes', icon: Star },
     { name: 'Assinaturas', path: '/admin/assinaturas', icon: Repeat },
     { name: 'Cupons', path: '/admin/cupons', icon: Ticket },
+    { name: 'Ofertas', path: '/admin/ofertas', icon: Tag },
   ];
 
   return (

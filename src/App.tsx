@@ -30,6 +30,7 @@ const Community = lazy(() => import('./pages/Community').then(m => ({ default: m
 const AdminUsers = lazy(() => import('./pages/admin/AdminUsers').then(m => ({ default: m.AdminUsers })));
 const AdminReviews = lazy(() => import('./pages/admin/AdminReviews').then(m => ({ default: m.AdminReviews })));
 const AdminSubscriptions = lazy(() => import('./pages/admin/AdminSubscriptions').then(m => ({ default: m.AdminSubscriptions })));
+const AdminOffers = lazy(() => import('./pages/admin/AdminOffers').then(m => ({ default: m.AdminOffers })));
 
 import {
   AdminLayout,
@@ -90,6 +91,7 @@ export default function App() {
                       <Route path="usuarios" element={<AdminUsers />} />
                       <Route path="avaliacoes" element={<AdminReviews />} />
                       <Route path="assinaturas" element={<AdminSubscriptions />} />
+                      <Route path="ofertas" element={<AdminOffers />} />
                     </Route>
                   </Route>
                 </Routes>

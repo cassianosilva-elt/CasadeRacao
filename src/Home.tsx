@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Star, Truck, MessageCircle, Dog, Cat, Fish, Pill, ChevronRight, Heart, ArrowUpDown, Check, Plus, ShoppingBag, Gamepad2 } from 'lucide-react';
+import { Star, Truck, MessageCircle, Dog, Cat, Fish, Pill, ChevronRight, Heart, ArrowUpDown, Check, Plus, ShoppingBag, Gamepad2, Repeat } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useAdmin, CATEGORIES } from './pages/admin/adminContext';
@@ -384,6 +384,109 @@ const ProductGrid = () => {
   );
 };
 
+const SubscriptionBanner = () => {
+  return (
+    <div className="py-16 md:py-24 bg-gradient-to-br from-orange-50 via-white to-teal-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest">
+              <Repeat className="w-4 h-4" />
+              Assinatura Pet
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl font-black text-stone-900 tracking-tighter leading-tight">
+              Assine e Economize<br />
+              <span className="text-teal-600">10% em Cada Entrega</span>
+            </h2>
+            <p className="text-stone-500 text-lg leading-relaxed max-w-lg">
+              Nunca mais esqueça a ração do seu pet! Com a Assinatura LOPES, você recebe seus produtos favoritos com desconto automático e na frequência ideal.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                { icon: '💰', title: '10% OFF Sempre', desc: 'Desconto automático em cada entrega recorrente' },
+                { icon: '📦', title: 'Entrega Automática', desc: 'Quinzenal ou mensal, você escolhe o ritmo' },
+                { icon: '❌', title: 'Cancele Quando Quiser', desc: 'Sem multa, sem compromisso, sem burocracia' }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 }}
+                  className="bg-white p-6 rounded-[24px] border border-stone-100 shadow-sm"
+                >
+                  <div className="text-3xl mb-3">{item.icon}</div>
+                  <h3 className="font-bold text-stone-900 text-sm mb-1">{item.title}</h3>
+                  <p className="text-xs text-stone-400 leading-relaxed">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                to="/#produtos" 
+                className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-xl shadow-teal-500/20 flex items-center justify-center gap-2"
+              >
+                <Repeat className="w-5 h-5" />
+                Escolher Produtos para Assinar
+              </Link>
+              <p className="text-xs text-stone-400 font-medium self-center">
+                Clique em "Assinar e Ganhar 10% OFF" na página de qualquer produto
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="hidden lg:block"
+          >
+            <div className="relative">
+              <div className="bg-stone-900 rounded-[40px] p-10 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-teal-500/20 rounded-full -mr-24 -mt-24 blur-3xl" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-500/20 rounded-full -ml-16 -mb-16 blur-3xl" />
+                <div className="relative z-10 space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-teal-500 rounded-2xl flex items-center justify-center">
+                      <Repeat className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold">Plano de Assinatura</p>
+                      <p className="text-[10px] text-stone-400 uppercase tracking-widest">Entrega Mensal</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {['Ração Premium 15kg', 'Petiscos Naturais', 'Anti-pulgas Mensal'].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between bg-white/5 p-4 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-sm">📦</div>
+                          <span className="text-sm font-medium">{item}</span>
+                        </div>
+                        <span className="text-teal-400 text-xs font-bold">-10%</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="border-t border-white/10 pt-4 flex justify-between items-center">
+                    <span className="text-stone-400 text-sm">Próxima entrega</span>
+                    <span className="text-teal-400 font-bold text-sm">Em 15 dias</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Testimonials = () => {
   const testimonials = [
     { name: 'Ricardo Dias', pet: 'Thor (Golden)', text: 'Entrega absurdamente rápida! Comprei a ração de manhã e chegou à tarde. Atendimento nota 10.', image: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=100' },
@@ -641,6 +744,7 @@ export default function Home() {
       <BrandLogos />
       <Categories />
       <ProductGrid />
+      <SubscriptionBanner />
       <Testimonials />
       <Newsletter />
     </>

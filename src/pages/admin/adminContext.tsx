@@ -61,6 +61,8 @@ interface AdminContextType {
   formatPrice: (price: number) => string;
   addCoupon: (coupon: Omit<Coupon, 'id'>) => void;
   deleteCoupon: (id: string) => void;
+  setProductOffer: (id: string, originalPrice: number, promoPrice: number) => void;
+  removeProductOffer: (id: string, originalPrice: number) => void;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -190,15 +192,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const [coupons, setCoupons] = useState<Coupon[]>(() => {
     const saved = localStorage.getItem('admin_coupons');
+    let existing: Coupon[] = [];
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          return parsed.filter((c: any) => c && !['1', '2'].includes(String(c.id)) && c.code !== 'BEMVINDO10' && c.code !== 'PETLOVER');
+          existing = parsed.filter((c: any) => c && !['1', '2'].includes(String(c.id)) && c.code !== 'BEMVINDO10' && c.code !== 'PETLOVER');
         }
       } catch (e) {}
     }
-    return [];
+    // Auto-register the welcome popup coupon if not already present
+    const hasWelcomeCoupon = existing.some(c => c.code === 'PRIMEIRA10');
+    if (!hasWelcomeCoupon) {
+      existing.push({ id: 'welcome_primeira10', code: 'PRIMEIRA10', discount: 10 });
+    }
+    return existing;
   });
 
   useEffect(() => {
@@ -282,6 +290,56 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCoupons(prev => prev.filter(c => c.id !== id));
   };
 
+  const setProductOffer = (id: string, originalPrice: number, promoPrice: number) => {
+    updateProductMutation({
+      id: id as Id<"products">,
+      ...(() => {
+        const product = products.find(p => p.id === id);
+        if (!product) return { name: '', price: promoPrice, quantity: 0, category: '', brand: '', images: [] };
+        return {
+          name: product.name,
+          price: promoPrice,
+          quantity: product.quantity,
+          category: product.category,
+          brand: product.brand,
+          images: product.images,
+          image: product.image,
+          video: product.video,
+          description: product.description,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
+          badge: 'Promoção',
+          oldPrice: originalPrice,
+        };
+      })()
+    }).catch(err => console.error("Erro ao criar oferta no Convex:", err));
+  };
+
+  const removeProductOffer = (id: string, originalPrice: number) => {
+    updateProductMutation({
+      id: id as Id<"products">,
+      ...(() => {
+        const product = products.find(p => p.id === id);
+        if (!product) return { name: '', price: originalPrice, quantity: 0, category: '', brand: '', images: [] };
+        return {
+          name: product.name,
+          price: originalPrice,
+          quantity: product.quantity,
+          category: product.category,
+          brand: product.brand,
+          images: product.images,
+          image: product.image,
+          video: product.video,
+          description: product.description,
+          rating: product.rating,
+          reviewCount: product.reviewCount,
+          badge: undefined,
+          oldPrice: undefined,
+        };
+      })()
+    }).catch(err => console.error("Erro ao remover oferta no Convex:", err));
+  };
+
   return (
     <AdminContext.Provider value={{
       products,
@@ -295,7 +353,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updateOrderStatus,
       formatPrice,
       addCoupon,
-      deleteCoupon
+      deleteCoupon,
+      setProductOffer,
+      removeProductOffer
     }}>
       {children}
     </AdminContext.Provider>

@@ -21,5 +21,6 @@ export { AdminGuard } from './pages/admin/AdminGuard';
 export { AdminUsers } from './pages/admin/AdminUsers';
 export { AdminReviews } from './pages/admin/AdminReviews';
 export { AdminSubscriptions } from './pages/admin/AdminSubscriptions';
+export { AdminOffers } from './pages/admin/AdminOffers';
 export { Checkout } from './pages/Checkout';
 export * from './pages/FAQ';

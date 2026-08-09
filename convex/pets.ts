@@ -53,3 +53,10 @@ export const deletePet = mutation({
     await ctx.db.delete(args.petId);
   },
 });
+
+export const listAllPets = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("pets").collect();
+  },
+});

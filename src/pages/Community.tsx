@@ -1,11 +1,12 @@
 import React from 'react';
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Dog, Cat, Heart, Camera, Users, MessageCircle } from 'lucide-react';
+import { Dog, Cat, Heart, Camera, Users, MessageCircle, Instagram } from 'lucide-react';
 import { motion } from 'motion/react';
+import { Link } from 'react-router-dom';
 
 export const Community = () => {
-  const pets = useQuery(api.pets.listAllPets || api.pets.listMyPets); // Fallback if listAllPets doesn't exist yet
+  const pets = useQuery(api.pets.listAllPets); // Fallback if listAllPets doesn't exist yet
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
@@ -88,10 +89,17 @@ export const Community = () => {
         <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6">
           <div>
             <h2 className="text-3xl font-display font-black text-stone-900 tracking-tight mb-2">Siga-nos no Instagram</h2>
-            <p className="text-stone-500 font-medium underline">@casaderacao_lopes</p>
+            <a 
+              href="https://www.instagram.com/casaracao_lopes?igsh=MWRqeWNqcmFrYmNrNA==" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-stone-500 font-medium underline hover:text-teal-600 transition-colors"
+            >
+              @casaracao_lopes
+            </a>
           </div>
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/casaracao_lopes?igsh=MWRqeWNqcmFrYmNrNA==" 
             target="_blank" 
             rel="noopener noreferrer"
             className="bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:shadow-xl transition-all"
@@ -103,12 +111,18 @@ export const Community = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="aspect-square bg-stone-100 rounded-2xl overflow-hidden relative group cursor-pointer">
+            <a 
+              key={i} 
+              href="https://www.instagram.com/casaracao_lopes?igsh=MWRqeWNqcmFrYmNrNA==" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="aspect-square bg-stone-100 rounded-2xl overflow-hidden relative group cursor-pointer block"
+            >
               <img src={`https://picsum.photos/seed/pet${i+10}/400/400`} alt="Insta Post" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Instagram className="text-white w-6 h-6" />
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>
