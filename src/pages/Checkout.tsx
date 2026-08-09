@@ -17,7 +17,9 @@ import {
   QrCode, 
   Barcode, 
   ArrowRight,
-  ShoppingBag
+  ShoppingBag,
+  MessageCircle,
+  Zap
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from "convex/react";
@@ -34,6 +36,29 @@ export const Checkout = () => {
   const user = useQuery(api.users.currentUser);
   const [currentStep, setCurrentStep] = useState<Step>('tutor');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [lastOrderDetails, setLastOrderDetails] = useState<any>(null);
+
+  const buildWhatsAppUrgentUrl = (order: any) => {
+    if (!order) return '#';
+    const paymentText = order.paymentMethod === 'pix' ? 'PIX' : order.paymentMethod === 'card' ? 'Cartão de Crédito' : 'Boleto';
+    const deliveryText = order.address.isStorePickup 
+      ? `Retirada na Loja: ${STORES.find(s => s.id === order.address.selectedPickupStore)?.name || 'Casa Lopes'}`
+      : `Entrega em Casa: ${order.address.street}, Nº ${order.address.number}${order.address.complement ? ' (' + order.address.complement + ')' : ''} - ${order.address.neighborhood}, ${order.address.city}/${order.address.state} (CEP ${order.address.zip})`;
+
+    const itemsList = order.items.map((i: any) => `• ${i.quantity}x ${i.name} (R$ ${(i.price * i.quantity).toFixed(2).replace('.', ',')})`).join('\n');
+
+    const messageText = `⚡ *PEDIDO COM URGÊNCIA DE ENTREGA* ⚡\n\n` +
+      `Olá, Casa de Ração Lopes! Acabei de fazer um pedido pelo site e estou com pressa para receber. Podem agilizar por favor?\n\n` +
+      `👤 *Cliente:* ${order.tutor.name}\n` +
+      `📱 *WhatsApp do Tutor:* ${order.tutor.whatsapp}\n` +
+      `💳 *Forma de Pagamento:* ${paymentText}\n` +
+      `📍 *Modalidade de Entrega:* ${deliveryText}\n\n` +
+      `🛒 *Itens do Pedido:*\n${itemsList}\n\n` +
+      `💰 *Total do Pedido:* R$ ${order.total.toFixed(2).replace('.', ',')}\n\n` +
+      `Agradeço a atenção e aguardo a confirmação do envio! 🐾`;
+
+    return `https://wa.me/5511948219786?text=${encodeURIComponent(messageText)}`;
+  };
   
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -232,6 +257,7 @@ export const Checkout = () => {
         decreaseStock(String(item.id), item.quantity);
       });
       
+      setLastOrderDetails(orderData);
       clearCart();
       setCurrentStep('success');
     } catch (error) {
@@ -667,6 +693,46 @@ export const Checkout = () => {
                     Obrigado, <span className="font-bold text-stone-900">{tutorData.name}</span>! Recebemos seu pedido com carinho. 
                     Seu pet vai adorar as novidades da <span className="text-teal-600 font-black">LOPES</span>.
                   </p>
+
+                  {/* Card de Agilização Express via WhatsApp */}
+                  <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/60 rounded-[32px] p-6 md:p-8 mb-10 border-2 border-emerald-200 text-left relative overflow-hidden shadow-xl shadow-emerald-500/10 max-w-2xl mx-auto">
+                    <div className="flex flex-col sm:flex-row items-start gap-5">
+                      <div className="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30 animate-pulse">
+                        <Zap className="w-7 h-7" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                          <span className="bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full flex items-center gap-1">
+                            <Zap className="w-3 h-3 fill-current" /> Agilização Express
+                          </span>
+                          <span className="text-emerald-700 text-xs font-bold">Está com pressa?</span>
+                        </div>
+                        <h3 className="font-display text-xl md:text-2xl font-black text-stone-900 mb-2">
+                          Envie os detalhes pelo WhatsApp para acelerar! ⚡
+                        </h3>
+                        <p className="text-stone-600 text-sm leading-relaxed mb-6">
+                          Clique no botão abaixo para encaminhar os dados do seu pedido direto para o nosso atendimento no WhatsApp. Nossa equipe já inicia a separação imediatamente!
+                        </p>
+
+                        <a
+                          href={buildWhatsAppUrgentUrl(lastOrderDetails || {
+                            tutor: tutorData,
+                            address: addressData,
+                            items: [],
+                            paymentMethod,
+                            total: finalTotal
+                          })}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-bold py-4 px-8 rounded-2xl transition-all shadow-lg shadow-emerald-500/30 text-sm group cursor-pointer"
+                        >
+                          <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                          Enviar Detalhes no WhatsApp
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="bg-stone-50 rounded-3xl p-8 mb-12 text-left border border-stone-100 inline-block w-full max-w-lg">
                     <div className="flex items-center gap-4 mb-6">

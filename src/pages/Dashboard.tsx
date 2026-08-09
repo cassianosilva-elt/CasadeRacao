@@ -5,7 +5,7 @@ import { api } from "../../convex/_generated/api";
 import { products, Product } from '../data';
 import { useCart } from '../CartContext';
 import { useFavorites } from '../FavoritesContext';
-import { User, Heart, LogOut, Dog, Cat, Plus, Trash2, Loader2, Save, X, Check, Package, Clock, Truck, ChevronRight, Repeat, Calendar, Shield, Share2, Copy, Gift } from 'lucide-react';
+import { User, Heart, LogOut, Dog, Cat, Plus, Trash2, Loader2, Save, X, Check, Package, Clock, Truck, ChevronRight, Repeat, Calendar, Shield, Share2, Copy, Gift, MessageCircle, Zap } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../ToastContext';
@@ -404,6 +404,24 @@ const OrdersList = () => {
 
         const currentStepIndex = steps.findIndex(s => s.s === order.status);
 
+        const buildOrderWhatsAppUrl = (orderData: any) => {
+          const shortOrderNumber = orderData._id.toString().substring(0, 6).toUpperCase();
+          const itemsList = orderData.items ? orderData.items.map((i: any) => `• ${i.quantity}x ${i.name}`).join('\n') : '';
+          const paymentText = orderData.paymentMethod === 'pix' ? 'PIX' : orderData.paymentMethod === 'card' ? 'Cartão' : 'Boleto';
+
+          const text = `⚡ *AGILIZAÇÃO DE ENTREGA DE PEDIDO* ⚡\n\n` +
+            `Olá, Casa de Ração Lopes! Preciso de ajuda para agilizar a entrega do meu pedido.\n\n` +
+            `🆔 *Pedido:* #${shortOrderNumber}\n` +
+            `👤 *Tutor:* ${orderData.tutor?.name || user?.name || 'Cliente'}\n` +
+            `📱 *WhatsApp:* ${orderData.tutor?.whatsapp || user?.phone || ''}\n` +
+            `💳 *Pagamento:* ${paymentText}\n\n` +
+            `🛒 *Itens:*\n${itemsList}\n\n` +
+            `💰 *Total:* R$ ${orderData.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}\n\n` +
+            `Estou com urgência para receber, poderiam priorizar o envio? Obrigado! 🐾`;
+
+          return `https://wa.me/5511948219786?text=${encodeURIComponent(text)}`;
+        };
+
         return (
           <div key={order._id} className="bg-white p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-stone-100 shadow-sm transition-all hover:border-teal-100 hover:shadow-xl hover:shadow-teal-500/5">
             <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
@@ -416,9 +434,9 @@ const OrdersList = () => {
                   </div>
                 </div>
                 <p className="text-stone-500 text-sm font-medium line-clamp-1" title={itemsString}>{itemsString}</p>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 flex-wrap">
                    <p className="text-2xl font-display font-black text-stone-900">R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                   {order.status === 'delivered' && (
+                   {order.status === 'delivered' ? (
                      <button 
                        onClick={handleReorder}
                        className="flex items-center gap-2 text-teal-600 bg-teal-50 px-4 py-2 rounded-xl text-xs font-bold hover:bg-teal-100 transition-all"
@@ -426,6 +444,16 @@ const OrdersList = () => {
                        <Repeat className="w-3.5 h-3.5" />
                        Comprar Novamente
                      </button>
+                   ) : (
+                     <a
+                       href={buildOrderWhatsAppUrl(order)}
+                       target="_blank"
+                       rel="noreferrer"
+                       className="flex items-center gap-2 text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm group"
+                     >
+                       <MessageCircle className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                       Agilizar no WhatsApp
+                     </a>
                    )}
                 </div>
                 
