@@ -34,23 +34,23 @@ export const Onboarding = () => {
         </div>
         <h1 className="font-display text-3xl font-bold text-stone-900 mb-2">Quase lá!</h1>
         <p className="text-stone-500 mb-8">Olá {user?.name}, precisamos do seu WhatsApp para avisar sobre os pedidos e promoções.</p>
-        
+
         <form className="space-y-4 text-left" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-stone-700 mb-1">WhatsApp / Telefone</label>
-            <input 
-              id="phone" 
-              type="tel" 
-              required 
+            <input
+              id="phone"
+              type="tel"
+              required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full border border-stone-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500" 
-              placeholder="(11) 99999-9999" 
+              className="w-full border border-stone-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="(11) 99999-9999"
             />
           </div>
-          
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             disabled={loading || !phone}
             className="w-full bg-stone-900 hover:bg-stone-800 text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-70"
           >

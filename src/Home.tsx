@@ -5,6 +5,8 @@ import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { useAdmin, CATEGORIES } from './pages/admin/adminContext';
 import { useCart } from './CartContext';
 import { useFavorites } from './FavoritesContext';
+import { useQuery } from 'convex/react';
+import { api } from '../convex/_generated/api';
 
 const slides = [
   {
@@ -310,13 +312,17 @@ const ProductGrid = () => {
                 transition={{ duration: 0.5, delay: (i % 4) * 0.1 }}
                 className="bg-white border border-stone-100 rounded-3xl overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full relative group"
               >
-                {product.badge && (
+                {product.quantity <= 0 ? (
+                  <span className="absolute top-2 left-2 md:top-4 md:left-4 z-10 text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-full text-white bg-stone-500 shadow-sm">
+                    Esgotado
+                  </span>
+                ) : product.badge ? (
                   <span className={`absolute top-2 left-2 md:top-4 md:left-4 z-10 text-[8px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-1 md:px-3 md:py-1.5 rounded-full text-white ${
                     product.badge === 'Novo' ? 'bg-blue-500' : product.badge === 'Promoção' ? 'bg-orange-500' : 'bg-teal-500'
                   }`}>
                     {product.badge}
                   </span>
-                )}
+                ) : null}
                 <button 
                   onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }}
                   aria-label={isFavorite(product.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
@@ -329,7 +335,7 @@ const ProductGrid = () => {
                     src={product.images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
                     alt={product.name} 
                     loading="lazy" 
-                    className="absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-500" 
+                    className={`absolute inset-0 w-full h-full object-contain p-6 mix-blend-multiply group-hover:scale-110 transition-transform duration-500 ${product.quantity <= 0 ? 'opacity-50 grayscale' : ''}`} 
                   />
                 </Link>
                 <div className="p-3 md:p-6 flex flex-col flex-grow">
@@ -346,9 +352,14 @@ const ProductGrid = () => {
                       <p className="text-lg md:text-2xl font-display font-bold text-stone-900 leading-none">{formatPrice(product.price)}</p>
                     </div>
                     <button 
-                      onClick={() => addToCart(product)} 
-                      className="bg-stone-900 hover:bg-teal-500 text-white p-2 md:p-3 rounded-xl md:rounded-2xl transition-all shadow-sm shrink-0 ml-2"
-                      aria-label="Adicionar ao carrinho"
+                      onClick={() => product.quantity > 0 && addToCart(product)} 
+                      disabled={product.quantity <= 0}
+                      className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all shadow-sm shrink-0 ml-2 ${
+                        product.quantity <= 0 
+                          ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none' 
+                          : 'bg-stone-900 hover:bg-teal-500 text-white cursor-pointer'
+                      }`}
+                      aria-label={product.quantity <= 0 ? "Produto indisponível" : "Adicionar ao carrinho"}
                     >
                       <Plus className="w-4 h-4 md:w-6 md:h-6" />
                     </button>
@@ -499,6 +510,113 @@ const Newsletter = () => {
   );
 };
 
+const PetRecommendations = () => {
+  const user = useQuery(api.users.currentUser);
+  const pets = useQuery(api.pets.listMyPets);
+  const { products, formatPrice } = useAdmin();
+  const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
+
+  if (!user || !pets || pets.length === 0) return null;
+
+  // Logic to suggest products based on pets
+  const suggestedProducts = pets.flatMap(pet => {
+    return products.filter(p => {
+      const isDogProduct = p.category === 'Rações' && p.name.toLowerCase().includes('cão');
+      const isCatProduct = p.category === 'Rações' && p.name.toLowerCase().includes('gato');
+      const isToy = p.category === 'Brinquedos';
+
+      if (pet.species === 'Cão') {
+        if (pet.weight && pet.weight > 20) {
+          return (p.name.toLowerCase().includes('raças grandes') || isToy) && p.name.toLowerCase().includes('cão');
+        }
+        return (isDogProduct || isToy);
+      }
+      if (pet.species === 'Gato') {
+        return (isCatProduct || p.category === 'Acessórios');
+      }
+      return false;
+    }).slice(0, 2);
+  }).filter((v, i, a) => a.findIndex(t => t.id === v.id) === i); // Unique
+
+  if (suggestedProducts.length === 0) return null;
+
+  return (
+    <div className="bg-orange-50/50 py-16 md:py-24 overflow-hidden border-y border-orange-100/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest leading-none">
+              <Star className="w-3 h-3 fill-orange-600" />
+              Especial para seus Pets
+            </div>
+            <h2 className="font-display text-3xl md:text-5xl font-black text-stone-900 tracking-tight leading-tight">
+              Recomendações para {pets.map(p => p.name).join(' & ')}
+            </h2>
+            <p className="text-stone-500 text-lg font-medium max-w-2xl">
+              Selecionamos os melhores produtos com base no perfil dos seus melhores amigos.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+          {suggestedProducts.slice(0, 4).map((product, i) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="bg-white rounded-[40px] border border-stone-100 p-4 md:p-6 group hover:shadow-2xl hover:shadow-orange-500/10 transition-all flex flex-col"
+            >
+              <Link to={`/produto/${product.id}`} className="block mb-6 relative">
+                 <div className="aspect-square bg-stone-50 rounded-[32px] flex items-center justify-center p-6 md:p-8 relative overflow-hidden">
+                    <img 
+                      src={product.images?.[0] || (product as any).image} 
+                      alt={product.name} 
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" 
+                    />
+                    <button 
+                      onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }}
+                      className={`absolute top-4 right-4 p-3 rounded-2xl backdrop-blur-md transition-all border ${
+                        isFavorite(product.id) ? 'bg-red-500 text-white border-red-500' : 'bg-white/80 text-stone-300 hover:text-red-500 border-stone-100'
+                      }`}
+                    >
+                      <Heart className={`w-4 h-4 ${isFavorite(product.id) ? 'fill-white' : ''}`} />
+                    </button>
+                 </div>
+              </Link>
+              <div className="space-y-2 md:space-y-3 flex-grow">
+                <div>
+                  <p className="text-[10px] md:text-xs font-bold text-orange-600 uppercase tracking-widest mb-1">{product.brand}</p>
+                  <h3 className="font-bold text-stone-900 text-sm md:text-lg leading-tight line-clamp-2 min-h-[3rem]">{product.name}</h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className={`w-2.5 h-2.5 md:w-3 md:h-3 ${star <= (product.rating || 5) ? 'fill-orange-400 text-orange-400' : 'text-stone-200'}`} />
+                    ))}
+                  </div>
+                  <span className="text-[10px] text-stone-400 font-bold">({product.reviewCount || 0})</span>
+                </div>
+              </div>
+              <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-stone-50 flex items-center justify-between gap-4">
+                <p className="text-xl md:text-2xl font-display font-black text-stone-900">{formatPrice(product.price)}</p>
+                <button 
+                  onClick={() => addToCart(product)}
+                  className="bg-stone-900 hover:bg-orange-500 text-white p-3 md:p-4 rounded-2xl transition-all shadow-lg shadow-stone-900/10 group/btn"
+                >
+                  <Plus className="w-5 h-5 group-hover/btn:rotate-90 transition-transform" />
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   const { hash } = useLocation();
 
@@ -519,6 +637,7 @@ export default function Home() {
     <>
       <PromoSlider />
       <TrustSignals />
+      <PetRecommendations />
       <BrandLogos />
       <Categories />
       <ProductGrid />

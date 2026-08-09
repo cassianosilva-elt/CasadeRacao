@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Home, LogOut, Package, ShoppingBag, PlusCircle, Dog } from 'lucide-react';
+import { Home, LogOut, Package, ShoppingBag, PlusCircle, Users, Star, Repeat, Ticket } from 'lucide-react';
 import { useAuthActions } from "@convex-dev/auth/react";
 import { motion } from 'motion/react';
 import { AdminProvider } from './adminContext';
@@ -27,7 +27,10 @@ export const AdminLayout = () => {
     { name: 'Início', path: '/admin', icon: Home },
     { name: 'Produtos', path: '/admin/meus-produtos', icon: Package },
     { name: 'Vendas', path: '/admin/vendas', icon: ShoppingBag },
-    { name: 'Novo Produto', path: '/admin/novo-produto', icon: PlusCircle },
+    { name: 'Usuários', path: '/admin/usuarios', icon: Users },
+    { name: 'Avaliações', path: '/admin/avaliacoes', icon: Star },
+    { name: 'Assinaturas', path: '/admin/assinaturas', icon: Repeat },
+    { name: 'Cupons', path: '/admin/cupons', icon: Ticket },
   ];
 
   return (
@@ -42,14 +45,14 @@ export const AdminLayout = () => {
                </span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => {
                 const isActive = pathname === link.path || (link.path !== '/admin' && pathname.startsWith(link.path));
                 return (
                   <Link 
                     key={link.name} 
                     to={link.path} 
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${isActive ? 'bg-teal-50 text-teal-600' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50'}`}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all ${isActive ? 'bg-teal-50 text-teal-600' : 'text-stone-500 hover:text-stone-900 hover:bg-stone-50'}`}
                   >
                     <link.icon className={`w-4 h-4 ${isActive ? 'text-teal-600' : 'text-stone-400'}`} />
                     {link.name}

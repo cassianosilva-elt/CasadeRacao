@@ -2,17 +2,23 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from './ToastContext';
 
 interface FavoritesContextType {
-  favorites: number[];
-  toggleFavorite: (id: number) => void;
-  isFavorite: (id: number) => boolean;
+  favorites: string[];
+  toggleFavorite: (id: string) => void;
+  isFavorite: (id: string) => boolean;
 }
 
 const FavoritesContext = createContext<FavoritesContextType>({} as FavoritesContextType);
 
 export const FavoritesProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [favorites, setFavorites] = useState<number[]>(() => {
+  const [favorites, setFavorites] = useState<string[]>(() => {
     const saved = localStorage.getItem('favorite_ids');
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed.map(String) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
   const { addToast } = useToast();
@@ -21,18 +27,19 @@ export const FavoritesProvider: React.FC<{children: React.ReactNode}> = ({ child
     localStorage.setItem('favorite_ids', JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = (id: number) => {
+  const toggleFavorite = (id: string) => {
     setFavorites(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(favId => favId !== id);
+      const stringId = String(id);
+      if (prev.includes(stringId)) {
+        return prev.filter(favId => favId !== stringId);
       } else {
         addToast('Adicionado aos favoritos!', 'success');
-        return [...prev, id];
+        return [...prev, stringId];
       }
     });
   };
 
-  const isFavorite = (id: number) => favorites.includes(id);
+  const isFavorite = (id: string) => favorites.includes(String(id));
 
   return (
     <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>

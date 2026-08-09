@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from "convex/react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "../../convex/_generated/api";
-import { products } from '../data';
+import { products, Product } from '../data';
 import { useCart } from '../CartContext';
 import { useFavorites } from '../FavoritesContext';
-import { User, Heart, LogOut, Dog, Cat, Plus, Trash2, Loader2, Save, X, Check, Package, Clock, Truck, ChevronRight } from 'lucide-react';
+import { User, Heart, LogOut, Dog, Cat, Plus, Trash2, Loader2, Save, X, Check, Package, Clock, Truck, ChevronRight, Repeat, Calendar, Shield, Share2, Copy, Gift } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useToast } from '../ToastContext';
 
 export const Dashboard = () => {
   const user = useQuery(api.users.currentUser);
   const pets = useQuery(api.pets.listMyPets);
   const deletePet = useMutation(api.pets.deletePet);
   const updateProfile = useMutation(api.users.updateProfile);
+  const generateReferral = useMutation(api.users.generateReferralCode);
   const { signOut } = useAuthActions();
   const navigate = useNavigate();
+  const { addToast } = useToast();
+  
+  const [activePetForVaccine, setActivePetForVaccine] = useState<string | null>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
@@ -107,23 +112,52 @@ export const Dashboard = () => {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {pets.map((pet) => (
-                  <motion.div whileHover={{ y: -5 }} key={pet._id} className="bg-white p-4 md:p-6 rounded-[24px] md:rounded-[32px] border border-stone-100 shadow-sm flex items-center justify-between group transition-all hover:border-teal-200 hover:shadow-xl hover:shadow-teal-500/5">
-                    <div className="flex items-center gap-3 md:gap-4">
-                      <div className="w-12 h-12 md:w-16 md:h-16 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-teal-50 group-hover:text-teal-500 transition-colors">
-                        {pet.species === "Gato" ? <Cat className="w-6 h-6 md:w-8 md:h-8" /> : <Dog className="w-6 h-6 md:w-8 md:h-8" />}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-stone-900 text-base md:text-lg leading-tight">{pet.name}</h3>
-                        <p className="text-stone-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{pet.breed} • {pet.age}</p>
-                      </div>
-                    </div>
-                    <button 
-                      onClick={() => deletePet({ petId: pet._id })}
-                      className="p-3 text-stone-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                  <div key={pet._id}>
+                    <motion.div 
+                      whileHover={{ y: -5 }} 
+                      className={`bg-white p-4 md:p-6 rounded-[24px] md:rounded-[32px] border group transition-all hover:shadow-xl hover:shadow-teal-500/5 ${activePetForVaccine === pet._id ? 'border-teal-500' : 'border-stone-100'}`}
                     >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </motion.div>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3 md:gap-4">
+                          <div className="w-12 h-12 md:w-16 md:h-16 bg-stone-50 rounded-xl md:rounded-2xl flex items-center justify-center text-stone-400 group-hover:bg-teal-50 group-hover:text-teal-500 transition-colors">
+                            {pet.species === "Gato" ? <Cat className="w-6 h-6 md:w-8 md:h-8" /> : <Dog className="w-6 h-6 md:w-8 md:h-8" />}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-stone-900 text-base md:text-lg leading-tight">{pet.name}</h3>
+                            <p className="text-stone-400 text-[10px] md:text-xs font-bold uppercase tracking-widest">{pet.breed} • {pet.age}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <button 
+                            onClick={() => setActivePetForVaccine(activePetForVaccine === pet._id ? null : pet._id as string)}
+                            className={`p-2 rounded-lg transition-all ${activePetForVaccine === pet._id ? 'bg-teal-500 text-white' : 'text-stone-300 hover:text-teal-500 hover:bg-teal-50'}`}
+                            title="Calendário de Vacinas"
+                          >
+                            <Calendar className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => deletePet({ petId: pet._id })}
+                            className="p-2 text-stone-200 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <AnimatePresence>
+                        {activePetForVaccine === pet._id && (
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden"
+                          >
+                             <VaccineManager petId={pet._id} />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  </div>
                 ))}
               </div>
             )}
@@ -144,7 +178,14 @@ export const Dashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {favoriteProducts.map((product) => (
                   <div key={product.id} className="bg-white p-4 rounded-3xl border border-stone-100 flex items-center gap-4 hover:border-stone-200 transition-all">
-                    <img src={product.image} alt={product.name} className="w-20 h-20 object-contain mix-blend-multiply bg-stone-50 rounded-2xl p-2" />
+                    <img 
+                      src={product.image || product.images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
+                      alt={product.name} 
+                      className="w-20 h-20 object-contain mix-blend-multiply bg-stone-50 rounded-2xl p-2" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400';
+                      }}
+                    />
                     <div className="min-w-0 pr-4">
                       <p className="font-bold text-stone-900 text-sm truncate mb-1">{product.name}</p>
                       <p className="text-teal-600 font-bold text-sm mb-2">{product.priceFormatted}</p>
@@ -164,6 +205,16 @@ export const Dashboard = () => {
             </h2>
             <OrdersList />
           </section>
+
+          {/* Subscriptions Section */}
+          <section className="reveal-on-scroll" style={{ transitionDelay: '250ms' }}>
+            <h2 className="font-display text-2xl font-bold text-stone-900 mb-8 flex items-center gap-3">
+              <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center text-teal-500"><Repeat className="w-5 h-5"/></div>
+              Assinaturas Ativas
+            </h2>
+            <SubscriptionsList />
+          </section>
+        </div>
         </div>
 
         {/* Sidebar */}
@@ -201,6 +252,14 @@ export const Dashboard = () => {
               <div className="space-y-2">
                 <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest">E-mail</p>
                 <p className="text-stone-300 text-sm font-medium truncate">{user?.email}</p>
+              </div>
+              <div className="space-y-2 pt-4 border-t border-stone-800">
+                <p className="text-[10px] font-bold text-orange-400 uppercase tracking-widest flex items-center gap-2">
+                   <Dog className="w-3 h-3" />
+                   Saldo PetCoins
+                </p>
+                <p className="text-2xl font-display font-black text-orange-500">{user?.petCoins || 0} <span className="text-xs font-bold text-stone-500">pontos</span></p>
+                <p className="text-[10px] text-stone-500 font-medium italic">R$ 1,00 para cada ponto em descontos!</p>
               </div>
             </div>
             
@@ -242,6 +301,31 @@ export const Dashboard = () => {
                <motion.div initial={{ width: 0 }} animate={{ width: '80%' }} className="bg-teal-500 h-full rounded-full" transition={{ duration: 1.5, delay: 0.5 }}></motion.div>
             </div>
           </div>
+
+          <div className="bg-orange-50 p-6 md:p-10 rounded-[32px] md:rounded-[40px] border border-orange-100 relative overflow-hidden group">
+            <Gift className="absolute bottom-0 right-0 w-24 h-24 md:w-32 md:h-32 text-orange-200 group-hover:scale-110 transition-transform duration-700 opacity-30" />
+            <h3 className="font-display font-bold text-orange-900 text-lg md:text-xl mb-2 md:mb-3 relative z-10 font-black tracking-tight">Indique um Amigo</h3>
+            <p className="text-orange-800 text-xs md:text-sm leading-relaxed mb-6 relative z-10">Ganhe 50 PetCoins por cada amigo que fizer a primeira compra usando seu código!</p>
+            
+            <div className="bg-white rounded-2xl p-4 border border-orange-200 flex items-center justify-between relative z-10">
+               <span className="font-mono font-black text-orange-600 tracking-wider">
+                 {user?.referralCode || '-------'}
+               </span>
+               <button 
+                 onClick={() => {
+                   if (!user?.referralCode) {
+                     generateReferral();
+                   } else {
+                     navigator.clipboard.writeText(user.referralCode);
+                     addToast("Código copiado!", "success");
+                   }
+                 }}
+                 className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-600 transition-all"
+               >
+                 {user?.referralCode ? <Copy className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                 {user?.referralCode ? 'Copiar' : 'Gerar'}
+               </button>
+            </div>
         </div>
       </div>
     </div>
@@ -250,6 +334,8 @@ export const Dashboard = () => {
 
 const OrdersList = () => {
   const orders = useQuery(api.orders.listMyOrders);
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const getStatusDisplay = (status: string) => {
     switch (status) {
@@ -296,6 +382,28 @@ const OrdersList = () => {
         // Items string
         const itemsString = order.items.map((i: any) => `${i.quantity}x ${i.name}`).join(', ');
 
+        const handleReorder = () => {
+          order.items.forEach((item: any) => {
+            const product = products.find(p => p.id === item.productId.toString());
+            if (product) {
+              for (let i = 0; i < item.quantity; i++) {
+                addToCart(product);
+              }
+            }
+          });
+          navigate('/carrinho');
+        };
+
+        const steps = [
+          { s: 'pending', l: 'Pedido Recebido', i: Clock },
+          { s: 'paid', l: 'Pagamento OK', i: Check },
+          { s: 'preparing', l: 'Em Separação', i: Package },
+          { s: 'shipped', l: 'Em Transporte', i: Truck },
+          { s: 'delivered', l: 'Entregue', i: Gift }
+        ];
+
+        const currentStepIndex = steps.findIndex(s => s.s === order.status);
+
         return (
           <div key={order._id} className="bg-white p-6 md:p-8 rounded-[24px] md:rounded-[32px] border border-stone-100 shadow-sm transition-all hover:border-teal-100 hover:shadow-xl hover:shadow-teal-500/5">
             <div className="flex flex-col md:flex-row justify-between gap-4 md:gap-6">
@@ -308,23 +416,194 @@ const OrdersList = () => {
                   </div>
                 </div>
                 <p className="text-stone-500 text-sm font-medium line-clamp-1" title={itemsString}>{itemsString}</p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
                    <p className="text-2xl font-display font-black text-stone-900">R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                   {order.status === 'delivered' && (
+                     <button 
+                       onClick={handleReorder}
+                       className="flex items-center gap-2 text-teal-600 bg-teal-50 px-4 py-2 rounded-xl text-xs font-bold hover:bg-teal-100 transition-all"
+                     >
+                       <Repeat className="w-3.5 h-3.5" />
+                       Comprar Novamente
+                     </button>
+                   )}
+                </div>
+                
+                {/* Visual Timeline */}
+                <div className="pt-4 flex items-center gap-1">
+                  {steps.map((step, idx) => {
+                    const isCompleted = idx <= currentStepIndex;
+                    const isLast = idx === steps.length - 1;
+                    return (
+                      <React.Fragment key={step.s}>
+                        <div className="flex flex-col items-center gap-1 group relative">
+                           <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isCompleted ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/20' : 'bg-stone-100 text-stone-300'}`}>
+                             <step.i className="w-4 h-4" />
+                           </div>
+                           <div className="absolute top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-stone-900 text-white text-[8px] px-2 py-1 rounded whitespace-nowrap z-10 pointer-events-none uppercase font-bold tracking-widest">
+                             {step.l}
+                           </div>
+                        </div>
+                        {!isLast && (
+                          <div className={`flex-grow h-1 rounded-full ${idx < currentStepIndex ? 'bg-teal-500' : 'bg-stone-100'}`} />
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
               </div>
               <div className="flex flex-col md:items-end justify-between">
-                <span className={`${status.color} border px-6 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2`}>
+                <span className={`${status.color} border px-6 py-2 rounded-full font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-sm`}>
                   <StatusIcon className="w-3 h-3" />
                   {status.label}
                 </span>
-                <button className="text-teal-600 font-bold text-sm flex items-center gap-2 hover:gap-3 transition-all mt-4">
-                  Ver detalhes <ChevronRight className="w-4 h-4" />
+                <button className="text-stone-400 font-bold text-xs flex items-center gap-2 hover:text-teal-600 transition-all mt-4">
+                  Visualizar Recibo <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
         );
       })}
+    </div>
+  );
+};
+
+const VaccineManager = ({ petId }: { petId: string }) => {
+  const vaccines = useQuery(api.vaccines.getVaccinesForPet, { petId: petId as any });
+  const addVaccine = useMutation(api.vaccines.addVaccine);
+  const deleteVaccine = useMutation(api.vaccines.deleteVaccine);
+  
+  const [showAdd, setShowAdd] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newDate, setNewDate] = useState("");
+
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newName || !newDate) return;
+    
+    const dateGiven = new Date(newDate).getTime();
+    const nextDueDate = dateGiven + (365 * 24 * 60 * 60 * 1000); // Default 1 year
+
+    await addVaccine({
+      petId: petId as any,
+      name: newName,
+      dateGiven,
+      nextDueDate
+    });
+    setNewName("");
+    setNewDate("");
+    setShowAdd(false);
+  };
+
+  return (
+    <div className="mt-6 pt-6 border-t border-stone-50 space-y-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-xs font-bold text-stone-900 uppercase tracking-widest flex items-center gap-2">
+           <Shield className="w-3 h-3 text-teal-500" /> Histórico de Vacinas
+        </h4>
+        <button 
+          onClick={() => setShowAdd(!showAdd)}
+          className="text-teal-600 font-bold text-[10px] uppercase hover:underline"
+        >
+          {showAdd ? 'Cancelar' : '+ Registrar'}
+        </button>
+      </div>
+
+      {showAdd && (
+        <form onSubmit={handleAdd} className="bg-stone-50 p-4 rounded-xl space-y-3">
+          <input 
+            type="text" 
+            placeholder="Nome da Vacina" 
+            className="w-full bg-white border border-stone-200 rounded-lg px-3 py-2 text-xs"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+          />
+          <input 
+            type="date" 
+            className="w-full bg-white border border-stone-200 rounded-lg px-3 py-2 text-xs"
+            value={newDate}
+            onChange={(e) => setNewDate(e.target.value)}
+          />
+          <button type="submit" className="w-full bg-teal-500 text-white font-bold py-2 rounded-lg text-[10px] uppercase">Salvar Vacina</button>
+        </form>
+      )}
+
+      <div className="space-y-2">
+        {vaccines?.map(v => (
+          <div key={v._id} className="flex items-center justify-between text-xs bg-white border border-stone-100 p-3 rounded-xl shadow-sm">
+            <div>
+              <p className="font-bold text-stone-900">{v.name}</p>
+              <p className="text-[10px] text-stone-400">Dada em: {new Date(v.dateGiven).toLocaleDateString()}</p>
+            </div>
+            <div className="text-right flex items-center gap-3">
+              <div>
+                <p className="text-[9px] font-bold text-teal-600 uppercase">Próxima</p>
+                <p className="font-bold text-stone-900 leading-none">{new Date(v.nextDueDate).toLocaleDateString()}</p>
+              </div>
+              <button onClick={() => deleteVaccine({ vaccineId: v._id })} className="text-stone-200 hover:text-red-500">
+                <Trash2 className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        ))}
+        {vaccines?.length === 0 && <p className="text-[10px] text-stone-400 italic text-center py-2">Nenhuma vacina registrada.</p>}
+      </div>
+    </div>
+  );
+};
+
+const SubscriptionsList = () => {
+  const subs = useQuery(api.subscriptions.listMySubscriptions);
+  const cancelSub = useMutation(api.subscriptions.cancelSubscription);
+
+  if (!subs) return <div className="animate-pulse h-20 bg-stone-50 rounded-3xl" />;
+  if (subs.length === 0) return (
+    <div className="bg-stone-50 p-10 rounded-[40px] text-center border-2 border-dashed border-stone-200">
+      <p className="text-stone-400 font-medium text-sm mb-4">Você ainda não tem assinaturas recorrentes.</p>
+      <Link to="/#produtos" className="text-teal-600 font-bold hover:underline">Ver produtos assináveis</Link>
+    </div>
+  );
+
+  return (
+    <div className="space-y-4">
+      {subs.map(sub => (
+        <div key={sub._id} className="bg-white p-6 rounded-[32px] border border-stone-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-sm">
+           <div className="flex items-center gap-4">
+             <div className="flex -space-x-4">
+               {sub.items.slice(0, 3).map((item, i) => (
+                 <img 
+                   key={i} 
+                   src={item.image || item.images?.[0] || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400'} 
+                   alt={item.name} 
+                   className="w-12 h-12 rounded-full border-4 border-white bg-stone-50 object-contain shadow-sm" 
+                   onError={(e) => {
+                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400';
+                   }}
+                 />
+               ))}
+             </div>
+             <div>
+               <p className="font-bold text-stone-900">{sub.items.length} {sub.items.length === 1 ? 'Produto' : 'Produtos'}</p>
+               <p className="text-xs text-stone-400 uppercase font-black tracking-widest">{sub.frequency === 'monthly' ? 'Mensal' : 'Quinzenal'} • Próxima: {new Date(sub.nextDeliveryDate).toLocaleDateString()}</p>
+             </div>
+           </div>
+           
+           <div className="flex items-center gap-3">
+             <div className="px-4 py-1.5 rounded-full bg-teal-50 text-teal-600 text-[10px] font-black uppercase tracking-widest">Ativa</div>
+             <button 
+               onClick={() => {
+                 if (confirm("Deseja cancelar esta assinatura?")) {
+                   cancelSub({ subscriptionId: sub._id });
+                 }
+               }}
+               className="text-stone-300 hover:text-red-500 text-[10px] font-bold uppercase"
+             >
+               Cancelar
+             </button>
+           </div>
+        </div>
+      ))}
     </div>
   );
 };

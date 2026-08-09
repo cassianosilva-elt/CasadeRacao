@@ -14,6 +14,60 @@ html {
   outline-offset: 2px;
 }
 
+/* ───────────────────────────────────────────────────────────────
+   DARK MODE
+   Sobrescreve os tokens de cor do Tailwind dentro de `.dark`,
+   fazendo `bg-white`, `text-stone-900`, etc. refletirem o tema
+   escuro sem precisar reescrever cada componente com `dark:`.
+   A transição respeita `prefers-reduced-motion`.
+   ─────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  html *, html *::before, html *::after {
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      fill 0.3s ease,
+      stroke 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  /* Evita transição em elementos que fazem suas próprias animações */
+  html .motion-reduce\:animate-none,
+  html .motion-safe\:animate-spin,
+  html .animate-shimmer,
+  html .animate-shimmer::after {
+    transition: none;
+  }
+}
+
+.dark {
+  --color-white: #0b1120;
+  --color-black: #f8fafc;
+
+  --color-stone-50:  #0f172a;
+  --color-stone-100: #1e293b;
+  --color-stone-200: #334155;
+  --color-stone-300: #475569;
+  --color-stone-400: #64748b;
+  --color-stone-500: #94a3b8;
+  --color-stone-600: #cbd5e1;
+  --color-stone-700: #e2e8f0;
+  --color-stone-800: #f1f5f9;
+  --color-stone-900: #f8fafc;
+
+  --color-teal-50:  #042f2e;
+  --color-teal-100: #115e54;
+  --color-teal-500: #2dd4bf;
+  --color-teal-600: #5eead4;
+  --color-teal-900: #ccfbf1;
+
+  color-scheme: dark;
+}
+
 @keyframes shimmer {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }

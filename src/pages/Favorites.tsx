@@ -2,15 +2,16 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Heart, ShoppingBag, Plus, Trash2, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { products } from '../data';
 import { useCart } from '../CartContext';
 import { useFavorites } from '../FavoritesContext';
+import { useAdmin } from './admin/adminContext';
 
 export const Favorites = () => {
   const { favorites, toggleFavorite } = useFavorites();
   const { addToCart } = useCart();
+  const { products: allProducts, formatPrice } = useAdmin();
   
-  const favoriteProducts = products.filter(p => favorites.includes(p.id));
+  const favoriteProducts = allProducts.filter(p => favorites.includes(String(p.id)));
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -69,7 +70,7 @@ export const Favorites = () => {
               >
                 <div className="relative pt-[80%] bg-stone-50/50">
                   <img 
-                    src={product.image} 
+                    src={product.images[0]} 
                     alt={product.name} 
                     className="absolute inset-0 w-full h-full object-contain p-8 mix-blend-multiply group-hover:scale-110 transition-transform duration-500"
                   />
@@ -91,13 +92,13 @@ export const Favorites = () => {
                   
                   <div className="flex items-end justify-between mt-4 md:mt-6">
                     <div>
-                      {product.oldPriceFormatted && (
-                        <p className="text-[10px] md:text-xs text-stone-400 line-through mb-0 md:mb-0.5">{product.oldPriceFormatted}</p>
+                      {product.oldPrice && (
+                        <p className="text-[10px] md:text-xs text-stone-400 line-through mb-0 md:mb-0.5">{formatPrice(product.oldPrice)}</p>
                       )}
-                      <p className="text-lg md:text-2xl font-display font-black text-stone-900 leading-none">{product.priceFormatted}</p>
+                      <p className="text-lg md:text-2xl font-display font-black text-stone-900 leading-none">{formatPrice(product.price)}</p>
                     </div>
                     <button 
-                      onClick={() => addToCart(product)}
+                      onClick={() => addToCart({ ...product, image: product.images[0], priceFormatted: formatPrice(product.price) } as any)}
                       className="bg-stone-900 hover:bg-teal-500 text-white p-2 md:px-6 md:py-3 rounded-xl md:rounded-2xl font-bold transition-all flex items-center gap-1 md:gap-2 shadow-sm md:shadow-lg shrink-0"
                       aria-label="Comprar"
                     >

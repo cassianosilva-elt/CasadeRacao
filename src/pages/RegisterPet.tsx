@@ -13,14 +13,18 @@ export const RegisterPet = () => {
     name: "",
     species: "Cão",
     breed: "",
-    age: ""
+    age: "",
+    weight: ""
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await addPet(formData);
+      await addPet({
+        ...formData,
+        weight: formData.weight ? Number(formData.weight) : undefined
+      });
       navigate('/painel');
     } catch (err) {
       console.error(err);
@@ -89,6 +93,19 @@ export const RegisterPet = () => {
                 placeholder="Ex: 2 anos" 
               />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="weight" className="block text-sm font-medium text-stone-700 mb-1">Peso (kg)</label>
+            <input 
+              id="weight" 
+              type="number"
+              step="0.1"
+              value={formData.weight}
+              onChange={(e) => setFormData({...formData, weight: e.target.value})}
+              className="w-full border border-stone-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500" 
+              placeholder="Ex: 10.5" 
+            />
           </div>
           
           <button 

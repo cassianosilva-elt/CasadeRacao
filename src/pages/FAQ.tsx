@@ -7,9 +7,10 @@ const faqs = [
     category: 'Entrega',
     icon: Truck,
     questions: [
-      { q: 'Qual o prazo de entrega?', a: 'Entregamos em toda a Grande São Paulo em até 24h úteis. Para outras regiões, o prazo varia de 2 a 5 dias úteis.' },
-      { q: 'Como acompanho meu pedido?', a: 'Após a confirmação do pagamento, você receberá um link de rastreio via WhatsApp e E-mail.' },
-      { q: 'O frete é grátis?', a: 'Sim! Oferecemos frete grátis para toda a cidade de São Paulo em compras acima de R$ 150,00.' }
+      { q: 'Como é calculada a taxa de entrega?', a: 'A taxa de entrega é calculada dinamicamente com base na distância em quilômetros ao valor de R$ 1,00 por km a partir da nossa unidade mais próxima do seu endereço (Rua Edimundo Audran, 18 ou Rua Salvador Vigano, 175). Caso escolha Retirada na Loja, o frete é R$ 0,00.' },
+      { q: 'Onde ficam as lojas físicas da Casa de Ração Lopes?', a: 'Possuímos duas unidades para melhor atendê-lo: 1) Rua Edimundo Audran, 18; 2) Rua Salvador Vigano, 175 (ambas no Conjunto Habitacional Barro Branco II / Cidade Tiradentes - São Paulo).' },
+      { q: 'Qual o prazo de entrega?', a: 'Entregamos via rota expressa no mesmo dia para a região das lojas (em até 3h) ou em até 24h úteis para demais localidades da Grande São Paulo.' },
+      { q: 'Como acompanho meu pedido?', a: 'Após a confirmação do pagamento, você receberá atualizações e código de acompanhamento via WhatsApp e E-mail.' },
     ]
   },
   {

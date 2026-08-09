@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAdmin } from './admin/adminContext';
+import { calculateDeliveryFee } from '../utils/deliveryCalculator';
 import { useCart } from '../CartContext';
 import { useFavorites } from '../FavoritesContext';
-import { Star, ShoppingCart, Heart, ArrowLeft, ShieldCheck, Truck, RefreshCw, ChevronRight, Plus, Minus } from 'lucide-react';
+import { calculateFoodAmount } from '../data';
+import { Star, ShoppingCart, Heart, ArrowLeft, ShieldCheck, Truck, RefreshCw, ChevronRight, Plus, Minus, Repeat, Calculator, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useQuery, useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { useToast } from '../ToastContext';
 
 export const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,9 +18,28 @@ export const ProductDetails = () => {
   const product = products.find(p => p.id === id);
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { addToast } = useToast();
+  
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'desc' | 'spec' | 'reviews'>('desc');
+  const [activeTab, setActiveTab] = useState<'desc' | 'spec' | 'reviews' | 'calc'>('desc');
   const [selectedMedia, setSelectedMedia] = useState<{ type: 'image' | 'video'; src: string }>({ type: 'image', src: '' });
+  const [cep, setCep] = useState('');
+  const [shippingResult, setShippingResult] = useState<{ type: string; price: number; delivery: string } | null>(null);
+  const [isCalculating, setIsCalculating] = useState(false);
+  
+  const [reviewName, setReviewName] = useState('');
+  const [reviewText, setReviewText] = useState('');
+  const [reviewRating, setReviewRating] = useState(5);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+
+  // Convex Hooks
+  const user = useQuery(api.users.currentUser);
+  const reviews = useQuery(api.reviews.getReviewsByProduct, { productId: id || "" });
+  const addReviewMutation = useMutation(api.reviews.addReview);
+
+  // Calculator State
+  const [calcWeight, setCalcWeight] = useState(10);
+  const [calcAge, setCalcAge] = useState<'puppy'|'adult'|'senior'>('adult');
 
   useEffect(() => {
     if (product) {
@@ -26,6 +50,8 @@ export const ProductDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setQuantity(1);
+    setShippingResult(null);
+    setCep('');
   }, [id]);
 
   if (!product) {
@@ -37,9 +63,58 @@ export const ProductDetails = () => {
     );
   }
 
+  const calculateShipping = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanCep = cep.replace(/\D/g, '');
+    if (cleanCep.length < 8) return;
+    setIsCalculating(true);
+    try {
+      const res = await calculateDeliveryFee(cleanCep, false);
+      setShippingResult({
+        type: `Entrega por Distância (${res.distanceKm} km)`,
+        price: res.fee,
+        delivery: `Origem: ${res.closestStore.name} | Previsão: ${res.estimatedTime}`
+      });
+    } catch (err) {
+      console.error('Erro ao calcular frete:', err);
+    } finally {
+      setIsCalculating(false);
+    }
+  };
+
+  const submitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      addToast("Faça login para avaliar o produto.", "error");
+      return;
+    }
+    if (!reviewText.trim()) return;
+
+    setIsSubmittingReview(true);
+    try {
+      await addReviewMutation({
+        productId: product.id,
+        rating: reviewRating,
+        text: reviewText
+      });
+      setReviewText('');
+      addToast("Avaliação enviada com sucesso!", "success");
+    } catch (error) {
+      addToast("Erro ao enviar avaliação.", "error");
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const isFoodProduct = product.category.includes('Rações');
+  const foodCalculation = isFoodProduct ? calculateFoodAmount(calcWeight, calcAge) : null;
+
   const relatedProducts = products
     .filter(p => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
+
+  const isLowStock = product.quantity > 0 && product.quantity <= 2;
+  const isOutOfStock = product.quantity === 0;
 
   return (
     <div className="bg-white">
@@ -51,18 +126,22 @@ export const ProductDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 mb-24">
           <div className="space-y-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               key={selectedMedia.src}
               className="bg-stone-50 rounded-[40px] p-6 md:p-16 aspect-square flex items-center justify-center relative overflow-hidden shadow-inner"
             >
               {product.badge && (
-                <span className={`absolute top-4 left-4 md:top-8 md:left-8 z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white ${
-                  product.badge === 'Novo' ? 'bg-blue-500' : product.badge === 'Promoção' ? 'bg-orange-500' : 'bg-teal-500'
-                }`}>
+                <span className={`absolute top-4 left-4 md:top-8 md:left-8 z-10 text-[10px] md:text-xs font-bold uppercase tracking-widest px-3 py-1.5 md:px-4 md:py-2 rounded-full text-white ${product.badge === 'Novo' ? 'bg-blue-500' : product.badge === 'Promoção' ? 'bg-orange-500' : 'bg-teal-500'
+                  }`}>
                   {product.badge}
                 </span>
+              )}
+              {isOutOfStock && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                  <span className="bg-stone-900 text-white font-bold py-3 px-8 rounded-2xl shadow-2xl rotate-[-5deg]">ESGOTADO</span>
+                </div>
               )}
               {selectedMedia.type === 'video' ? (
                 <video src={selectedMedia.src} controls autoPlay className="max-w-full max-h-full rounded-2xl shadow-2xl" />
@@ -77,9 +156,8 @@ export const ProductDetails = () => {
                   <button
                     key={idx}
                     onClick={() => setSelectedMedia({ type: 'image', src: img })}
-                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${
-                      selectedMedia.type === 'image' && selectedMedia.src === img ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
-                    }`}
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 ${selectedMedia.type === 'image' && selectedMedia.src === img ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
+                      }`}
                   >
                     <img src={img} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
                   </button>
@@ -87,9 +165,8 @@ export const ProductDetails = () => {
                 {product.video && (
                   <button
                     onClick={() => setSelectedMedia({ type: 'video', src: product.video! })}
-                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-stone-900 flex items-center justify-center relative ${
-                      selectedMedia.type === 'video' ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
-                    }`}
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 transition-all shrink-0 bg-stone-900 flex items-center justify-center relative ${selectedMedia.type === 'video' ? 'border-teal-500 shadow-md scale-105' : 'border-stone-100 opacity-60 hover:opacity-100'
+                      }`}
                   >
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                       <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
@@ -108,13 +185,15 @@ export const ProductDetails = () => {
               <p className="text-teal-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-3 md:mb-4">{product.brand}</p>
               <h1 className="font-display text-2xl md:text-5xl font-bold text-stone-900 mb-4 md:mb-6 leading-tight">{product.name}</h1>
               <div className="flex items-center gap-2 md:gap-4">
-                <div className="flex bg-orange-50 px-3 py-1.5 rounded-xl">
+                <div className="flex bg-orange-50 px-3 py-1.5 rounded-xl cursor-pointer hover:bg-orange-100 transition-colors" onClick={() => setActiveTab('reviews')}>
                   {[1, 2, 3, 4, 5].map(s => (
                     <Star key={s} className={`w-4 h-4 ${s <= Math.floor(product.rating) ? 'text-orange-400 fill-orange-400' : 'text-stone-200'}`} />
                   ))}
                   <span className="ml-2 font-bold text-orange-700 text-sm">{product.rating}</span>
                 </div>
-                <span className="text-stone-400 text-sm">({product.reviewCount} avaliações)</span>
+                <button onClick={() => setActiveTab('reviews')} className="text-stone-400 text-sm hover:text-teal-600 transition-colors">
+                  ({reviews?.length || product.reviewCount} avaliações)
+                </button>
               </div>
             </div>
 
@@ -124,27 +203,110 @@ export const ProductDetails = () => {
                 <span className="text-3xl md:text-5xl font-display font-bold text-stone-900 leading-none">{formatPrice(product.price)}</span>
               </div>
               <p className="text-stone-500 text-sm font-medium">À vista no PIX com 5% de desconto ou em até 3x sem juros.</p>
+              
+              {isLowStock && (
+                <motion.p 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="mt-4 text-orange-600 font-bold flex items-center gap-2 text-sm"
+                >
+                  <span className="w-2 h-2 bg-orange-600 rounded-full animate-ping" />
+                  Corra! Apenas {product.quantity} unidades em estoque.
+                </motion.p>
+              )}
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
-              <div className="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-4 text-stone-500 hover:text-teal-600 transition-colors"><Minus className="w-5 h-5" /></button>
-                <span className="w-12 text-center font-bold text-xl">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="p-4 text-stone-500 hover:text-teal-600 transition-colors"><Plus className="w-5 h-5" /></button>
+            <div className="flex flex-col gap-4 mb-10">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                    disabled={isOutOfStock}
+                    className="p-4 text-stone-500 hover:text-teal-600 transition-colors disabled:opacity-30"
+                  >
+                    <Minus className="w-5 h-5" />
+                  </button>
+                  <span className="w-12 text-center font-bold text-xl">{isOutOfStock ? 0 : quantity}</span>
+                  <button 
+                    onClick={() => setQuantity(quantity + 1)} 
+                    disabled={isOutOfStock || quantity >= product.quantity}
+                    className="p-4 text-stone-500 hover:text-teal-600 transition-colors disabled:opacity-30"
+                  >
+                    <Plus className="w-5 h-5" />
+                  </button>
+                </div>
+                <button
+                  onClick={() => addToCart({ ...product, quantity }, false)}
+                  disabled={isOutOfStock}
+                  className={`flex-grow font-bold py-5 px-8 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 ${
+                    isOutOfStock 
+                      ? 'bg-stone-200 text-stone-400 cursor-not-allowed shadow-none' 
+                      : 'bg-teal-500 hover:bg-teal-600 text-white shadow-teal-500/20'
+                  }`}
+                >
+                  <ShoppingCart className="w-6 h-6" />
+                  {isOutOfStock ? 'Produto Esgotado' : 'Adicionar ao Carrinho'}
+                </button>
+                <button
+                  onClick={() => toggleFavorite(product.id)}
+                  className={`p-5 rounded-2xl border transition-all ${isFavorite(product.id) ? 'bg-red-50 border-red-100 text-red-500' : 'bg-white border-stone-200 text-stone-400 hover:text-stone-600'}`}
+                >
+                  <Heart className={`w-6 h-6 ${isFavorite(product.id) ? 'fill-red-500' : ''}`} />
+                </button>
               </div>
-              <button 
-                onClick={() => addToCart({ ...product, quantity })}
-                className="flex-grow bg-teal-500 hover:bg-teal-600 text-white font-bold py-5 px-8 rounded-2xl transition-all shadow-xl shadow-teal-500/20 flex items-center justify-center gap-3"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                Adicionar ao Carrinho
-              </button>
-              <button 
-                onClick={() => toggleFavorite(product.id)}
-                className={`p-5 rounded-2xl border transition-all ${isFavorite(product.id) ? 'bg-red-50 border-red-100 text-red-500' : 'bg-white border-stone-200 text-stone-400 hover:text-stone-600'}`}
-              >
-                <Heart className={`w-6 h-6 ${isFavorite(product.id) ? 'fill-red-500' : ''}`} />
-              </button>
+              
+              {!isOutOfStock && product.category !== 'Serviços' && (
+                 <button
+                   onClick={() => addToCart({ ...product, quantity }, true)}
+                   className="w-full bg-orange-50 hover:bg-orange-100 text-orange-600 border border-orange-200 font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-3"
+                 >
+                   <Repeat className="w-5 h-5" />
+                   <div>
+                     <p className="leading-tight">Assinar e Ganhar 10% OFF</p>
+                     <p className="text-[10px] font-medium opacity-80 uppercase tracking-widest mt-0.5">({formatPrice(product.price * 0.9)} a cada entrega)</p>
+                   </div>
+                 </button>
+              )}
+            </div>
+
+            <div className="mb-10 p-6 border-2 border-dashed border-stone-100 rounded-[32px]">
+              <h4 className="font-bold text-stone-900 mb-4 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-teal-500" />
+                Calcular Frete
+              </h4>
+              <form onSubmit={calculateShipping} className="flex gap-2">
+                <input 
+                  type="text" 
+                  maxLength={8}
+                  placeholder="Seu CEP (00000-000)" 
+                  value={cep}
+                  onChange={(e) => setCep(e.target.value.replace(/\D/g, ''))}
+                  className="flex-grow bg-white border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                />
+                <button 
+                  type="submit"
+                  disabled={isCalculating || cep.length < 8}
+                  className="bg-stone-900 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-stone-800 transition-all disabled:opacity-50"
+                >
+                  {isCalculating ? 'Calculando...' : 'Calcular'}
+                </button>
+              </form>
+              
+              <AnimatePresence>
+                {shippingResult && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="mt-6 pt-6 border-t border-stone-100"
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-bold text-stone-800">{shippingResult.type}</span>
+                      <span className="font-bold text-teal-600">{formatPrice(shippingResult.price)}</span>
+                    </div>
+                    <p className="text-xs text-stone-400">{shippingResult.delivery}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 border-t border-stone-100">
@@ -166,15 +328,14 @@ export const ProductDetails = () => {
 
         <div className="mb-24">
           <div className="flex border-b border-stone-100 mb-10 overflow-x-auto no-scrollbar">
-            {['desc', 'spec', 'reviews'].map(tab => (
+            {['desc', 'spec', 'reviews', ...(isFoodProduct ? ['calc'] : [])].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab as any)}
-                className={`px-6 py-4 md:px-8 md:py-4 font-bold text-[10px] md:text-sm uppercase tracking-widest whitespace-nowrap transition-all relative ${
-                  activeTab === tab ? 'text-teal-600' : 'text-stone-400 hover:text-stone-600'
-                }`}
+                className={`px-6 py-4 md:px-8 md:py-4 font-bold text-[10px] md:text-sm uppercase tracking-widest whitespace-nowrap transition-all relative ${activeTab === tab ? 'text-teal-600' : 'text-stone-400 hover:text-stone-600'
+                  }`}
               >
-                {tab === 'desc' ? 'Descrição' : tab === 'spec' ? 'Especificações' : 'Avaliações'}
+                {tab === 'desc' ? 'Descrição' : tab === 'spec' ? 'Especificações' : tab === 'reviews' ? 'Avaliações' : 'Calculadora de Porção'}
                 {activeTab === tab && <motion.div layoutId="tab-active" className="absolute bottom-0 left-0 right-0 h-1 bg-teal-500 rounded-t-full" />}
               </button>
             ))}
@@ -204,26 +365,168 @@ export const ProductDetails = () => {
                 ))}
               </div>
             )}
-            {activeTab === 'reviews' && (
-              <div className="space-y-8">
-                 <div className="flex items-center justify-between mb-8">
-                   <h3 className="font-display text-2xl font-bold text-stone-900">O que os clientes dizem</h3>
-                   <button className="bg-stone-900 text-white font-bold py-3 px-6 rounded-2xl text-sm">Escrever Avaliação</button>
-                 </div>
-                 {[1, 2].map(r => (
-                   <div key={r} className="border-b border-stone-200 pb-8">
-                     <div className="flex mb-3">
-                       {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 text-orange-400 fill-orange-400 mr-1" />)}
-                     </div>
-                     <p className="font-bold text-stone-900 mb-2">Excelente custo benefício.</p>
-                     <p className="text-stone-500 text-sm leading-relaxed mb-4">Meu cachorro adorou essa ração, o pelo dele ficou muito mais brilhante e as fezes bem firmes.</p>
-                     <div className="flex items-center gap-2">
-                       <div className="w-6 h-6 bg-stone-200 rounded-full"></div>
-                       <span className="text-xs font-bold text-stone-600">Carlos Silva</span>
-                       <span className="text-[10px] text-stone-400">Verificado</span>
+            {activeTab === 'calc' && isFoodProduct && (
+              <div className="max-w-xl mx-auto py-8">
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                     <Calculator className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold text-stone-900 mb-2">Calculadora de Dieta Ideal</h3>
+                  <p className="text-stone-500">Descubra exatamente quanto o seu pet precisa comer por dia e a duração deste pacote.</p>
+                </div>
+
+                <div className="bg-white p-6 md:p-8 rounded-[32px] border border-stone-100 shadow-sm space-y-6">
+                   <div>
+                     <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Estágio de Vida</label>
+                     <div className="grid grid-cols-3 gap-3">
+                       {[{id:'puppy', l:'Filhote'}, {id:'adult', l:'Adulto'}, {id:'senior', l:'Idoso'}].map(stage => (
+                         <button 
+                           key={stage.id}
+                           onClick={() => setCalcAge(stage.id as any)}
+                           className={`py-3 rounded-xl border font-bold text-sm transition-all ${calcAge === stage.id ? 'bg-teal-50 border-teal-500 text-teal-600' : 'border-stone-200 text-stone-500 hover:border-stone-300'}`}
+                         >
+                           {stage.l}
+                         </button>
+                       ))}
                      </div>
                    </div>
-                 ))}
+
+                   <div>
+                     <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest mb-3 flex justify-between">
+                       <span>Peso do Pet (kg): <span className="text-stone-900">{calcWeight}kg</span></span>
+                     </label>
+                     <input 
+                       type="range" 
+                       min="1" max="60" 
+                       value={calcWeight}
+                       onChange={(e) => setCalcWeight(Number(e.target.value))}
+                       className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                     />
+                     <div className="flex justify-between text-[10px] text-stone-400 mt-2 font-bold font-mono">
+                       <span>1kg</span><span>30kg</span><span>60kg</span>
+                     </div>
+                   </div>
+
+                   {foodCalculation && (
+                     <div className="mt-8 bg-teal-500 text-white rounded-[24px] p-6 relative overflow-hidden">
+                       <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-16 -mt-16"></div>
+                       <h4 className="font-bold mb-4 flex items-center gap-2">
+                         <Info className="w-5 h-5" /> Resultado
+                       </h4>
+                       <div className="grid grid-cols-2 gap-4">
+                         <div>
+                           <p className="text-teal-100 text-[10px] font-bold uppercase tracking-widest mb-1">Porção Diária</p>
+                           <p className="text-3xl font-display font-black leading-none">{foodCalculation.daily}g</p>
+                         </div>
+                         <div>
+                           <p className="text-teal-100 text-[10px] font-bold uppercase tracking-widest mb-1">Consumo Mensal</p>
+                           <p className="text-3xl font-display font-black leading-none">{foodCalculation.monthly}kg</p>
+                         </div>
+                       </div>
+                       
+                       {/* Estimate duration if package weight is known (mocking 15kg for now since it's common in data.ts) */}
+                       {product.name.includes('15kg') && (
+                         <div className="mt-6 pt-4 border-t border-white/20">
+                           <p className="text-sm font-medium text-teal-50">Este pacote de 15kg durará aproximadamente <strong className="text-white text-lg">{(15 / (foodCalculation.daily / 1000)).toFixed(0)} dias</strong>.</p>
+                         </div>
+                       )}
+                     </div>
+                   )}
+                </div>
+              </div>
+            )}
+            
+            {activeTab === 'reviews' && (
+              <div className="space-y-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                  <h3 className="font-display text-2xl font-bold text-stone-900">O que os clientes dizem</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="text-right hidden md:block">
+                      <p className="text-2xl font-bold text-stone-900">{product.rating}</p>
+                      <p className="text-xs text-stone-400">Geral</p>
+                    </div>
+                    <div className="h-10 w-[1px] bg-stone-200 hidden md:block" />
+                  </div>
+                </div>
+
+                {user ? (
+                  <div className="bg-white p-6 md:p-8 rounded-[32px] border border-stone-100 mb-12">
+                     <h4 className="font-bold text-stone-900 mb-6">Deixe sua opinião</h4>
+                     <form onSubmit={submitReview} className="space-y-4">
+                       <div className="flex gap-2 mb-4">
+                          {[1, 2, 3, 4, 5].map(s => (
+                            <button 
+                              key={s} 
+                              type="button"
+                              onClick={() => setReviewRating(s)}
+                              className="focus:outline-none"
+                            >
+                              <Star className={`w-6 h-6 ${s <= reviewRating ? 'text-orange-400 fill-orange-400' : 'text-stone-200'}`} />
+                            </button>
+                          ))}
+                       </div>
+                       <textarea 
+                         placeholder="Sua avaliação (O que você achou do produto?)" 
+                         rows={4}
+                         value={reviewText}
+                         onChange={(e) => setReviewText(e.target.value)}
+                         className="w-full bg-stone-50 border border-stone-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none font-medium resize-none"
+                       />
+                       <button disabled={isSubmittingReview || !reviewText.trim()} className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-stone-300 text-white font-bold py-4 rounded-xl transition-all">
+                         {isSubmittingReview ? 'Enviando...' : 'Enviar Avaliação'}
+                       </button>
+                     </form>
+                  </div>
+                ) : (
+                  <div className="bg-stone-100 p-8 rounded-[32px] text-center mb-12">
+                    <p className="text-stone-500 font-medium mb-4">Faça login para deixar sua avaliação.</p>
+                    <Link to="/conta" className="inline-block bg-white text-stone-900 font-bold px-8 py-3 rounded-xl border border-stone-200 hover:border-teal-500 transition-all">Ir para Login</Link>
+                  </div>
+                )}
+
+                {reviews === undefined ? (
+                   <p className="text-stone-400">Carregando avaliações...</p>
+                ) : reviews && reviews.length > 0 ? (
+                  reviews.map(r => (
+                    <div key={r._id} className="border-b border-stone-200 pb-8 last:border-0 last:pb-0">
+                      <div className="flex mb-3">
+                        {[1, 2, 3, 4, 5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${s <= r.rating ? 'text-orange-400 fill-orange-400' : 'text-stone-200'} mr-1`} />)}
+                      </div>
+                      <p className="text-stone-600 text-sm leading-relaxed mb-4">{r.text}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-[10px] font-bold uppercase">
+                          {r.userName.substring(0,2)}
+                        </div>
+                        <span className="text-xs font-bold text-stone-600">{r.userName}</span>
+                        <span className="text-[10px] text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full font-bold">Compra Verificada</span>
+                        <span className="text-[10px] text-stone-400 ml-auto">{new Date(r._creationTime).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                     <p className="text-stone-400">Seja o primeiro a avaliar este produto!</p>
+                     
+                     {/* Static mockup fallback when empty db */}
+                     <div className="text-left mt-12 border-t pt-8">
+                       <p className="text-stone-400 text-xs uppercase mb-4 tracking-widest font-bold">Avaliações Anteriores</p>
+                       {[1, 2].map(r => (
+                         <div key={`mock-${r}`} className="border-b border-stone-200 pb-8 last:border-0 mb-8 last:mb-0">
+                           <div className="flex mb-3">
+                             {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 text-orange-400 fill-orange-400 mr-1" />)}
+                           </div>
+                           <p className="font-bold text-stone-900 mb-2">Excelente custo benefício.</p>
+                           <p className="text-stone-500 text-sm leading-relaxed mb-4">Meu cachorro adorou essa ração, o pelo dele ficou muito mais brilhante e as fezes bem firmes.</p>
+                           <div className="flex items-center gap-2">
+                             <div className="w-6 h-6 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center text-[10px] font-bold">CS</div>
+                             <span className="text-xs font-bold text-stone-600">Carlos Silva</span>
+                             <span className="text-[10px] text-teal-600 bg-teal-50 px-2 py-0.5 rounded-full font-bold">Compra Verificada</span>
+                           </div>
+                         </div>
+                       ))}
+                     </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -232,7 +535,7 @@ export const ProductDetails = () => {
         {relatedProducts.length > 0 && (
           <div className="reveal-on-scroll">
             <div className="flex items-center justify-between mb-8 md:mb-10">
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">Também pode te interessar</h2>
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-stone-900">Quem comprou isso, também levou...</h2>
               <Link to={`/?categoria=${product.category}#produtos`} className="text-teal-600 text-sm md:text-base font-bold flex items-center gap-1 md:gap-2 hover:gap-4 transition-all">
                 <span className="hidden md:inline">Ver tudo</span>
                 <ChevronRight className="w-5 h-5" />

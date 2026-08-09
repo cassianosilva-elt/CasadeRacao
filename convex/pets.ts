@@ -22,6 +22,8 @@ export const addPet = mutation({
     species: v.string(),
     breed: v.string(),
     age: v.string(),
+    weight: v.optional(v.number()),
+    photo: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);

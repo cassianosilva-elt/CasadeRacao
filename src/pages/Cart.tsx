@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useCart } from '../CartContext';
-import { ShoppingCart, Minus, Plus, Trash2, CheckCircle, Ticket, MapPin, ArrowRight, Loader2 } from 'lucide-react';
+import { useAdmin } from './admin/adminContext';
+import { ShoppingCart, Minus, Plus, Trash2, CheckCircle, Ticket, MapPin, ArrowRight, Loader2, Clock } from 'lucide-react';
 
 export const Cart = () => {
   const { items, updateQuantity, removeFromCart, total, clearCart } = useCart();
+  const { coupons } = useAdmin();
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   
@@ -19,13 +21,20 @@ export const Cart = () => {
 
   const handleApplyCoupon = () => {
     setCouponError('');
-    const code = couponCode.toUpperCase();
-    if (code === 'LOPES10') {
-      setActiveCoupon({ code: 'LOPES10', discount: 0.1 });
-    } else if (code === 'PRIMEIRACOMPRA') {
-      setActiveCoupon({ code: 'PRIMEIRACOMPRA', discount: 0.15 });
+    const code = couponCode.toUpperCase().trim();
+    const foundCoupon = coupons.find(c => c.code === code);
+
+    if (foundCoupon) {
+      if (foundCoupon.expirationDate) {
+        const expDate = new Date(foundCoupon.expirationDate + 'T23:59:59');
+        if (expDate < new Date()) {
+          setCouponError('Este cupom já expirou.');
+          return;
+        }
+      }
+      setActiveCoupon({ code: foundCoupon.code, discount: foundCoupon.discount / 100 });
     } else {
-      setCouponError('Cupom inválido ou expirado.');
+      setCouponError('Cupom inválido.');
     }
   };
 
@@ -68,9 +77,19 @@ export const Cart = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
               <>
-                {items.map(item => (
-                  <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white p-4 sm:p-6 rounded-3xl border border-stone-100 shadow-sm gap-4 sm:gap-8 group">
-                    <img src={item.image} alt={item.name} className="w-24 h-24 sm:w-28 sm:h-28 object-contain rounded-xl sm:rounded-2xl mix-blend-multiply bg-stone-50 group-hover:scale-105 transition-transform" loading="lazy" />
+                {items.map(item => {
+                  const itemImage = item.image || (item.images && item.images.length > 0 ? item.images[0] : '') || 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400';
+                  return (
+                    <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white p-4 sm:p-6 rounded-3xl border border-stone-100 shadow-sm gap-4 sm:gap-8 group">
+                      <img 
+                        src={itemImage} 
+                        alt={item.name} 
+                        className="w-24 h-24 sm:w-28 sm:h-28 object-contain rounded-xl sm:rounded-2xl mix-blend-multiply bg-stone-50 group-hover:scale-105 transition-transform" 
+                        loading="lazy" 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400';
+                        }}
+                      />
                     <div className="flex-grow text-center sm:text-left">
                       <p className="text-teal-600 text-[10px] font-bold uppercase tracking-widest mb-1">{item.brand}</p>
                       <h2 className="font-bold text-stone-900 text-base sm:text-lg mb-1 sm:mb-2 leading-tight">{item.name}</h2>
@@ -83,9 +102,10 @@ export const Cart = () => {
                         <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 text-stone-400 hover:text-teal-600 transition-colors"><Plus className="w-4 h-4" /></button>
                       </div>
                       <button onClick={() => removeFromCart(item.id)} className="p-3 text-stone-300 hover:text-red-500 transition-colors bg-white border border-stone-100 rounded-2xl shadow-sm hover:border-red-100"><Trash2 className="w-5 h-5" /></button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 
                 <div className="bg-teal-50 p-5 sm:p-6 rounded-[24px] sm:rounded-3xl border border-teal-100 flex flex-col md:flex-row justify-between items-center gap-4 sm:gap-6">
                   <div className="flex items-center gap-3 sm:gap-4 text-teal-800">

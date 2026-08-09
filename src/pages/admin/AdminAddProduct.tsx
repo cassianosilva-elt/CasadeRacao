@@ -23,6 +23,7 @@ export const AdminAddProduct = () => {
   
   const [editingImage, setEditingImage] = useState<{ index: number; src: string } | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   React.useEffect(() => {
     if (isEditing && products.length > 0) {
@@ -47,7 +48,9 @@ export const AdminAddProduct = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.price) return;
+    if (!formData.name || !formData.price || isSubmitting) return;
+
+    setIsSubmitting(true);
 
     const productData = {
       name: formData.name,
@@ -71,7 +74,7 @@ export const AdminAddProduct = () => {
     setTimeout(() => {
       setShowSuccess(false);
       navigate('/admin/meus-produtos');
-    }, 3000);
+    }, 600);
   };
 
   const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -300,9 +303,9 @@ export const AdminAddProduct = () => {
         </div>
 
         <div className="pt-6">
-          <button type="submit" className="admin-button-primary w-full flex items-center justify-center gap-2">
+          <button type="submit" disabled={isSubmitting} className="admin-button-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer">
             {isEditing ? <Edit3 className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-            {isEditing ? 'Atualizar Produto' : 'Salvar Produto'}
+            {isSubmitting ? 'Salvando...' : isEditing ? 'Atualizar Produto' : 'Salvar Produto'}
           </button>
         </div>
       </form>

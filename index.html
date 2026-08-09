@@ -29,6 +29,18 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/logo.png">
+
+    <!-- Anti-flash: aplica o tema salvo antes do React montar -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var dark = saved ? saved === 'dark' : prefersDark;
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

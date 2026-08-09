@@ -76,38 +76,38 @@ export const Delivery = () => {
              <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 mx-auto mb-6">
                 <Clock className="w-8 h-8" />
              </div>
-             <h3 className="font-bold text-stone-900 mb-2">Até 24h</h3>
-             <p className="text-stone-500 text-sm">Entrega expressa para toda capital de SP.</p>
+             <h3 className="font-bold text-stone-900 mb-2">Entrega Expressa</h3>
+             <p className="text-stone-500 text-sm">Entregas no mesmo dia ou em até 24h úteis.</p>
           </div>
           <div className="text-center">
              <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 mx-auto mb-6">
                 <Truck className="w-8 h-8" />
              </div>
-             <h3 className="font-bold text-stone-900 mb-2">Frete Grátis</h3>
-             <p className="text-stone-500 text-sm">Em compras acima de R$ 150 na cidade de SP.</p>
+             <h3 className="font-bold text-stone-900 mb-2">R$ 1,00 por KM</h3>
+             <p className="text-stone-500 text-sm">Taxa justa calculada pela distância da loja mais próxima.</p>
           </div>
           <div className="text-center">
              <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 mx-auto mb-6">
                 <MapPin className="w-8 h-8" />
              </div>
-             <h3 className="font-bold text-stone-900 mb-2">Rastreio Real</h3>
-             <p className="text-stone-500 text-sm">Acompanhe seu pedido em tempo real pelo site.</p>
+             <h3 className="font-bold text-stone-900 mb-2">2 Unidades Físicas</h3>
+             <p className="text-stone-500 text-sm">Retirada grátis na Rua Edimundo Audran, 18 ou Salvador Vigano, 175.</p>
           </div>
         </div>
         <div className="bg-stone-50 p-10 md:p-16 rounded-[40px] border border-stone-100">
-           <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">Informações Importantes</h2>
+           <h2 className="font-display text-2xl font-bold text-stone-900 mb-6">Informações da Nossa Logística</h2>
            <ul className="space-y-6 text-stone-600">
               <li className="flex gap-4">
                  <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>Pedidos realizados até as 11h são enviados no mesmo dia para a capital.</p>
+                 <p>O cálculo da taxa de entrega é automático (R$ 1,00/km) usando o CEP fornecido no checkout e localizando a loja mais próxima entre a <strong>Unidade Rua Edimundo Audran, 18</strong> e a <strong>Unidade Rua Salvador Vigano, 175</strong>.</p>
               </li>
               <li className="flex gap-4">
                  <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>As entregas ocorrem de segunda a sábado, entre as 09h e 19h.</p>
+                 <p>Se você preferir buscar o pedido pessoalmente, a <strong>Retirada na Loja é 100% Grátis</strong> em qualquer uma das duas unidades.</p>
               </li>
               <li className="flex gap-4">
                  <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 shrink-0"></div>
-                 <p>É necessário que haja alguém no local para o recebimento do pedido.</p>
+                 <p>As entregas ocorrem de segunda a sábado, entre as 09h e 19h com avisos via WhatsApp.</p>
               </li>
            </ul>
         </div>
@@ -142,36 +142,6 @@ export const Returns = () => {
   );
 };
 
-export const Blog = () => {
-  useEffect(() => window.scrollTo(0, 0), []);
-  return (
-    <div className="bg-white pb-24">
-      <PageHero 
-        title="Blog Pet LOPES" 
-        subtitle="Dicas de saúde, nutrição e curiosidades para você ser o melhor tutor do mundo." 
-        icon={BookOpen} 
-      />
-      <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {[
-            { t: 'Como escolher a ração ideal?', d: 'Aprenda a ler os rótulos e entender as necessidades nutricionais do seu pet.', c: 'Nutrição' },
-            { t: '5 dicas para gatinhos hidratados', d: 'Truques simples para garantir que seu felino beba mais água no dia a dia.', c: 'Saúde' },
-            { t: 'Adaptação de pets em apartamentos', d: 'Tudo o que você precisa saber para criar um ambiente feliz em espaços reduzidos.', c: 'Comportamento' }
-          ].map((post, i) => (
-            <div key={i} className="group cursor-pointer">
-               <div className="aspect-[16/10] bg-stone-100 rounded-[32px] mb-6 overflow-hidden relative">
-                  <div className="absolute top-4 left-4 bg-teal-500 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10">{post.c}</div>
-                  <div className="w-full h-full bg-stone-200 group-hover:scale-110 transition-transform duration-700"></div>
-               </div>
-               <h3 className="font-display text-2xl font-bold text-stone-900 mb-4 group-hover:text-teal-600 transition-colors">{post.t}</h3>
-               <p className="text-stone-500 text-sm leading-relaxed mb-6 line-clamp-2">{post.d}</p>
-               <button className="text-stone-900 font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all">Ler mais <ChevronRight className="w-4 h-4 text-teal-500" /></button>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
 
-export const StaticPages = { About, Delivery, Returns, Blog };
+
+export const StaticPages = { About, Delivery, Returns };

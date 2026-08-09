@@ -26,17 +26,40 @@ export const createOrder = mutation({
       brand: v.string(),
       price: v.number(),
       quantity: v.number(),
-      image: v.string()
+      image: v.string(),
+      isSubscription: v.optional(v.boolean())
     })),
     paymentMethod: v.string(), // "pix" | "card" | "boleto"
     coupon: v.optional(v.string()),
     subtotal: v.number(),
+    shippingFee: v.optional(v.number()),
     discount: v.number(),
     total: v.number(),
+    usedPetCoins: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     
+    // Logic for PetCoins
+    if (userId) {
+      const user = await ctx.db.get(userId);
+      if (user) {
+        let currentCoins = user.petCoins || 0;
+        
+        // Subtract used coins
+        if (args.usedPetCoins && args.usedPetCoins > 0) {
+          currentCoins = Math.max(0, currentCoins - args.usedPetCoins);
+        }
+        
+        // Award new coins (10% of total)
+        const awardedCoins = Math.floor(args.total / 10);
+        
+        await ctx.db.patch(userId, {
+          petCoins: currentCoins + awardedCoins
+        });
+      }
+    }
+
     // Default status according to payment method
     let initialStatus = "pending";
     if (args.paymentMethod === "card" || args.paymentMethod === "pix") {
@@ -51,9 +74,11 @@ export const createOrder = mutation({
       paymentMethod: args.paymentMethod,
       coupon: args.coupon,
       subtotal: args.subtotal,
+      shippingFee: args.shippingFee,
       discount: args.discount,
       total: args.total,
       status: initialStatus,
+      usedPetCoins: args.usedPetCoins,
     });
     
     return orderId;

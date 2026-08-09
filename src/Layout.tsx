@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, Search, Menu, X, User, Heart, Instagram, Facebook, Mail, Phone, MapPin, ChevronRight, Dog } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User, Heart, Instagram, Facebook, Mail, Phone, MapPin, ChevronRight, Dog, Sun, Moon, Sparkles, Scale, Users } from 'lucide-react';
 import { useCart } from './CartContext';
 import { useFavorites } from './FavoritesContext';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { ScrollToTop } from './components/ScrollToTop';
 import { CookieBanner } from './components/CookieBanner';
+import { WelcomePopup } from './components/WelcomePopup';
 import { motion, AnimatePresence } from 'motion/react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.documentElement.classList.contains('dark');
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const { items } = useCart();
   const { favorites } = useFavorites();
@@ -21,6 +26,25 @@ const Header = () => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Sincroniza o estado com o tema aplicado pelo script anti-flash no index.html.
+  // Garante que o ícone (Sol/Lua) reflita o tema correto após mudanças de rota
+  // e atualiza caso o usuário altere a preferência do sistema.
+  useEffect(() => {
+    const root = document.documentElement;
+    setIsDark(root.classList.contains('dark'));
+
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onSysChange = (e: MediaQueryListEvent) => {
+      const saved = localStorage.getItem('theme');
+      if (saved) return; // usuário definiu preferência explícita
+      const dark = e.matches;
+      setIsDark(dark);
+      root.classList.toggle('dark', dark);
+    };
+    mq.addEventListener('change', onSysChange);
+    return () => mq.removeEventListener('change', onSysChange);
   }, []);
 
   useEffect(() => {
@@ -36,15 +60,27 @@ const Header = () => {
 
   const navLinks = [
     { name: 'Início', path: '/' },
-    { name: 'Rações', path: '/?categoria=Rações#produtos' },
-    { name: 'Acessórios', path: '/?categoria=Acessórios#produtos' },
-    { name: 'FAQ', path: '/faq' },
+    { name: 'Ofertas', path: '/ofertas', icon: Sparkles },
+    { name: 'Comparar', path: '/comparar', icon: Scale },
+    { name: 'Comunidade', path: '/comunidade', icon: Users },
+    { name: 'Blog', path: '/blog' },
     { name: 'Sobre', path: '/sobre' },
   ];
 
   const isHome = pathname === '/';
 
-  return (
+    const toggleDark = () => {
+      const dark = !isDark;
+      setIsDark(dark);
+      document.documentElement.classList.toggle('dark', dark);
+      try {
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+      } catch (e) {
+        // storage indisponível (modo privado, etc.); ignora silenciosamente
+      }
+    };
+
+    return (
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${isScrolled || !isHome ? 'bg-white/95 backdrop-blur-md shadow-lg py-2 md:py-3' : 'bg-transparent py-4 md:py-6'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-4 md:gap-8">
@@ -98,6 +134,15 @@ const Header = () => {
                 {items.length}
               </span>
             </Link>
+            <button 
+              onClick={toggleDark}
+              className={`p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'hover:bg-stone-100 text-stone-600' : 'hover:bg-white/10 text-white'}`}
+              aria-label="Alternar Tema"
+              aria-pressed={isDark}
+              title={isDark ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+            >
+              {isDark ? <Sun className="w-5 h-5 md:w-6 md:h-6" /> : <Moon className="w-5 h-5 md:w-6 md:h-6" />}
+            </button>
             <button 
               onClick={() => setIsMenuOpen(true)}
               className={`lg:hidden p-2 md:p-3 rounded-xl md:rounded-2xl transition-all ${isScrolled || !isHome ? 'text-stone-600' : 'text-white'}`}
@@ -233,7 +278,9 @@ export default function Layout() {
       <Footer />
       <WhatsAppButton />
       <ScrollToTop />
+      <WhatsAppButton />
       <CookieBanner />
+      <WelcomePopup />
     </div>
   );
 }

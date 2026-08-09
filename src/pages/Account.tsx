@@ -97,17 +97,19 @@ export const Account = () => {
               placeholder="seu@email.com"
             />
           </div>
-          <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-stone-700 mb-1">Telefone</label>
-            <input
-              id="phone"
-              name="phone"
-              type="text"
-              required
-              className="w-full border border-stone-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="11999999999"
-            />
-          </div>
+          {flow === "signUp" && (
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-stone-700 mb-1">Telefone</label>
+              <input
+                id="phone"
+                name="phone"
+                type="text"
+                required
+                className="w-full border border-stone-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                placeholder="11999999999"
+              />
+            </div>
+          )}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-stone-700 mb-1">Senha</label>
             <input
