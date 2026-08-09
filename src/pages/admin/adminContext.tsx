@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { products as INITIAL_DATA } from '../../data';
+import { useQuery, useMutation } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { Id } from '../../../convex/_generated/dataModel';
 
 export interface Product {
   id: string;
@@ -63,35 +65,115 @@ interface AdminContextType {
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-const MAPPED_INITIAL_PRODUCTS: Product[] = [];
-const INITIAL_ORDERS: Order[] = [];
-const INITIAL_COUPONS: Coupon[] = [];
+const DEFAULT_SEED_PRODUCTS: Omit<Product, 'id'>[] = [
+  {
+    name: 'Golden PP Filhote Cães Frango, arroz e vegatais',
+    brand: 'GOLDEN',
+    category: 'Rações para Cães',
+    price: 139.99,
+    quantity: 20,
+    images: ['https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80'],
+    rating: 5,
+    reviewCount: 0,
+  },
+  {
+    name: 'Golden PP Filhote Cães carne, arroz e vegetais',
+    brand: 'GOLDEN',
+    category: 'Rações para Cães',
+    price: 139.99,
+    quantity: 15,
+    images: ['https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80'],
+    rating: 5,
+    reviewCount: 0,
+  },
+  {
+    name: 'Golden Adulto Cães Frango',
+    brand: 'GOLDEN',
+    category: 'Rações para Cães',
+    price: 159.99,
+    quantity: 10,
+    images: ['https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80'],
+    rating: 5,
+    reviewCount: 0,
+  },
+  {
+    name: 'Golden Adulto Special Carne Frango Cães',
+    brand: 'GOLDEN',
+    category: 'Rações para Cães',
+    price: 154.99,
+    quantity: 12,
+    images: ['https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=500&q=80'],
+    rating: 5,
+    reviewCount: 0,
+  },
+];
 
 export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('admin_products');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          // Remove mock products (products with numeric string IDs 1-32 or Royal Canin, etc.)
-          const userCreated = parsed.filter((p: any) => p && isNaN(Number(p.id)));
-          return userCreated.map((p: any) => {
-            const images = p.images || (p.image ? [p.image] : []);
-            const image = p.image || images[0] || '';
-            return {
-              ...p,
-              image,
-              images
-            };
-          });
-        }
-      } catch (e) {
-        console.error("Erro ao carregar produtos do localStorage:", e);
+  const convexProducts = useQuery(api.products.list);
+  const addProductMutation = useMutation(api.products.add);
+  const updateProductMutation = useMutation(api.products.update);
+  const removeProductMutation = useMutation(api.products.remove);
+  const updatePriceMutation = useMutation(api.products.updatePrice);
+  const decreaseStockMutation = useMutation(api.products.decreaseStock);
+  const seedDefaultsMutation = useMutation(api.products.seedDefaults);
+
+  const [hasSeeded, setHasSeeded] = useState(false);
+
+  // Seed default products when database is empty
+  useEffect(() => {
+    if (convexProducts !== undefined && convexProducts.length === 0 && !hasSeeded) {
+      setHasSeeded(true);
+      // Check if localStorage has products from user session
+      let initialList = DEFAULT_SEED_PRODUCTS;
+      const saved = localStorage.getItem('admin_products');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const userCreated = parsed.filter((p: any) => p && isNaN(Number(p.id)));
+            if (userCreated.length > 0) {
+              initialList = userCreated.map((p: any) => ({
+                name: p.name || 'Produto',
+                price: Number(p.price) || 0,
+                quantity: Number(p.quantity) || 0,
+                category: p.category || 'Rações para Cães',
+                brand: p.brand || 'GOLDEN',
+                images: p.images || (p.image ? [p.image] : []),
+                image: p.image || (p.images ? p.images[0] : ''),
+                video: p.video,
+                description: p.description,
+                rating: p.rating || 5,
+                reviewCount: p.reviewCount || 0,
+                badge: p.badge,
+                oldPrice: p.oldPrice
+              }));
+            }
+          }
+        } catch (e) {}
       }
+
+      seedDefaultsMutation({ initialProducts: initialList }).catch(err => {
+        console.error("Erro ao inicializar produtos no Convex:", err);
+      });
     }
-    return [];
-  });
+  }, [convexProducts, hasSeeded, seedDefaultsMutation]);
+
+  // Format convex products to Product interface
+  const products: Product[] = React.useMemo(() => {
+    if (!convexProducts) return [];
+    return convexProducts.map((p: any) => {
+      const images = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
+      const image = p.image || images[0] || '';
+      return {
+        ...p,
+        id: p._id as string,
+        image,
+        images,
+        rating: p.rating ?? 5,
+        reviewCount: p.reviewCount ?? 0,
+      };
+    });
+  }, [convexProducts]);
 
   const [orders, setOrders] = useState<Order[]>(() => {
     const saved = localStorage.getItem('admin_orders');
@@ -99,7 +181,6 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          // Remove initial mock orders ('101', '102', '103', '104')
           return parsed.filter((o: any) => o && !['101', '102', '103', '104'].includes(String(o.id)));
         }
       } catch (e) {}
@@ -113,17 +194,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
-          // Remove initial mock coupons ('BEMVINDO10', 'PETLOVER')
           return parsed.filter((c: any) => c && !['1', '2'].includes(String(c.id)) && c.code !== 'BEMVINDO10' && c.code !== 'PETLOVER');
         }
       } catch (e) {}
     }
     return [];
   });
-
-  useEffect(() => {
-    localStorage.setItem('admin_products', JSON.stringify(products));
-  }, [products]);
 
   useEffect(() => {
     localStorage.setItem('admin_orders', JSON.stringify(orders));
@@ -136,32 +212,57 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const addProduct = (product: Omit<Product, 'id'>) => {
     const images = product.images || ((product as any).image ? [(product as any).image] : []);
     const image = (product as any).image || images[0] || '';
-    const newProduct = { ...product, image, images, id: Math.random().toString(36).substr(2, 9) };
-    setProducts(prev => [newProduct, ...prev]);
+    addProductMutation({
+      name: product.name,
+      price: product.price,
+      quantity: product.quantity,
+      category: product.category,
+      brand: product.brand,
+      images: images,
+      image: image,
+      video: product.video,
+      description: product.description,
+      rating: product.rating || 5,
+      reviewCount: product.reviewCount || 0,
+      badge: product.badge,
+      oldPrice: product.oldPrice,
+    }).catch(err => console.error("Erro ao adicionar produto no Convex:", err));
   };
 
   const updateProductPrice = (id: string, newPrice: number) => {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, price: newPrice } : p));
+    updatePriceMutation({ id: id as Id<"products">, price: newPrice })
+      .catch(err => console.error("Erro ao atualizar preço no Convex:", err));
   };
 
   const updateProduct = (id: string, updatedProduct: Omit<Product, 'id'>) => {
     const images = updatedProduct.images || ((updatedProduct as any).image ? [(updatedProduct as any).image] : []);
     const image = (updatedProduct as any).image || images[0] || '';
-    setProducts(prev => prev.map(p => p.id === id ? { ...updatedProduct, image, images, id } : p));
+    updateProductMutation({
+      id: id as Id<"products">,
+      name: updatedProduct.name,
+      price: updatedProduct.price,
+      quantity: updatedProduct.quantity,
+      category: updatedProduct.category,
+      brand: updatedProduct.brand,
+      images: images,
+      image: image,
+      video: updatedProduct.video,
+      description: updatedProduct.description,
+      rating: updatedProduct.rating || 5,
+      reviewCount: updatedProduct.reviewCount || 0,
+      badge: updatedProduct.badge,
+      oldPrice: updatedProduct.oldPrice,
+    }).catch(err => console.error("Erro ao atualizar produto no Convex:", err));
   };
 
   const deleteProduct = (id: string) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
+    removeProductMutation({ id: id as Id<"products"> })
+      .catch(err => console.error("Erro ao remover produto no Convex:", err));
   };
 
   const decreaseStock = (id: string, quantityBought: number) => {
-    setProducts(prev => prev.map(p => {
-      if (p.id === id) {
-        const newQty = Math.max(0, (p.quantity || 0) - quantityBought);
-        return { ...p, quantity: newQty };
-      }
-      return p;
-    }));
+    decreaseStockMutation({ id: id as Id<"products">, quantityBought })
+      .catch(err => console.error("Erro ao decrementar estoque no Convex:", err));
   };
 
   const updateOrderStatus = (id: string, newStatus: OrderStatus) => {

@@ -95,6 +95,22 @@ const schema = defineSchema({
     dateGiven: v.number(), // timestamp
     nextDueDate: v.number(), // timestamp
   }).index("by_pet", ["petId"]),
+
+  products: defineTable({
+    name: v.string(),
+    price: v.number(),
+    quantity: v.number(),
+    category: v.string(),
+    brand: v.string(),
+    images: v.array(v.string()),
+    image: v.optional(v.string()),
+    video: v.optional(v.string()),
+    description: v.optional(v.string()),
+    rating: v.optional(v.number()),
+    reviewCount: v.optional(v.number()),
+    badge: v.optional(v.string()),
+    oldPrice: v.optional(v.number()),
+  }).index("by_category", ["category"]),
 });
 
 export default schema;
