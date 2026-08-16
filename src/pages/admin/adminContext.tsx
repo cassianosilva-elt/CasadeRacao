@@ -18,6 +18,7 @@ export interface Product {
   reviewCount: number;
   badge?: string;
   oldPrice?: number;
+  bagSize?: string;
 }
 
 export const CATEGORIES = [
@@ -147,7 +148,8 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 rating: p.rating || 5,
                 reviewCount: p.reviewCount || 0,
                 badge: p.badge,
-                oldPrice: p.oldPrice
+                oldPrice: p.oldPrice,
+                bagSize: p.bagSize
               }));
             }
           }
@@ -234,6 +236,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       reviewCount: product.reviewCount || 0,
       badge: product.badge,
       oldPrice: product.oldPrice,
+      bagSize: product.bagSize,
     }).catch(err => console.error("Erro ao adicionar produto no Convex:", err));
   };
 
@@ -260,6 +263,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       reviewCount: updatedProduct.reviewCount || 0,
       badge: updatedProduct.badge,
       oldPrice: updatedProduct.oldPrice,
+      bagSize: updatedProduct.bagSize,
     }).catch(err => console.error("Erro ao atualizar produto no Convex:", err));
   };
 
@@ -310,6 +314,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           reviewCount: product.reviewCount,
           badge: 'Promoção',
           oldPrice: originalPrice,
+          bagSize: product.bagSize,
         };
       })()
     }).catch(err => console.error("Erro ao criar oferta no Convex:", err));
@@ -335,6 +340,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           reviewCount: product.reviewCount,
           badge: undefined,
           oldPrice: undefined,
+          bagSize: product.bagSize,
         };
       })()
     }).catch(err => console.error("Erro ao remover oferta no Convex:", err));

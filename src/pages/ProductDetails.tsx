@@ -148,7 +148,7 @@ export const ProductDetails = () => {
     else if (name.includes('Senior') || name.includes('Idoso')) indicacao = 'Senior';
 
     const weightMatch = name.match(/(\d+(?:[.,]\d+)?\s*(?:kg|g))/i);
-    const peso = weightMatch ? weightMatch[1].toLowerCase() : 'Consulte';
+    const peso = product.bagSize || (weightMatch ? weightMatch[1].toLowerCase() : 'Consulte');
 
     let saborBase = '';
     const sabores = ['Frango', 'Carne', 'Peixe', 'Salmão', 'Cordeiro', 'Peru'];
@@ -247,7 +247,14 @@ export const ProductDetails = () => {
 
           <div className="flex flex-col">
             <div className="mb-6 md:mb-8">
-              <p className="text-teal-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs mb-3 md:mb-4">{product.brand}</p>
+              <div className="flex items-center gap-2 mb-3 md:mb-4">
+                <p className="text-teal-600 font-bold uppercase tracking-[0.2em] text-[10px] md:text-xs">{product.brand}</p>
+                {product.bagSize && (
+                  <span className="bg-amber-100 text-amber-800 text-[10px] md:text-xs font-bold px-2.5 py-0.5 rounded-full">
+                    📦 {product.bagSize}
+                  </span>
+                )}
+              </div>
               <h1 className="font-display text-2xl md:text-5xl font-bold text-stone-900 mb-4 md:mb-6 leading-tight">{product.name}</h1>
               <div className="flex items-center gap-2 md:gap-4">
                 <div className="flex bg-orange-50 px-3 py-1.5 rounded-xl cursor-pointer hover:bg-orange-100 transition-colors" onClick={() => setActiveTab('reviews')}>

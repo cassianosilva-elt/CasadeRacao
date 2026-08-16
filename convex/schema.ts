@@ -110,6 +110,7 @@ const schema = defineSchema({
     reviewCount: v.optional(v.number()),
     badge: v.optional(v.string()),
     oldPrice: v.optional(v.number()),
+    bagSize: v.optional(v.string()),
   }).index("by_category", ["category"]),
 });
 

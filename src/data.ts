@@ -13,6 +13,7 @@ export interface Product {
   rating?: number;
   reviewCount?: number;
   badge?: 'Novo' | 'Promoção' | 'Frete Grátis' | string;
+  bagSize?: string;
 }
 
 export const calculateFoodAmount = (weight: number, age: 'puppy' | 'adult' | 'senior') => {

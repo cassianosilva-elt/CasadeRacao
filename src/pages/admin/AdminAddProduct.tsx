@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Camera, CheckCircle2, ArrowLeft, X, Save, Edit3 } from 'lucide-react';
+import { Camera, CheckCircle2, ArrowLeft, X, Save, Edit3, Scale } from 'lucide-react';
 import { useAdmin, CATEGORIES } from './adminContext';
-import { ImageEditor } from './ImageEditor';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const AdminAddProduct = () => {
@@ -17,12 +16,13 @@ export const AdminAddProduct = () => {
     quantity: '',
     category: CATEGORIES[0],
     brand: '',
+    bagSize: '',
     images: ['', '', ''] as string[],
     video: '',
     description: '',
   });
   
-  const [editingImage, setEditingImage] = useState<{ index: number; src: string } | null>(null);
+
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,6 +36,7 @@ export const AdminAddProduct = () => {
           quantity: product.quantity.toString(),
           category: product.category,
           brand: product.brand,
+          bagSize: product.bagSize || '',
           images: [
             product.images[0] || '',
             product.images[1] || '',
@@ -60,6 +61,7 @@ export const AdminAddProduct = () => {
       quantity: parseInt(formData.quantity) || 0,
       category: formData.category,
       brand: formData.brand || 'Marca Própria',
+      bagSize: formData.bagSize || undefined,
       images: formData.images.filter(img => img.trim() !== ''),
       video: formData.video,
       description: formData.description || undefined,
@@ -85,7 +87,9 @@ export const AdminAddProduct = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setEditingImage({ index, src: reader.result as string });
+        const newImages = [...formData.images];
+        newImages[index] = reader.result as string;
+        setFormData(prev => ({ ...prev, images: newImages }));
       };
       reader.readAsDataURL(file);
     }
@@ -180,6 +184,47 @@ export const AdminAddProduct = () => {
           </div>
         </div>
 
+        <div className="space-y-3 p-4 bg-stone-50/80 rounded-2xl border border-stone-200/60">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <label className="admin-label block text-stone-900 font-bold flex items-center gap-2">
+              <Scale className="w-4 h-4 text-teal-600" />
+              Tamanho do Saco de Ração
+            </label>
+            <span className="text-xs text-stone-400 font-medium">Selecione uma opção ou informe o peso</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {['10kg', '15kg', '20kg'].map(size => {
+              const isSelected = formData.bagSize === size;
+              return (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, bagSize: isSelected ? '' : size })}
+                  className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                    isSelected
+                      ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20 scale-105 ring-2 ring-teal-600 ring-offset-1'
+                      : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200 hover:border-stone-300'
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-white' : 'bg-teal-500'}`}></span>
+                  {size}
+                </button>
+              );
+            })}
+
+            <div className="flex-1 min-w-[150px]">
+              <input
+                type="text"
+                placeholder="Outro peso (ex: 3kg, 25kg)"
+                className="admin-input text-sm py-2"
+                value={['10kg', '15kg', '20kg'].includes(formData.bagSize) ? '' : formData.bagSize}
+                onChange={e => setFormData({ ...formData, bagSize: e.target.value })}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div className="space-y-2">
             <label className="admin-label block">Preço de Venda (R$)</label>
@@ -223,10 +268,10 @@ export const AdminAddProduct = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[0, 1, 2].map(index => (
               <div key={index} className="space-y-2 group">
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-stone-50 border-2 border-dashed border-stone-200 group-hover:border-teal-400 transition-colors flex items-center justify-center">
+                <div className="relative min-h-[140px] rounded-2xl overflow-hidden bg-stone-50 border-2 border-dashed border-stone-200 group-hover:border-teal-400 transition-colors flex items-center justify-center">
                   {formData.images[index] ? (
                     <>
-                      <img src={formData.images[index]} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                      <img src={formData.images[index]} alt={`Preview ${index + 1}`} className="w-full h-full object-contain max-h-[220px]" />
                       <button 
                         type="button"
                         onClick={() => {
@@ -324,18 +369,7 @@ export const AdminAddProduct = () => {
         </div>
       </form>
 
-      {editingImage && (
-        <ImageEditor
-          image={editingImage.src}
-          onSave={(croppedImage) => {
-            const newImages = [...formData.images];
-            newImages[editingImage.index] = croppedImage;
-            setFormData({ ...formData, images: newImages });
-            setEditingImage(null);
-          }}
-          onCancel={() => setEditingImage(null)}
-        />
-      )}
+
     </motion.div>
   );
 };

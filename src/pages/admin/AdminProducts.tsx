@@ -93,6 +93,11 @@ export const AdminProducts = () => {
                   <span className="inline-block bg-teal-50 text-teal-600 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider self-center sm:self-auto shrink-0">
                     {product.category}
                   </span>
+                  {product.bagSize && (
+                    <span className="inline-block bg-amber-50 text-amber-700 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wider self-center sm:self-auto shrink-0">
+                      📦 {product.bagSize}
+                    </span>
+                  )}
                 </div>
                 
                 <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-8">

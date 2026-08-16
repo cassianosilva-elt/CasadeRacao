@@ -46,7 +46,14 @@ export const Offers = () => {
             </div>
             
             <div className="p-6">
-              <p className="text-[10px] font-bold text-teal-600 uppercase tracking-widest mb-2">{product.brand}</p>
+              <div className="flex items-center justify-between gap-1 mb-2">
+                <p className="text-[10px] font-bold text-teal-600 uppercase tracking-widest">{product.brand}</p>
+                {(product.bagSize || product.name.match(/(\d+(?:[.,]\d+)?\s*kg)/i)?.[1]) && (
+                  <span className="text-[10px] font-bold text-amber-800 bg-amber-100/90 px-2 py-0.5 rounded-full border border-amber-200/80 shrink-0">
+                    📦 {product.bagSize || product.name.match(/(\d+(?:[.,]\d+)?\s*kg)/i)?.[1]}
+                  </span>
+                )}
+              </div>
               <h3 className="font-bold text-stone-900 mb-4 line-clamp-2 h-10 leading-tight">{product.name}</h3>
               
               <div className="flex items-center gap-3 mb-6">

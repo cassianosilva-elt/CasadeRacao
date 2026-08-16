@@ -23,6 +23,7 @@ export const add = mutation({
     reviewCount: v.optional(v.number()),
     badge: v.optional(v.string()),
     oldPrice: v.optional(v.number()),
+    bagSize: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const id = await ctx.db.insert("products", {
@@ -39,6 +40,7 @@ export const add = mutation({
       reviewCount: args.reviewCount ?? 0,
       badge: args.badge,
       oldPrice: args.oldPrice,
+      bagSize: args.bagSize,
     });
     return id;
   },
@@ -60,6 +62,7 @@ export const update = mutation({
     reviewCount: v.optional(v.number()),
     badge: v.optional(v.string()),
     oldPrice: v.optional(v.number()),
+    bagSize: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const { id, ...rest } = args;
@@ -115,6 +118,7 @@ export const seedDefaults = mutation({
         reviewCount: v.optional(v.number()),
         badge: v.optional(v.string()),
         oldPrice: v.optional(v.number()),
+        bagSize: v.optional(v.string()),
       })
     ),
   },

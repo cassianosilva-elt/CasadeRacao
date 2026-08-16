@@ -100,11 +100,11 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({ image, onSave, onCance
           crop={crop}
           zoom={zoom}
           rotation={rotation}
-          aspect={1}
           onCropChange={setCrop}
           onCropComplete={onCropComplete}
           onZoomChange={setZoom}
           onRotationChange={setRotation}
+          objectFit="contain"
         />
       </div>
 

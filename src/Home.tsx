@@ -339,7 +339,14 @@ const ProductGrid = () => {
                   />
                 </Link>
                 <div className="p-3 md:p-6 flex flex-col flex-grow">
-                  <p className="text-[10px] md:text-xs font-bold text-teal-600 uppercase mb-1 md:mb-2 tracking-wider">{product.brand}</p>
+                  <div className="flex items-center justify-between gap-1 mb-1 md:mb-2">
+                    <p className="text-[10px] md:text-xs font-bold text-teal-600 uppercase tracking-wider">{product.brand}</p>
+                    {(product.bagSize || product.name.match(/(\d+(?:[.,]\d+)?\s*kg)/i)?.[1]) && (
+                      <span className="text-[10px] md:text-xs font-bold text-amber-800 bg-amber-100/90 px-2 py-0.5 rounded-full border border-amber-200/80 shrink-0">
+                        📦 {product.bagSize || product.name.match(/(\d+(?:[.,]\d+)?\s*kg)/i)?.[1]}
+                      </span>
+                    )}
+                  </div>
                   <Link to={`/produto/${product.id}`} className="font-bold text-stone-900 text-sm md:text-base leading-snug mb-2 md:mb-3 hover:text-teal-600 line-clamp-2 transition-colors">{product.name}</Link>
                   <div className="flex items-center gap-1 mb-2 md:mb-4">
                     <Star className="w-3 h-3 md:w-3.5 md:h-3.5 text-orange-400 fill-orange-400" />
