@@ -101,6 +101,26 @@ export const decreaseStock = mutation({
   },
 });
 
+export const fixCategories = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const products = await ctx.db.query("products").collect();
+    let fixed = 0;
+    for (const product of products) {
+      const nameLower = product.name.toLowerCase();
+      // If the name contains "gato" or "gatos" but the category is for dogs, fix it
+      if (
+        (nameLower.includes("gato") || nameLower.includes("gatos")) &&
+        product.category === "Rações para Cães"
+      ) {
+        await ctx.db.patch(product._id, { category: "Rações para Gatos" });
+        fixed++;
+      }
+    }
+    return { fixed };
+  },
+});
+
 export const seedDefaults = mutation({
   args: {
     initialProducts: v.array(

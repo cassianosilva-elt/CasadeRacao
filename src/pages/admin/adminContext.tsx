@@ -119,8 +119,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const updatePriceMutation = useMutation(api.products.updatePrice);
   const decreaseStockMutation = useMutation(api.products.decreaseStock);
   const seedDefaultsMutation = useMutation(api.products.seedDefaults);
+  const fixCategoriesMutation = useMutation(api.products.fixCategories);
 
   const [hasSeeded, setHasSeeded] = useState(false);
+  const [hasFixedCategories, setHasFixedCategories] = useState(false);
 
   // Seed default products when database is empty
   useEffect(() => {
@@ -161,6 +163,16 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
     }
   }, [convexProducts, hasSeeded, seedDefaultsMutation]);
+
+  // Fix category for products that were incorrectly saved (e.g. cat food saved as dog food)
+  useEffect(() => {
+    if (convexProducts && convexProducts.length > 0 && !hasFixedCategories) {
+      setHasFixedCategories(true);
+      fixCategoriesMutation().catch(err => {
+        console.error("Erro ao corrigir categorias:", err);
+      });
+    }
+  }, [convexProducts, hasFixedCategories, fixCategoriesMutation]);
 
   // Format convex products to Product interface
   const products: Product[] = React.useMemo(() => {
